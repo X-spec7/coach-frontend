@@ -16,11 +16,13 @@ const ScheduleOverview:React.FC<ScheduleOverviewProps> = ({title, description, t
 
   return (
     <div className='flex justify-between items-center pl-1'>
-      <Tick ticked={completed}/>
-      <div className='flex flex-col justify-center w-54'>
-        <p className='text-gray-20 text-xxs'>{timeIn12HourFormat}</p>
-        <h4 className='text-black font-medium'>{title}</h4>
-        <p className='text-gray-20 text-xs max-w-54 break-words'>{description}</p>
+      <div className='flex justify-start items-center gap-2'>
+        <Tick ticked={completed}/>
+        <div className='flex flex-col justify-center w-54'>
+          <p className='text-gray-20 text-xxs'>{timeIn12HourFormat}</p>
+          <h4 className='text-black font-medium'>{title}</h4>
+          <p className='text-gray-20 text-xs max-w-54 break-words'>{description}</p>
+        </div>
       </div>
       <KebabMenu />
     </div>
