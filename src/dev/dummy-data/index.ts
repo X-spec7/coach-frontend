@@ -1,0 +1,6 @@
+export { classDummyData as classDummyData} from './class'
+export { progressDummyData as progressDummyData } from './progress'
+export { mealDummyData as mealDummyData } from './meal'
+export { scheduleDummyData as scheduleDummyData } from './schedule'
+export { contactUserDummyData as contactUserDummyData } from './chat.contact'
+export { messagesDummyData as messagesDummyData } from './chat.message'
