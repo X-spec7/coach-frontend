@@ -6,6 +6,10 @@ const nextConfig = {
         protocol: 'http', 
         hostname: '5.9.85.28',
       },
+      {
+        protocol: 'http', 
+        hostname: '127.0.0.1',
+      },
     ],
   },
   async redirects() {
