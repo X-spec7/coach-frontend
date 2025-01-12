@@ -1,7 +1,9 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import { v4 as uuid } from 'uuid'
 
 import ChatItem from './ChatItem'
 import MessageTypeBox from './MessageTypeBox'
@@ -25,6 +27,8 @@ interface IChat {
 }
 
 const Chat: React.FC<IChat> = ({ isShow, currentChatUserId }) => {
+  const router = useRouter()
+
   const chatRef = useRef<HTMLDivElement | null>(null)
 
   const [showScrollDown, setShowScrollDown] = useState(false)
@@ -113,6 +117,10 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId }) => {
     }
   }, [messages, hasMore])
 
+  const createMeeting = () => {
+    router.push(`/meeting/${uuid()}`)
+  }
+
   if (!currentChatUserId) {
     return (
       <div className='relative flex flex-[2] flex-col justify-center items-center h-full bg-gray-bg-subtle rounded-20'>
@@ -157,7 +165,7 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId }) => {
           </div>
         </div>
         <div className='flex justify-end items-center gap-2.5'>
-          <SvgWrapper>
+          <SvgWrapper onClick={createMeeting}>
             <PhoneSvg width='20' height='20' color='#4D5260' />
           </SvgWrapper>
           <SvgWrapper>
@@ -188,9 +196,14 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId }) => {
   )
 }
 
-const SvgWrapper: React.FC<ILayoutProps> = ({ children }) => {
+interface ISvgWrapper {
+  children: React.ReactNode
+  onClick?: () => void
+}
+
+const SvgWrapper: React.FC<ISvgWrapper> = ({ children, onClick }) => {
   return (
-    <div className='flex justify-center items-center w-9 h-9 bg-gray-bg-subtle rounded-full'>
+    <div className='flex justify-center items-center w-9 h-9 bg-gray-bg-subtle rounded-full cursor-pointer' onClick={onClick}>
       {children}
     </div>
   )
