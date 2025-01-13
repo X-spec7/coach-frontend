@@ -8,9 +8,14 @@ export const metadata: Metadata = {
   description: "This is Messages for COA-CH",
 }
 
-const Messages: React.FC = () => {
+const Messages: React.FC = async (props: {
+  searchParams?: Promise<{currentChatUserId?: string}>;
+}) => {
+  const searchParams = await props.searchParams
+  const currentChatUserId = searchParams?.currentChatUserId
+
   return (
-    <MessagesPage />
+    <MessagesPage currentChatUserId={currentChatUserId} />
   )
 }
 

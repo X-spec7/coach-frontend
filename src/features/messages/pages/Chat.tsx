@@ -118,7 +118,7 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId }) => {
   }, [messages, hasMore])
 
   const createMeeting = () => {
-    router.push(`/meeting/${uuid()}`)
+    router.push(`/meeting/${uuid()}?currentChatUserId=${currentChatUserId}`)
   }
 
   if (!currentChatUserId) {
