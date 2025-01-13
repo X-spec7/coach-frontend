@@ -10,6 +10,7 @@ export interface ISession {
   goal: string
   level: string
   description: string
+  bannerImageUrl: string
   // booking info
   totalParticipantNumber: number
   currentParticipantNumber: number
