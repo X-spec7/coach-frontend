@@ -6,16 +6,23 @@ import { useSelector } from 'react-redux'
 
 import ClientSessionsListPage from './client/pages/list'
 import CoachSessionsListPage from './coach/pages/list'
+import SharedLayout from '@/shared/Layouts/SharedLayout'
 
-const SessionsPage = () => {
+const SessionsListPage = () => {
   const user = useSelector(selectUser)
 
-  if (user.userType === 'Coach') {
-    return <CoachSessionsListPage />
+  if (user.userType === 'Client') {
+    return (
+      <SharedLayout
+        headerTitle='Sessions Page'
+        headerDescription='Find Session to book'
+      >
+        <ClientSessionsListPage />
+      </SharedLayout>
+    )
   } else {
-    return <ClientSessionsListPage />
+    return <CoachSessionsListPage />
   }
-
 }
 
-export default SessionsPage
+export default SessionsListPage

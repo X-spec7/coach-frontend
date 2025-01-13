@@ -1,5 +1,6 @@
 import React from 'react'
 import { Metadata } from 'next'
+import SessionsListPage from '@/features/sessions'
 
 export const metadata: Metadata = {
   title:
@@ -9,9 +10,7 @@ export const metadata: Metadata = {
 
 const Page = () => {
   return (
-    <div>
-      Sessions
-    </div>
+    <SessionsListPage />
   )
 }
 

@@ -1,4 +1,4 @@
-interface ISession {
+export interface ISession {
   // basic info
   title: string
   startDate: string
