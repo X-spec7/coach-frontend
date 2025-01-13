@@ -4,8 +4,8 @@ import React from 'react'
 import { selectUser } from '../user/slice/userSlice'
 import { useSelector } from 'react-redux'
 
-import ClientSessionsListPage from './client/pages/list'
-import CoachSessionsListPage from './coach/pages/list'
+import ClientSessionsListPage from './pages/list/client'
+import CoachSessionsListPage from './pages/list/coach'
 import SharedLayout from '@/shared/Layouts/SharedLayout'
 
 const SessionsListPage = () => {
