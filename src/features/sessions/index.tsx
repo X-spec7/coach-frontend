@@ -1,21 +1,47 @@
 'use client'
 
 import React from 'react'
-import { selectUser } from '../user/slice/userSlice'
 import { useSelector } from 'react-redux'
+import { useSearchParams } from 'next/navigation'
 
-import ClientSessionsListPage from './client/pages/list'
-import CoachSessionsListPage from './coach/pages/list'
+import { selectUser } from '../user/slice/userSlice'
+import ClientSessionsListPage from './pages/list/client'
+import CoachSessionsListPage from './pages/list/coach'
+import SharedLayout from '@/shared/Layouts/SharedLayout'
 
-const SessionsPage = () => {
-  const user = useSelector(selectUser)
-
-  if (user.userType === 'Coach') {
-    return <CoachSessionsListPage />
-  } else {
-    return <ClientSessionsListPage />
-  }
-
+interface ISessionsListPageProps {
+  query: string
+  currentPage: number
+  goal: string
+  booked: boolean
 }
 
-export default SessionsPage
+const SessionsListPage:React.FC = () => {
+  const user = useSelector(selectUser)
+  
+  const searchParams = useSearchParams()
+  const query = searchParams.get('query') || ''
+  const currentPage = Number(searchParams.get('currentPage')) || 1
+  const goal = searchParams.get('goal') || ''
+  const booked = !!searchParams.get('booked')
+
+  if (user.userType === 'Client') {
+    return (
+      <SharedLayout
+        headerTitle='Sessions Page'
+        headerDescription='Find Session to book'
+      >
+        <ClientSessionsListPage
+          query={query}
+          currentPage={currentPage}
+          goal={goal}
+          booked={booked}
+        />
+      </SharedLayout>
+    )
+  } else {
+    return <CoachSessionsListPage />
+  }
+}
+
+export default SessionsListPage
