@@ -1,4 +1,4 @@
-import { ISessionWithBookedStatus } from "@/features/sessions/types";
+import { ISessionWithBookedStatus, ISession } from "@/features/sessions/types";
 
 export const sessionsDummyData: ISessionWithBookedStatus[] = [
   {
@@ -273,3 +273,7 @@ export const sessionsDummyData: ISessionWithBookedStatus[] = [
   },
   // Additional 10 sessions omitted for brevity...
 ]
+
+export const sessionsWithoutBookedDummyData: ISession[] = sessionsDummyData.map(
+  ({ booked, ...session }) => session
+);

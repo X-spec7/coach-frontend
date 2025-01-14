@@ -18,7 +18,7 @@ const SignUpPage: React.FC = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    userType: 'Client',
+    userType: 'Coach',
   })
 
   const [isSubmitting, setIsSubmitting] = useState(false)

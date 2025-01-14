@@ -27,8 +27,13 @@ export interface ISessionWithBookedStatus extends ISession {
 }
 
 export type {
+  // coach
   CreateSessionRequestDTO,
+  GetMySessionsRequestDTO,
   GetMySessionsResponseDTO,
+  GetTotalMySessionCountRequestDTO,
+  GetTotalMySessionCountResponseDTO,
+  // client
   GetSessionsRequestDTO,
   GetTotalSessionCountRequestDTO,
   GetTotalSessionCountResponseDTO,

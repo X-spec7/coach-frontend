@@ -25,15 +25,11 @@ const ClientSessionsListPage: React.FC<IClientSessionListPageProps> = ({
 
   useEffect(() => {
     const getTotalSessionCount = async () => {
-      console.log('get total session count got called')
       const response = await clientSessionService.getTotalSessionCount({
-        limit: 15,
-        offset: ( currentPage - 1) * 15,
         goal: goal,
         query: query,
       })
       setTotalSessionCount(response.totalSessionCount)
-      console.log('total session count response: ', response.totalSessionCount)
     }
     getTotalSessionCount()
   }, [query, currentPage, goal])

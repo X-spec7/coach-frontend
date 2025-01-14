@@ -1,8 +1,12 @@
 import { mockApi } from "./api"
-import { sessionsDummyData } from "../dummy-data/sessions"
+import { sessionsDummyData, sessionsWithoutBookedDummyData } from "../dummy-data/sessions"
 import {
+  GetMySessionsRequestDTO,
+  GetMySessionsResponseDTO,
   GetSessionsRequestDTO,
   GetSessionsResponseDTO,
+  GetTotalMySessionCountRequestDTO,
+  GetTotalMySessionCountResponseDTO,
   GetTotalSessionCountRequestDTO,
   GetTotalSessionCountResponseDTO,
 } from "@/features/sessions/types"
@@ -40,18 +44,15 @@ export const getSessionsMockApi = async (request: GetSessionsRequestDTO): Promis
 export const getTotalSessionCountMockApi = async (
   request: GetTotalSessionCountRequestDTO
 ): Promise<GetTotalSessionCountResponseDTO> => {
-  const { limit, offset, goal, booked, query } = request
-  console.log('limit, offest, goal, booked, query', limit, offset, goal, booked, query)
+  const { goal, booked, query } = request
 
   let filteredSessions = sessionsDummyData
-  console.log('filtered sessions', filteredSessions.length)
 
   if (goal && goal !== '') {
     filteredSessions = filteredSessions.filter(
       (session) => session.goal === goal
     )
   }
-  console.log('goal filtered sessions', filteredSessions.length)
 
   if (query && query !== '') {
     filteredSessions = filteredSessions.filter(
@@ -60,16 +61,64 @@ export const getTotalSessionCountMockApi = async (
         session.description.toLowerCase().includes(query.toLowerCase())
     )
   }
-  console.log('query filtered sessions', filteredSessions.length)
-
-  const paginatedSessions = filteredSessions.slice(offset, offset + limit)
-  console.log('paginated filtered sessions', filteredSessions.length)
 
   return mockApi<GetTotalSessionCountResponseDTO>(
     {
       message: 'Session Total Count fetched successfully',
-      totalSessionCount: paginatedSessions.length
+      totalSessionCount: filteredSessions.length
     },
-    500
+    100
   )
 }
+
+export const getMySessionsMockApi = async (request: GetMySessionsRequestDTO): Promise<GetMySessionsResponseDTO> => {
+  const { limit, offset, query } = request
+
+  // Filter sessions based on the request criteria
+  let filteredSessions = sessionsWithoutBookedDummyData
+
+  if (query && query !== '') {
+    filteredSessions = filteredSessions.filter(
+      (session) =>
+        session.title.toLowerCase().includes(query.toLowerCase()) ||
+        session.description.toLowerCase().includes(query.toLowerCase())
+    )
+  }
+
+  // Pagination logic
+  const paginatedSessions = filteredSessions.slice(offset, offset + limit)
+
+  return mockApi<GetMySessionsResponseDTO>(
+    {
+      message: "Sessions fetched successfully",
+      sessions: paginatedSessions,
+      totalCount: filteredSessions.length,
+    },
+    500 // Simulate a delay of 500ms
+  )
+}
+
+export const getTotalMySessionCountMockApi = async (
+  request: GetTotalMySessionCountRequestDTO
+): Promise<GetTotalMySessionCountResponseDTO> => {
+  const { query } = request
+
+  let filteredSessions = sessionsWithoutBookedDummyData
+
+  if (query && query !== '') {
+    filteredSessions = filteredSessions.filter(
+      (session) =>
+        session.title.toLowerCase().includes(query.toLowerCase()) ||
+        session.description.toLowerCase().includes(query.toLowerCase())
+    )
+  }
+
+  return mockApi<GetTotalSessionCountResponseDTO>(
+    {
+      message: 'Session Total Count fetched successfully',
+      totalSessionCount: filteredSessions.length
+    },
+    100
+  )
+}
+
