@@ -27,7 +27,23 @@ export function formatTimeToDisplay(date: string): string {
   return formattedTime
 }
 
-export const getDateFromDateObject = (dateObj: Date) => dateObj.toISOString().split('T')[0]
+// export const getDateFromDateObject = (dateObj: Date) => dateObj.toISOString().split('T')[0]
+export const getDateFromDateObject = (dateObj: any) => {
+
+  if (dateObj == null) {
+    return null; // Or return an empty string '' if preferred
+  }
+
+  if (typeof dateObj === 'string' || typeof dateObj === 'number') {
+    dateObj = new Date(dateObj);
+  }
+
+  if (!(dateObj instanceof Date) || isNaN(dateObj.getTime())) {
+    throw new Error("Invalid Date object passed");
+  }
+
+  return dateObj.toISOString().split('T')[0];
+};
 
 export const get12HourTimeFromDateObject = (dateObj: Date): string => {
   let hours = dateObj.getHours()

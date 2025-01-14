@@ -8,6 +8,7 @@ import { SearchField } from '@/shared/components'
 import { IContactUser } from '../types'
 import { contactService } from '../service'
 import { get12HourTimeFromDateObject, getDateFromDateObject } from '@/shared/utils'
+import authorizedHttpServer from '@/shared/services/authorizedHttp'
 import * as dotenv from 'dotenv'
 
 dotenv.config()
@@ -18,15 +19,16 @@ interface IUsers {
   isShow: boolean
   currentChatUserId?: string
   setCurrentChatUser: (userId: string) => void
+  setSearchResult: (obj: IContactUser[]) => void
 }
 
-const Users: React.FC<IUsers> = ({ isShow, setCurrentChatUser, currentChatUserId }) => {
+const Users: React.FC<IUsers> = ({ isShow, setCurrentChatUser, setSearchResult, currentChatUserId }) => {
   const searchParams = useSearchParams()
   const query: string | null = searchParams.get('query')
 
   const [contactUsers, setContactUsers] = useState<IContactUser[]>([])
   const [nameSearchResultUsers, setNameSearchResultUsers] = useState<IContactUser[]>([])
-  const [chatSearchResultUsers, setChatSearchResultUsers] = useState()
+  // const [chatSearchResultUsers, setChatSearchResultUsers] = useState()
 
   const onClick = (userId: string) => {
     console.log('setting chat user: ', userId)
@@ -35,12 +37,26 @@ const Users: React.FC<IUsers> = ({ isShow, setCurrentChatUser, currentChatUserId
 
   useEffect(() => {
     const getContacts = async () => {
-      const response = await contactService.getContacts()
-      setContactUsers(response)
+      await authorizedHttpServer.get('/chat/rooms/sidebar-info/')
+        .then((res) => {
+          setContactUsers(res.data)
+        })
     }
 
     getContacts()
   }, [])
+
+  useEffect(() => {
+    const getSearchResult = async () => {
+      await authorizedHttpServer.get(`/chat/rooms/search-list/?query=${query}`)
+        .then((res) => {
+          setNameSearchResultUsers(res.data)
+          setSearchResult(res.data)
+        })
+    }
+
+    getSearchResult()
+  }, [searchParams])
 
   const groupUsersByDate = (users: IContactUser[]) => {
     const today = new Date()
@@ -84,7 +100,8 @@ const Users: React.FC<IUsers> = ({ isShow, setCurrentChatUser, currentChatUserId
         placeholder={query ?? 'Search name, chat, etc'}
       />
 
-      <div className='flex flex-col gap-4 overflow-y-auto no-scrollbar'>
+      {nameSearchResultUsers.length === 0 ? (
+        <div className='flex flex-col gap-4 overflow-y-auto no-scrollbar'>
         {todayUsers.length > 0 && (
           <div className='flex flex-col gap-4'>
             <h3 className='text-black text-sm font-medium'>Today</h3>
@@ -148,6 +165,31 @@ const Users: React.FC<IUsers> = ({ isShow, setCurrentChatUser, currentChatUserId
           </div>
         )}
       </div>
+      ) : (
+        <div className='flex flex-col gap-4 overflow-y-auto no-scrollbar'>
+          {nameSearchResultUsers.length > 0 && (
+          <div className='flex flex-col gap-4'>
+            <h3 className='text-black text-sm font-medium'>Today</h3>
+            <div className='flex flex-col rounded-20 border-stroke border'>
+              {nameSearchResultUsers.map((user, index) => (
+                <div key={index} className='w-full'>
+                  <UserItem
+                    key={index}
+                    user={user}
+                    isSelected={user.id === currentChatUserId}
+                    isTodayOrYesterday
+                    onClick={() => onClick(user.id)}
+                  />
+                  {index < nameSearchResultUsers.length -1 && (
+                    <div className='w-full h-[1px] bg-stroke' />
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        </div>
+      )}
     </div>
   )
 }
@@ -172,10 +214,10 @@ const UserItem: React.FC<IUserItemProps> = ({
     `
 
   // !type assertion
-  const dateObj = new Date(user.lastMessage?.sentDate!)
+  const dateObj = new Date(user?.lastMessage?.sentDate!)
 
   let time: string = get12HourTimeFromDateObject(dateObj)
-  let date: string = getDateFromDateObject(dateObj)
+  let date: string | null = getDateFromDateObject(user?.lastMessage?.sentDate!)
 
   return (
     <div className={containerStyle} onClick={onClick}>
@@ -220,7 +262,7 @@ const UserItem: React.FC<IUserItemProps> = ({
         {/* Chat content and unread message */}
         <div className='flex justify-start items-center gap-4'>
           <article className='flex-1 text-xxs text-gray-30 text-medium'>{user.lastMessage?.content}</article>
-          {user.unreadCount > 0 && (
+          {user?.unreadCount > 0 && (
             <div className='flex justify-center items-center w-5 h-5 rounded-full bg-yellow text-black text-xxs font-medium'>
               {user.unreadCount}
             </div>

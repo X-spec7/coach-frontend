@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 
 import ChatItem from './ChatItem'
@@ -11,8 +11,10 @@ import { IMessage } from '../types'
 import { ILayoutProps } from '@/shared/types/common.type'
 import { EllipsisMenu } from '@/shared/components'
 import { PhoneSvg, VideoCameraSvg, SidebarSimpleSvg } from '@/shared/components/Svg'
+import { IContactUser } from '../types'
 
 import * as dotenv from 'dotenv'
+import authorizedHttpServer from '@/shared/services/authorizedHttp'
 
 dotenv.config()
 
@@ -22,9 +24,10 @@ const defaultAvatarUrl = '/images/avatar/default.png'
 interface IChat {
   isShow: boolean
   currentChatUserId?: string
+  searchResult?: IContactUser[]
 }
 
-const Chat: React.FC<IChat> = ({ isShow, currentChatUserId }) => {
+const Chat: React.FC<IChat> = ({ isShow, currentChatUserId, searchResult }) => {
   const chatRef = useRef<HTMLDivElement | null>(null)
 
   const [showScrollDown, setShowScrollDown] = useState(false)
@@ -32,7 +35,12 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId }) => {
   const [otherPersonName, setOtherPersonName] = useState('')
   const [otherPersonAvatarUrl, setOtherPersonAvatarUrl] = useState('')
   const [messages, setMessages] = useState<IMessage[]>([])
+  // chat related states 
+  const [roomName, setRoomName] = useState('')
+  const [inputMessage, setInputMessage] = useState<string>('');
+  
 
+  const webSocketRef = useRef<WebSocket | null>(null)
 
   const offsetRef = useRef(0)
   const previousScrollHeightRef = useRef(0)
@@ -42,18 +50,27 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId }) => {
   const getInitialData = async () => {
     if (!currentChatUserId) return
 
-    offsetRef.current = 0
+    offsetRef.current = 10
 
-    const response = await messageService.getMessagesByUserId({
-      otherPersonId: currentChatUserId,
-      offset: offsetRef.current,
-      limit,
-    })
+    // const response = await messageService.getMessagesByUserId({
+    //   otherPersonId: currentChatUserId,
+    //   offset: offsetRef.current,
+    //   limit,
+    // })
 
-    setOtherPersonName(response.otherPersonFullname)
-    setOtherPersonAvatarUrl(response.otherPersonAvatarUrl)
-    setMessages(response.messages)
-    setHasMore(response.messages.length !== response.totalMessageCount)
+    const getAllInfoByTargetedUserId = async () => {
+      await authorizedHttpServer.get('/chat/rooms/user-chat-info/', {params: {"user_id": currentChatUserId}})
+        .then((res) => {
+          setOtherPersonName(res.data.other_person.full_name)
+          setOtherPersonAvatarUrl(res.data.other_person.avatar_url)
+          setMessages(res.data.messages)
+          setHasMore(res.data.messages.length !== res.data.totalMessageCount)
+          setRoomName(res.data.room_name)
+        })
+    }
+
+    getAllInfoByTargetedUserId()
+
   }
 
   const getMoreData = async () => {
@@ -62,14 +79,22 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId }) => {
     isLoadingMoreRef.current = true
     offsetRef.current = messages.length
 
-    const response = await messageService.getMessagesByUserId({
-      otherPersonId: currentChatUserId,
-      offset: offsetRef.current,
-      limit,
-    })
+    // const response = await messageService.getMessagesByUserId({
+    //   otherPersonId: currentChatUserId,
+    //   offset: offsetRef.current,
+    //   limit,
+    // })
 
-    setMessages((prev) => [...response.messages, ...prev])
-    setHasMore((messages.length + response.messages.length) < response.totalMessageCount)
+    const getMoreAndMoreInfoByTargetedUserId = async () => {
+      await authorizedHttpServer.get('/chat/rooms/user-chat-info/', {params: {"user_id": currentChatUserId}})
+        .then((res) => {
+          setMessages((prev) => [...res.data.messages, ...prev])
+          setHasMore((messages.length + res.data.messages.length) < res.data.totalMessageCount)      
+        })
+    }
+
+    getMoreAndMoreInfoByTargetedUserId()   
+    
     isLoadingMoreRef.current = false
   }
 
@@ -113,12 +138,68 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId }) => {
     }
   }, [messages, hasMore])
 
-  if (!currentChatUserId) {
+  const handleChatStartButton = useCallback((targetUserId: number) => {
+    const createOrFetchDMRoom = async (currentUserId: number) => {
+      await authorizedHttpServer.post('/chat/rooms/manage/', JSON.stringify({"target_user_id": currentUserId}))
+        .then((res) => {
+          console.log("room name type", typeof res.data.room_name, res.data.room_name)
+          setRoomName(res.data.room_name)
+        })
+        .catch((error) => {
+          console.error('Error creating or fetching room:', error);
+        })
+    };
+
+    if (currentChatUserId)  {
+      createOrFetchDMRoom(targetUserId)
+    }
+  }, [currentChatUserId])
+
+  useEffect(() => {
+    if (roomName) {
+      console.log("this is roomname", roomName)
+      const accessToken = localStorage.getItem("access_token")
+      const wsUrl = `ws://localhost:8000/ws/chat/${roomName}/?token=${accessToken}}`
+      webSocketRef.current = new WebSocket(wsUrl);
+
+      webSocketRef.current.onmessage = (event: MessageEvent) => {
+        const data = JSON.parse(event.data);
+        console.log('this is databody of websocket message event----->', data)
+        if (data.message) {
+          setMessages((prevMessages) => [...prevMessages, data.message]);
+        }
+      };
+
+      webSocketRef.current.close = () => {
+        console.log('WebSocket disconnected');
+      }
+
+      return () => {
+        if (webSocketRef.current) {
+          webSocketRef.current.close();
+        }
+      };
+    }
+  }, [roomName])
+
+  // const sendMessage = () => {
+  //   if (webSocketRef.current && inputMessage.trim()) {
+  //     webSocketRef.current.send(
+  //       JSON.stringify({
+  //         message: inputMessage,
+  //         type: 'chat',
+  //       })
+  //     );
+  //     setInputMessage('');
+  //   }
+  // };
+
+  if (searchResult?.length !== 0 && !searchResult?.find(user => user.id === currentChatUserId)?.lastMessage) {
     return (
       <div className='relative flex flex-[2] flex-col justify-center items-center h-full bg-gray-bg-subtle rounded-20'>
         <h2 className='text-5xl font-semibold text-black mb-6 z-10'><span className='text-gray-30'>Hello, </span>COA-CH!</h2>
         <p className='text-gray-30 text-2xl mb-14 z-10'>Start chatting now with your connections and enjoy seamless conversations.</p>
-        <button className='px-6 py-2 bg-green text-black rounded-full hover:bg-green-400 transition z-10'>
+        <button className='px-6 py-2 bg-green text-black rounded-full hover:bg-green-400 transition z-10' onClick={() => handleChatStartButton(currentChatUserId)}>
           Find someone to chat with
         </button>
       </div>
@@ -132,7 +213,7 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId }) => {
         <div className='flex justify-start items-center gap-3.5'>
           <div className='relative w-11.5 h-11.5 rounded-full'>
             {
-              otherPersonAvatarUrl !== '' ? (
+              otherPersonAvatarUrl !== null ? (
                 <Image
                   src={backendHostUrl + otherPersonAvatarUrl}
                   alt={`${otherPersonName} avatar`}
@@ -181,7 +262,7 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId }) => {
           ))}
         </div>
         <div className='flex w-full'>
-          <MessageTypeBox />
+          <MessageTypeBox websocket={webSocketRef.current} />
         </div>
       </div>
     </div>
