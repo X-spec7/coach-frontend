@@ -10,11 +10,24 @@ export interface ISession {
   goal: string
   level: string
   description: string
-  bannerImageUrl: string
+  bannerImageUrl?: string
   // booking info
   totalParticipantNumber: number
   currentParticipantNumber: number
   price: number
   // equip
-  equipments: string[]
+  equipments?: string[]
+  // corresponding scheduled meeting
+  meetingId: string
 }
+
+export type {
+  CreateSessionRequestDTO,
+  GetMySessionsResponseDTO,
+  GetSessionsRequestDTO,
+  GetTotalSessionCountRequestDTO,
+  GetTotalSessionCountResponseDTO,
+  GetSessionsResponseDTO,
+  GetSessionByIdRequestDTO,
+  GetSessionByIdResponseDTO,
+} from './dto'
