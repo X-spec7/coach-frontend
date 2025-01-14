@@ -33,14 +33,21 @@ const SessionsList: React.FC<ISessionsListProps> = ({
     getSessionsData()
   }, [currentPage, query, goal])
 
+  const onSessionCardClicked = () => {
+
+  }
+
   return (
     <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-y-4 justify-content-between justify-items-center align-items-center w-full min-h-150'>
       {
         sessions.map((session, index) => (
           // TODO: update url param in future
-          <Link href={`/sessions/detail/1`} key={index}>
-            <SessionCard key={index} session={session} />
-          </Link>
+          // <Link href={`/sessions/detail/1`} key={index}>
+          //   <SessionCard key={index} session={session} />
+          // </Link>
+          <div key={index} onClick={onSessionCardClicked} className='cursor-pointer'>
+            <SessionCard session={session} />
+          </div>
         ))
       }
     </div>
