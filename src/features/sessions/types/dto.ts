@@ -1,4 +1,4 @@
-import { ISessionWithBookedStatus } from '.'
+import { ISessionWithBookedStatus, ISession } from '.'
 
 // Coach
 export interface CreateSessionRequestDTO {
@@ -13,10 +13,25 @@ export interface CreateSessionRequestDTO {
   equipments: string[]
 }
 
+export interface GetMySessionsRequestDTO {
+  limit: number
+  offset: number
+  query?: string
+}
+
 export interface GetMySessionsResponseDTO {
   message: string
-  sessions: ISessionWithBookedStatus[]
+  sessions: ISession[]
   totalCount: number
+}
+
+export interface GetTotalMySessionCountRequestDTO {
+  query?: string
+}
+
+export interface GetTotalMySessionCountResponseDTO {
+  totalSessionCount: number
+  message: string
 }
 
 // Client
@@ -33,12 +48,9 @@ export interface GetSessionsResponseDTO {
   sessions: ISessionWithBookedStatus[]
 }
 
-export interface GetTotalSessionCountRequestDTO extends GetSessionsRequestDTO {}
+export interface GetTotalSessionCountRequestDTO extends Omit<GetSessionsRequestDTO, 'offset' | 'limit'> {}
 
-export interface GetTotalSessionCountResponseDTO {
-  totalSessionCount: number
-  message: string
-}
+export interface GetTotalSessionCountResponseDTO extends GetTotalMySessionCountResponseDTO {}
 
 export interface GetSessionByIdRequestDTO {
   sessionID: string

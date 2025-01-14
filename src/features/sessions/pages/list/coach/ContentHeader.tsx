@@ -1,17 +1,24 @@
 'use client'
 
 import { SearchField } from '@/shared/components'
-import { BasicDropdownButton } from '@/shared/components/Button'
 import { PlusSvg, FadersHorizontalSvg } from '@/shared/components/Svg'
 
-const sessionCategories = [
-  'All Session Categories',
-  'Fitness Session',
-  'Strength Session',
-  'Flexibility Session',
-  'Mindfullness Session'
-]
-  
+const handleCreateSessionButtonClick = () => {
+  console.log('create session button clicked')
+}
+
+const CreateSessionButton = () => {
+  return (
+    <button
+      className='flex justify-center items-center gap-0.5 py-1.5 px-2.5 bg-green rounded-20'
+      onClick={handleCreateSessionButtonClick}
+    >
+      <PlusSvg width='14' height='18' color='#4D5260' />
+      <p className='text-gray-30 text-xxs font-medium'>Create Session</p>
+    </button>
+  )
+}
+
 const FadeButton = () => {
   return (
     <div className='flex justify-center items-center w-7.5 h-7.5 rounded-20 bg-gray-bg'>
@@ -22,19 +29,18 @@ const FadeButton = () => {
 
 const ContentHeader = ({ searchPlaceHolder } : { searchPlaceHolder: string}) => {
   return (
-    <div className='flex justify-between items-center w-full h-7.5'>
+    <div className='flex justify-between items-center w-full h-7.5 px-4'>
       <div className='flex justify-start items-center gap-3'>
         <SearchField
           width='w-56'
           height='h-7.5'
           placeholder={searchPlaceHolder || 'Search for session'}
         />
-        <BasicDropdownButton options = {sessionCategories} />
       </div>
 
       <div className='flex justify-end items-center gap-3'>
         <FadeButton />
-        <p className='text-lg text-black font-medium'>Toggle Button</p>
+        <CreateSessionButton />
       </div>
     </div>
   )

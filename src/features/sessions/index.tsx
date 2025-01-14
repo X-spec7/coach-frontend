@@ -29,7 +29,7 @@ const SessionsListPage:React.FC = () => {
     return (
       <SharedLayout
         headerTitle='Sessions Page'
-        headerDescription='Find Session to book'
+        headerDescription='Book and Join Session here'
       >
         <ClientSessionsListPage
           query={query}
@@ -40,7 +40,17 @@ const SessionsListPage:React.FC = () => {
       </SharedLayout>
     )
   } else {
-    return <CoachSessionsListPage />
+    return (
+      <SharedLayout
+        headerTitle='Coach Sessions Page'
+        headerDescription='Create, Edit, and Join Session'
+      >
+        <CoachSessionsListPage
+          query={query}
+          currentPage={currentPage}
+        />
+      </SharedLayout>
+    )
   }
 }
 
