@@ -12,6 +12,21 @@ export function formatTimeTo12Hour(date: string): string {
   return formattedTime
 }
 
+export function formatTimeToDisplay(date: string): string {
+  const dateObj = new Date(date)
+  let year = dateObj.getFullYear()
+  let month = dateObj.getMonth() + 1
+  let pureDate = dateObj.getDate()
+  let hours = dateObj.getHours()
+  const minutes = dateObj.getMinutes()
+
+  const ampm = hours >= 12 ? 'PM' : 'AM'
+  hours = hours % 12
+  hours = hours ? hours : 12
+  const formattedTime = `${year}-${month}-${pureDate}    ${hours}:${minutes < 10 ? '0' + minutes : minutes} ${ampm}`
+  return formattedTime
+}
+
 export const getDateFromDateObject = (dateObj: Date) => dateObj.toISOString().split('T')[0]
 
 export const get12HourTimeFromDateObject = (dateObj: Date): string => {
