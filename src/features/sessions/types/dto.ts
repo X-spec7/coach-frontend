@@ -21,11 +21,16 @@ export interface GetMySessionsResponseDTO {
 
 // Client
 export interface GetSessionsRequestDTO {
-  pageSize: number
-  pageNum: number
+  limit: number
+  offset: number
   goal?: string
   booked?: boolean
   query?: string
+}
+
+export interface GetSessionsResponseDTO {
+  message: string
+  sessions: ISession[]
 }
 
 export interface GetTotalSessionCountRequestDTO extends GetSessionsRequestDTO {}
@@ -33,11 +38,6 @@ export interface GetTotalSessionCountRequestDTO extends GetSessionsRequestDTO {}
 export interface GetTotalSessionCountResponseDTO {
   totalSessionCount: number
   message: string
-}
-
-export interface GetSessionsResponseDTO {
-  message: string
-  sessions: ISession[]
 }
 
 export interface GetSessionByIdRequestDTO {
