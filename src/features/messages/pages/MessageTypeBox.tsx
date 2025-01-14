@@ -4,7 +4,11 @@ import { SendButton } from '@/shared/components/Button'
 import { EmotiSmileSvg, PaperClipSvg } from '@/shared/components/Svg'
 import { useEffect, useRef, useState } from 'react'
 
-const MessageTypeBox = () => {
+interface MessageTypeBoxProps {
+  websocket: WebSocket | null
+}
+
+const MessageTypeBox: React.FC<MessageTypeBoxProps> = ({ websocket }) => {
   const [message, setMessage] = useState('')
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
@@ -21,13 +25,27 @@ const MessageTypeBox = () => {
   }
 
   const onClick = () => {
+    console.log("this is websocket---->", websocket)
     if (message.trim() === '') {
-      alert('Please enter a message before sending.')
+      alert('Please enter a message before sending.')      
       return
     }
 
+    if (!websocket) {
+      return
+    }
+
+    if (websocket && message.trim()) {
+      websocket.send(
+        JSON.stringify({
+          message: message,
+          type: 'chat',
+        })
+      );
+      setMessage('')
+    }
+
     console.log('Message sent:', message)
-    setMessage('')
   }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
