@@ -2,20 +2,14 @@
 
 import { SearchField } from '@/shared/components'
 import { PlusSvg, FadersHorizontalSvg } from '@/shared/components/Svg'
-
-const handleCreateSessionButtonClick = () => {
-  console.log('create session button clicked')
-}
+import Link from 'next/link'
 
 const CreateSessionButton = () => {
   return (
-    <button
-      className='flex justify-center items-center gap-0.5 py-1.5 px-2.5 bg-green rounded-20'
-      onClick={handleCreateSessionButtonClick}
-    >
+    <div className='flex justify-center items-center gap-0.5 py-1.5 px-2.5 bg-green rounded-20'>
       <PlusSvg width='14' height='18' color='#4D5260' />
       <p className='text-gray-30 text-xxs font-medium'>Create Session</p>
-    </button>
+    </div>
   )
 }
 
@@ -40,7 +34,9 @@ const ContentHeader = ({ searchPlaceHolder } : { searchPlaceHolder: string}) => 
 
       <div className='flex justify-end items-center gap-3'>
         <FadeButton />
-        <CreateSessionButton />
+        <Link href='/sessions/create'>
+          <CreateSessionButton />
+        </Link>
       </div>
     </div>
   )
