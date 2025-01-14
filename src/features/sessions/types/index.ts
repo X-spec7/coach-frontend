@@ -1,4 +1,5 @@
 export interface ISession {
+  id: number
   // basic info
   title: string
   startDate: string
@@ -19,6 +20,10 @@ export interface ISession {
   equipments?: string[]
   // corresponding scheduled meeting
   meetingId: string
+}
+
+export interface ISessionWithBookedStatus extends ISession {
+  booked: boolean
 }
 
 export type {

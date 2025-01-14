@@ -1,4 +1,4 @@
-import { ISession } from '.'
+import { ISessionWithBookedStatus } from '.'
 
 // Coach
 export interface CreateSessionRequestDTO {
@@ -15,7 +15,7 @@ export interface CreateSessionRequestDTO {
 
 export interface GetMySessionsResponseDTO {
   message: string
-  sessions: ISession[]
+  sessions: ISessionWithBookedStatus[]
   totalCount: number
 }
 
@@ -30,7 +30,7 @@ export interface GetSessionsRequestDTO {
 
 export interface GetSessionsResponseDTO {
   message: string
-  sessions: ISession[]
+  sessions: ISessionWithBookedStatus[]
 }
 
 export interface GetTotalSessionCountRequestDTO extends GetSessionsRequestDTO {}
@@ -46,7 +46,7 @@ export interface GetSessionByIdRequestDTO {
 
 export interface GetSessionByIdResponseDTO {
   message: string
-  session: ISession
+  session: ISessionWithBookedStatus
 }
 
 // Should be updated

@@ -1,10 +1,10 @@
 import React from 'react'
 import Image from 'next/image'
-import { ISession } from '@/features/sessions/types'
+import { ISessionWithBookedStatus } from '@/features/sessions/types'
 import { formatTimeToDisplay } from '@/shared/utils/format'
 
 interface ISesssionCardProps {
-  session: ISession
+  session: ISessionWithBookedStatus
 }
 
 const defaultBannerImageUrl = '/images/banner/banner8.png'

@@ -1,7 +1,8 @@
-import { ISession } from "@/features/sessions/types";
+import { ISessionWithBookedStatus } from "@/features/sessions/types";
 
-export const sessionsDummyData: ISession[] = [
+export const sessionsDummyData: ISessionWithBookedStatus[] = [
   {
+    id: 1,
     title: "Yoga Basics",
     startDate: "2025-01-15T08:00:00Z",
     duration: 60,
@@ -15,9 +16,11 @@ export const sessionsDummyData: ISession[] = [
     currentParticipantNumber: 5,
     price: 15.0,
     equipments: ["Yoga mat"],
-    meetingId: "meeting-101"
+    meetingId: "meeting-101",
+    booked:true
   },
   {
+    id: 2,
     title: "Advanced Cardio Blast",
     startDate: "2025-01-16T10:00:00Z",
     duration: 45,
@@ -31,9 +34,11 @@ export const sessionsDummyData: ISession[] = [
     currentParticipantNumber: 10,
     price: 20.0,
     equipments: ["Towel", "Water bottle"],
-    meetingId: "meeting-102"
+    meetingId: "meeting-102",
+    booked: false
   },
   {
+    id: 3,
     title: "Strength Training 101",
     startDate: "2025-01-17T09:00:00Z",
     duration: 90,
@@ -47,9 +52,11 @@ export const sessionsDummyData: ISession[] = [
     currentParticipantNumber: 8,
     price: 25.0,
     equipments: ["Dumbbells"],
-    meetingId: "meeting-103"
+    meetingId: "meeting-103",
+    booked:true
   },
   {
+    id: 4,
     title: "Pilates for Core Strength",
     startDate: "2025-01-18T07:30:00Z",
     duration: 50,
@@ -63,9 +70,11 @@ export const sessionsDummyData: ISession[] = [
     currentParticipantNumber: 12,
     price: 18.0,
     equipments: ["Yoga mat"],
-    meetingId: "meeting-104"
+    meetingId: "meeting-104",
+    booked:true
   },
   {
+    id: 5,
     title: "Mindful Meditation",
     startDate: "2025-01-18T19:00:00Z",
     duration: 30,
@@ -79,9 +88,11 @@ export const sessionsDummyData: ISession[] = [
     currentParticipantNumber: 3,
     price: 10.0,
     equipments: ["Cushion"],
-    meetingId: "meeting-105"
+    meetingId: "meeting-105",
+    booked:true
   },
   {
+    id: 6,
     title: "HIIT Express",
     startDate: "2025-01-19T06:30:00Z",
     duration: 30,
@@ -95,9 +106,11 @@ export const sessionsDummyData: ISession[] = [
     currentParticipantNumber: 15,
     price: 12.0,
     equipments: ["Towel", "Water bottle"],
-    meetingId: "meeting-106"
+    meetingId: "meeting-106",
+    booked:true
   },
   {
+    id: 7,
     title: "Balance and Stability",
     startDate: "2025-01-19T14:00:00Z",
     duration: 60,
@@ -111,9 +124,11 @@ export const sessionsDummyData: ISession[] = [
     currentParticipantNumber: 6,
     price: 14.0,
     equipments: ["Resistance band"],
-    meetingId: "meeting-107"
+    meetingId: "meeting-107",
+    booked:true
   },
   {
+    id: 8,
     title: "Power Yoga",
     startDate: "2025-01-20T09:00:00Z",
     duration: 75,
@@ -127,9 +142,11 @@ export const sessionsDummyData: ISession[] = [
     currentParticipantNumber: 18,
     price: 22.0,
     equipments: ["Yoga mat"],
-    meetingId: "meeting-108"
+    meetingId: "meeting-108",
+    booked:true
   },
   {
+    id: 9,
     title: "Strength Circuit",
     startDate: "2025-01-20T18:00:00Z",
     duration: 40,
@@ -143,9 +160,11 @@ export const sessionsDummyData: ISession[] = [
     currentParticipantNumber: 12,
     price: 20.0,
     equipments: ["Dumbbells", "Resistance band"],
-    meetingId: "meeting-109"
+    meetingId: "meeting-109",
+    booked:true
   },
   {
+    id: 10,
     title: "Cardio Dance Party",
     startDate: "2025-01-21T11:00:00Z",
     duration: 50,
@@ -159,9 +178,11 @@ export const sessionsDummyData: ISession[] = [
     currentParticipantNumber: 25,
     price: 18.0,
     equipments: ["Comfortable shoes"],
-    meetingId: "meeting-110"
+    meetingId: "meeting-110",
+    booked:true
   },
   {
+    id: 11,
     title: "HIIT Express",
     startDate: "2025-01-19T06:30:00Z",
     duration: 30,
@@ -175,9 +196,11 @@ export const sessionsDummyData: ISession[] = [
     currentParticipantNumber: 15,
     price: 12.0,
     equipments: ["Towel", "Water bottle"],
-    meetingId: "meeting-106"
+    meetingId: "meeting-106",
+    booked:true
   },
   {
+    id: 12,
     title: "Balance and Stability",
     startDate: "2025-01-19T14:00:00Z",
     duration: 60,
@@ -191,9 +214,11 @@ export const sessionsDummyData: ISession[] = [
     currentParticipantNumber: 6,
     price: 14.0,
     equipments: ["Resistance band"],
-    meetingId: "meeting-107"
+    meetingId: "meeting-107",
+    booked:true
   },
   {
+    id: 13,
     title: "Power Yoga",
     startDate: "2025-01-20T09:00:00Z",
     duration: 75,
@@ -207,9 +232,11 @@ export const sessionsDummyData: ISession[] = [
     currentParticipantNumber: 18,
     price: 22.0,
     equipments: ["Yoga mat"],
-    meetingId: "meeting-108"
+    meetingId: "meeting-108",
+    booked:true
   },
   {
+    id: 14,
     title: "Strength Circuit",
     startDate: "2025-01-20T18:00:00Z",
     duration: 40,
@@ -223,9 +250,11 @@ export const sessionsDummyData: ISession[] = [
     currentParticipantNumber: 12,
     price: 20.0,
     equipments: ["Dumbbells", "Resistance band"],
-    meetingId: "meeting-109"
+    meetingId: "meeting-109",
+    booked:true
   },
   {
+    id: 15,
     title: "Cardio Dance Party",
     startDate: "2025-01-21T11:00:00Z",
     duration: 50,
@@ -239,7 +268,8 @@ export const sessionsDummyData: ISession[] = [
     currentParticipantNumber: 25,
     price: 18.0,
     equipments: ["Comfortable shoes"],
-    meetingId: "meeting-110"
+    meetingId: "meeting-110",
+    booked:true
   },
   // Additional 10 sessions omitted for brevity...
 ]
