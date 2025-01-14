@@ -1,23 +1,23 @@
 import Link from 'next/link'
 import SessionCard from './SessionCard'
+import { clientSessionService } from '@/features/sessions/service'
 
 interface ISessionsListProps {
   query: string
-  level: string
+  goal: string
   currentPage: number
 }
 
 const SessionsList: React.FC<ISessionsListProps> = async ({
   query,
-  level,
+  goal,
   currentPage
 }) => {
-  const response = sessionService.getSessions({
-    pageSize: 15,
-    pageNum: currentPage,
+  const response = await clientSessionService.getSessions({
+    limit: 15,
+    offset: (currentPage - 1) * 15,
     query: query,
-    level: level,
-    mySessions: false
+    goal: goal,
   })
   const sessions = response.sessions
 

@@ -3,23 +3,30 @@ import React, { Suspense } from 'react'
 import { Pagination, Loader } from '@/shared/components'
 import ContentHeader from './ContentHeader'
 import SessionsList from './SessionsList'
+import { clientSessionService } from '@/features/sessions/service'
 
 const countPerPage = 15
 
 interface IClientSessionListPageProps {
   query: string
   currentPage: number
-  level: string
+  goal: string
   mySessions: boolean
 }
 
 const ClientSessionsListPage: React.FC<IClientSessionListPageProps> = async ({
   query,
   currentPage,
-  level,
+  goal,
   mySessions
 }) => {
-  const response = await sessionService.getTotalSessionsCount({ query })
+  const response = await clientSessionService.getTotalSessionCount({
+    limit: 15,
+    offset: ( currentPage - 1) * 15,
+    goal: goal,
+    query: query,
+  })
+
   return (
     <div className='flex flex-col p-4 gap-4 bg-white rounded-4xl'>
       <ContentHeader searchPlaceHolder={query} />
@@ -28,14 +35,14 @@ const ClientSessionsListPage: React.FC<IClientSessionListPageProps> = async ({
       <Suspense fallback={<Loader />}>
         <SessionsList
           query={query}
-          level={level}
+          goal={goal}
           currentPage={currentPage}
         />
       </Suspense>
 
       <Pagination
         countPerPage={countPerPage}
-        totalCounts={response.totalCount}
+        totalCounts={response.totalSessionCount}
       />
     </div>
   )
