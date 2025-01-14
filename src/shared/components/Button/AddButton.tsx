@@ -15,8 +15,8 @@ const AddButton: React.FC<AddButtonProps> = ({title, onClick}) => {
     >
       {/* Plus SVG */}
       <svg width="18px" height="18px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 6V18" stroke="#212738" strokeWidth={2} stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M6 12H18" stroke="#212738" strokeWidth={2} stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M12 6V18" stroke="#212738" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M6 12H18" stroke="#212738" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"/>
       </svg>
       {
         title && <h4>{title}</h4>

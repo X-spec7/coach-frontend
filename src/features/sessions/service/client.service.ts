@@ -10,13 +10,15 @@ class ClientSessionService {
   getSessions = async (
     request: GetSessionsRequestDTO
   ): Promise<GetSessionsResponseDTO> => {
-    return getSessionsMockApi(request)
+    const response = getSessionsMockApi(request)
+    return response
   }
 
   getTotalSessionCount = async (
     request: GetTotalSessionCountRequestDTO
   ): Promise<GetTotalSessionCountResponseDTO> => {
-    return getTotalSessionCountMockApi(request)
+    const response = getTotalSessionCountMockApi(request)
+    return response
   }
 }
 

@@ -36,6 +36,10 @@ const menuGroups = [
         route: '/classes',
       },
       {
+        label: 'Sessions',
+        route: '/sessions',
+      },
+      {
         label: 'Trainers',
         route: '/trainers',
       },
