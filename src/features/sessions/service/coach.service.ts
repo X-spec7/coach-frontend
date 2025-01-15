@@ -68,7 +68,7 @@ class CoachSessionService {
     request: JoinSessionRequestDTO
   ): Promise<JoinSessionResponseDTO> => {
     return authorizedHttpServer
-      .post('/join/', request)
+      .post('/session/join/', request)
       .then((response) => {
         return response.data as JoinSessionResponseDTO
       })

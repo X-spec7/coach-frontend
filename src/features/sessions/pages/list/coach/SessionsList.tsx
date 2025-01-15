@@ -39,6 +39,7 @@ const SessionsList: React.FC<ISessionsListProps> = ({
 
   const handleJoin = async () => {
     if (selectedSession) {
+      console.log('selected session id: ', selectedSession.id)
       const response = await clientSessionService.joinSession({sessionId: selectedSession.id.toString()})
       const zoom_url = response.zoom_url
       if (zoom_url) {
@@ -78,7 +79,7 @@ const SessionsList: React.FC<ISessionsListProps> = ({
         <Modal onClose={() => setIsModalOpen(false)}>
           <div className='p-4'>
             <h2 className='text-xl text-center font-bold mb-2'>
-              {selectedSession.booked ? 'Join this session' : 'Book this session'}
+              Join this session
             </h2>
             <p className='mb-8 text-center text-gray-30'>
               {formatTimeToDisplay(selectedSession.startDate)}

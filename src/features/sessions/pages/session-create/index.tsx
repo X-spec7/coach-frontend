@@ -42,9 +42,11 @@ const CreateSessionContent = () => {
     setLoading(true)
     setError(null)
 
+    const startDateISO = new Date(formData.startDate).toISOString();
+
     const sessionData: CreateSessionRequestDTO = {
       title: formData.title,
-      startDate: formData.startDate,
+      startDate: startDateISO,
       duration: Number(formData.duration),
       goal: formData.goal,
       level: formData.level,
