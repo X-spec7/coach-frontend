@@ -2,6 +2,8 @@
 
 import { ChangeEvent, useState } from 'react'
 import Image from 'next/image'
+import { coachSessionService } from '../../service'
+import { CreateSessionRequestDTO } from '../../types'
 
 const CreateSessionContent = () => {
   const [banner, setBanner] = useState<string | ArrayBuffer | null>(null)
@@ -40,14 +42,14 @@ const CreateSessionContent = () => {
     setLoading(true)
     setError(null)
 
-    const sessionData = {
+    const sessionData: CreateSessionRequestDTO = {
       title: formData.title,
       startDate: formData.startDate,
       duration: Number(formData.duration),
       goal: formData.goal,
       level: formData.level,
       description: formData.description,
-      bannerImageUrl: banner,
+      bannerImage: banner,
       totalParticipantNumber: Number(formData.totalParticipantNumber),
       price: Number(formData.price),
       equipments: formData.equipments.split(',').map((item) => item.trim()),
@@ -55,6 +57,7 @@ const CreateSessionContent = () => {
 
     try {
       // Replace with your API call
+      await coachSessionService.createSession(sessionData)
       console.log('Session Data:', sessionData)
       setLoading(false)
       alert('Session Created Successfully')

@@ -38,18 +38,20 @@ const SessionsList: React.FC<ISessionsListProps> = ({
     setIsModalOpen(true)
   }
 
-  const handleBook = () => {
+  const handleBook = async () => {
     if (selectedSession) {
-      // Add logic to book the session
-      console.log(`Booking session: ${selectedSession.title}`)
+      await clientSessionService.bookSession(selectedSession.id)
     }
     setIsModalOpen(false)
   }
 
-  const handleJoin = () => {
+  const handleJoin = async () => {
     if (selectedSession) {
-      // Add logic to join the session
-      console.log(`Joining session: ${selectedSession.title}`)
+      const response = await clientSessionService.joinSession(selectedSession.id)
+      const zoom_url = response.zoom_url
+      if (zoom_url) {
+        window.open(zoom_url, '_blank', 'noopener,noreferrer');
+      }
     }
     setIsModalOpen(false)
   }

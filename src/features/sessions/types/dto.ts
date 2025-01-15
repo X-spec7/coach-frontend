@@ -10,7 +10,14 @@ export interface CreateSessionRequestDTO {
   description: string
   bannerImage: any
   totalParticipantNumber: number
+  price: number
   equipments: string[]
+}
+
+export interface CreateSessionResponseDTO {
+  message: string
+  sessionId: number
+  meetingId: number
 }
 
 export interface GetMySessionsRequestDTO {
@@ -22,7 +29,7 @@ export interface GetMySessionsRequestDTO {
 export interface GetMySessionsResponseDTO {
   message: string
   sessions: ISession[]
-  totalCount: number
+  totalSessionCount: number
 }
 
 export interface GetTotalMySessionCountRequestDTO {
@@ -46,6 +53,7 @@ export interface GetSessionsRequestDTO {
 export interface GetSessionsResponseDTO {
   message: string
   sessions: ISessionWithBookedStatus[]
+  totalSessionCount: number
 }
 
 export interface GetTotalSessionCountRequestDTO extends Omit<GetSessionsRequestDTO, 'offset' | 'limit'> {}
@@ -64,4 +72,16 @@ export interface GetSessionByIdResponseDTO {
 // Should be updated
 export interface BookSessionRequestDTO {
   sessionId: string
+}
+
+export interface BookSessionResponseDTO {
+  message: string
+}
+
+export interface JoinSessionRequestDTO {
+  meetingId: string
+}
+
+export interface JoinSessionResponseDTO {
+  zoom_url: string
 }
