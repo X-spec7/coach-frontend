@@ -29,7 +29,7 @@ class CoachSessionService {
       return authorizedHttpServer
         .get(`/session/get/mine/count/?${params.toString()}`)
         .then((response) => {
-          return response
+          return response.data as GetTotalSessionCountResponseDTO
         })
     }
     
@@ -50,7 +50,7 @@ class CoachSessionService {
       return authorizedHttpServer
         .post(`/session/get/mine/?${params.toString()}`)
         .then((response) => {
-          return response
+          return response.data as GetMySessionsResponseDTO;
         })
     }
 
@@ -60,7 +60,7 @@ class CoachSessionService {
     return authorizedHttpServer
       .post('/session/create/', request)
       .then((response) => {
-        return response
+        return response.data as CreateSessionResponseDTO
       })
   }
 
@@ -70,7 +70,7 @@ class CoachSessionService {
     return authorizedHttpServer
       .post('/join/', request)
       .then((response) => {
-        return response
+        return response.data as JoinSessionResponseDTO
       })
   }
 

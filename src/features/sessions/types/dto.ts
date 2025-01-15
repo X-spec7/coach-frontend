@@ -79,7 +79,7 @@ export interface BookSessionResponseDTO {
 }
 
 export interface JoinSessionRequestDTO {
-  meetingId: string
+  sessionId: string
 }
 
 export interface JoinSessionResponseDTO {

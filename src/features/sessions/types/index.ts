@@ -42,4 +42,5 @@ export type {
   GetSessionByIdRequestDTO,
   GetSessionByIdResponseDTO,
   BookSessionRequestDTO,
+  BookSessionResponseDTO,
 } from './dto'
