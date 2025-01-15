@@ -1,7 +1,7 @@
 'use client'
 
 import SessionCard from './SessionCard'
-import { clientSessionService } from '@/features/sessions/service'
+import sharedSessionService, { clientSessionService } from '@/features/sessions/service'
 import { useEffect, useState } from 'react'
 import { ISessionWithBookedStatus } from '@/features/sessions/types'
 
@@ -32,6 +32,17 @@ const SessionsList: React.FC<ISessionsListProps> = ({
   const [sessions, setSessions] = useState<ISessionWithBookedStatus[]>([])
   const [selectedSession, setSelectedSession] = useState<ISessionWithBookedStatus | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const getSessionsData = async () => {
+    const response = await clientSessionService.getSessions({
+      limit: 15,
+      offset: (currentPage - 1) * 15,
+      query: query,
+      goal: goal,
+    })
+    const sessions = response.sessions
+    setSessions(sessions)
+  }
   
   const onSessionCardClicked = (session: ISessionWithBookedStatus) => {
     setSelectedSession(session)
@@ -40,14 +51,15 @@ const SessionsList: React.FC<ISessionsListProps> = ({
 
   const handleBook = async () => {
     if (selectedSession) {
-      await clientSessionService.bookSession(selectedSession.id)
+      await clientSessionService.bookSession({sessionId: selectedSession.id.toString()})
+      await getSessionsData()
     }
     setIsModalOpen(false)
   }
 
   const handleJoin = async () => {
     if (selectedSession) {
-      const response = await clientSessionService.joinSession(selectedSession.id)
+      const response = await sharedSessionService.joinSession({sessionId: selectedSession.id.toString()})
       const zoom_url = response.zoom_url
       if (zoom_url) {
         window.open(zoom_url, '_blank', 'noopener,noreferrer');
@@ -55,18 +67,8 @@ const SessionsList: React.FC<ISessionsListProps> = ({
     }
     setIsModalOpen(false)
   }
-
+  
   useEffect(() => {
-    const getSessionsData = async () => {
-      const response = await clientSessionService.getSessions({
-        limit: 15,
-        offset: (currentPage - 1) * 15,
-        query: query,
-        goal: goal,
-      })
-      const sessions = response.sessions
-      setSessions(sessions)
-    }
     getSessionsData()
   }, [currentPage, query, goal])
 

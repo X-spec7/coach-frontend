@@ -42,4 +42,10 @@ export type {
   GetSessionByIdRequestDTO,
   GetSessionByIdResponseDTO,
   BookSessionRequestDTO,
+  BookSessionResponseDTO,
+  // shared
+  CreateInstantMeetingRequestDTO,
+  CreateInstantMeetingResponseDTO,
+  JoinSessionRequestDTO,
+  JoinSessionResponseDTO,
 } from './dto'
