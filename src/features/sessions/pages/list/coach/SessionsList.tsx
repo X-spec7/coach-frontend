@@ -1,7 +1,7 @@
 'use client'
 
 import SessionCard from './SessionCard'
-import { clientSessionService } from '@/features/sessions/service'
+import { clientSessionService, coachSessionService } from '@/features/sessions/service'
 import { useEffect, useState } from 'react'
 import { ISessionWithBookedStatus } from '@/features/sessions/types'
 import { formatTimeToDisplay } from '@/shared/utils/format'
@@ -37,18 +37,13 @@ const SessionsList: React.FC<ISessionsListProps> = ({
     setIsModalOpen(true)
   }
 
-  const handleBook = () => {
+  const handleJoin = async () => {
     if (selectedSession) {
-      // Add logic to book the session
-      console.log(`Booking session: ${selectedSession.title}`)
-    }
-    setIsModalOpen(false)
-  }
-
-  const handleJoin = () => {
-    if (selectedSession) {
-      // Add logic to join the session
-      console.log(`Joining session: ${selectedSession.title}`)
+      const response = await clientSessionService.joinSession(selectedSession.id)
+      const zoom_url = response.zoom_url
+      if (zoom_url) {
+        window.open(zoom_url, '_blank', 'noopener,noreferrer');
+      }
     }
     setIsModalOpen(false)
   }
