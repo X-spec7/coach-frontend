@@ -8,7 +8,6 @@ import {
   BookSessionResponseDTO
 } from '../types'
 import authorizedHttpServer from '@/shared/services/authorizedHttp'
-import { JoinSessionRequestDTO, JoinSessionResponseDTO } from '../types/dto'
 
 class ClientSessionService {
   bookSession = async (
@@ -21,16 +20,6 @@ class ClientSessionService {
       })
   }
   
-  joinSession = async (
-    request: JoinSessionRequestDTO
-  ): Promise<JoinSessionResponseDTO> => {
-    return authorizedHttpServer
-      .post('/session/join/', request)
-      .then((response) => {
-        return response.data as JoinSessionResponseDTO
-      })
-  }
-
   getSessions = async (
     request: GetSessionsRequestDTO
   ): Promise<GetSessionsResponseDTO> => {

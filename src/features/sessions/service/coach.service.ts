@@ -8,7 +8,6 @@ import {
   GetTotalSessionCountResponseDTO,
 } from "../types"
 import authorizedHttpServer from "@/shared/services/authorizedHttp"
-import { JoinSessionRequestDTO, JoinSessionResponseDTO } from "../types/dto";
 
 class CoachSessionService {
   getTotalMySessionCount = async (
@@ -63,17 +62,6 @@ class CoachSessionService {
         return response.data as CreateSessionResponseDTO
       })
   }
-
-  joinSession = async (
-    request: JoinSessionRequestDTO
-  ): Promise<JoinSessionResponseDTO> => {
-    return authorizedHttpServer
-      .post('/session/join/', request)
-      .then((response) => {
-        return response.data as JoinSessionResponseDTO
-      })
-  }
-
 }
 
 const coachSessionService = new CoachSessionService()

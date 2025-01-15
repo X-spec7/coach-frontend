@@ -85,3 +85,15 @@ export interface JoinSessionRequestDTO {
 export interface JoinSessionResponseDTO {
   zoom_url: string
 }
+
+// Shared
+
+export interface CreateInstantMeetingRequestDTO {
+  otherPersonId: string
+}
+
+export interface CreateInstantMeetingResponseDTO {
+  message: string
+  join_url: string
+  start_url: string
+}

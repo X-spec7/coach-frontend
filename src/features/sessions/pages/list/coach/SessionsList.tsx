@@ -1,7 +1,7 @@
 'use client'
 
 import SessionCard from './SessionCard'
-import { clientSessionService, coachSessionService } from '@/features/sessions/service'
+import sharedSessionService, { clientSessionService, coachSessionService } from '@/features/sessions/service'
 import { useEffect, useState } from 'react'
 import { ISessionWithBookedStatus } from '@/features/sessions/types'
 import { formatTimeToDisplay } from '@/shared/utils/format'
@@ -39,8 +39,7 @@ const SessionsList: React.FC<ISessionsListProps> = ({
 
   const handleJoin = async () => {
     if (selectedSession) {
-      console.log('selected session id: ', selectedSession.id)
-      const response = await clientSessionService.joinSession({sessionId: selectedSession.id.toString()})
+      const response = await sharedSessionService.joinSession({sessionId: selectedSession.id.toString()})
       const zoom_url = response.zoom_url
       if (zoom_url) {
         window.open(zoom_url, '_blank', 'noopener,noreferrer');
