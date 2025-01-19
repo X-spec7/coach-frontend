@@ -23,21 +23,21 @@ class ClientSessionService {
   getSessions = async (
     request: GetSessionsRequestDTO
   ): Promise<GetSessionsResponseDTO> => {
-    const params = new URLSearchParams();
+    const params = new URLSearchParams()
     if (request.limit) {
-      params.append('limit', request.limit.toString());
+      params.append('limit', request.limit.toString())
     }
     if (request.offset !== undefined) {
-      params.append('offset', String(request.offset));
+      params.append('offset', String(request.offset))
     }
     if (request.query) {
-      params.append('query', request.query);
+      params.append('query', request.query)
     }
     if (request.goal) {
-      params.append('goal', request.goal);
+      params.append('goal', request.goal)
     }
     if (request.booked !== undefined) {
-      params.append('booked', String(request.booked));
+      params.append('booked', String(request.booked))
     }
 
     return authorizedHttpServer
@@ -50,15 +50,15 @@ class ClientSessionService {
   getTotalSessionCount = async (
     request: GetTotalSessionCountRequestDTO
   ): Promise<GetTotalSessionCountResponseDTO> => {
-    const params = new URLSearchParams();
+    const params = new URLSearchParams()
     if (request.query) {
-      params.append('query', request.query);
+      params.append('query', request.query)
     }
     if (request.goal) {
-      params.append('goal', request.goal);
+      params.append('goal', request.goal)
     }
     if (request.booked !== undefined) {
-      params.append('booked', String(request.booked));
+      params.append('booked', String(request.booked))
     }
 
     return authorizedHttpServer
