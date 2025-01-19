@@ -7,4 +7,5 @@ export interface IContactUser {
   userType: string
   unreadCount: number
   lastMessage?: IMessage
+  roomName?: string
 }

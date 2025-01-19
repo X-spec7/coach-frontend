@@ -5,7 +5,7 @@ import { EmotiSmileSvg, PaperClipSvg } from '@/shared/components/Svg'
 import { useEffect, useRef, useState } from 'react'
 
 interface MessageTypeBoxProps {
-  websocket: WebSocket | null
+  websocket?: WebSocket | null
 }
 
 const MessageTypeBox: React.FC<MessageTypeBoxProps> = ({ websocket }) => {

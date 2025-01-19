@@ -15,6 +15,7 @@ import { IContactUser } from '../types'
 
 import * as dotenv from 'dotenv'
 import authorizedHttpServer from '@/shared/services/authorizedHttp'
+import tokenUtil from '../utils/tokenUtils'
 
 dotenv.config()
 
@@ -27,6 +28,12 @@ interface IChat {
   searchResult?: IContactUser[]
 }
 
+let socket = new WebSocket(
+  `ws://127.0.0.1:8000/ws/users/${tokenUtil.getUserId()}/chat/`
+);
+let typingTimer = 0;
+let isTypingSignalSent = false;
+
 const Chat: React.FC<IChat> = ({ isShow, currentChatUserId, searchResult }) => {
   const chatRef = useRef<HTMLDivElement | null>(null)
 
@@ -38,9 +45,7 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId, searchResult }) => {
   // chat related states 
   const [roomName, setRoomName] = useState('')
   const [inputMessage, setInputMessage] = useState<string>('');
-  
-
-  const webSocketRef = useRef<WebSocket | null>(null)
+  // websocket
 
   const offsetRef = useRef(0)
   const previousScrollHeightRef = useRef(0)
@@ -155,32 +160,7 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId, searchResult }) => {
     }
   }, [currentChatUserId])
 
-  useEffect(() => {
-    if (roomName) {
-      console.log("this is roomname", roomName)
-      const accessToken = localStorage.getItem("access_token")
-      const wsUrl = `ws://localhost:8000/ws/chat/${roomName}/?token=${accessToken}}`
-      webSocketRef.current = new WebSocket(wsUrl);
-
-      webSocketRef.current.onmessage = (event: MessageEvent) => {
-        const data = JSON.parse(event.data);
-        console.log('this is databody of websocket message event----->', data)
-        if (data.message) {
-          setMessages((prevMessages) => [...prevMessages, data.message]);
-        }
-      };
-
-      webSocketRef.current.close = () => {
-        console.log('WebSocket disconnected');
-      }
-
-      return () => {
-        if (webSocketRef.current) {
-          webSocketRef.current.close();
-        }
-      };
-    }
-  }, [roomName])
+  
 
   // const sendMessage = () => {
   //   if (webSocketRef.current && inputMessage.trim()) {
@@ -199,7 +179,7 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId, searchResult }) => {
       <div className='relative flex flex-[2] flex-col justify-center items-center h-full bg-gray-bg-subtle rounded-20'>
         <h2 className='text-5xl font-semibold text-black mb-6 z-10'><span className='text-gray-30'>Hello, </span>COA-CH!</h2>
         <p className='text-gray-30 text-2xl mb-14 z-10'>Start chatting now with your connections and enjoy seamless conversations.</p>
-        <button className='px-6 py-2 bg-green text-black rounded-full hover:bg-green-400 transition z-10' onClick={() => handleChatStartButton(currentChatUserId)}>
+        <button className='px-6 py-2 bg-green text-black rounded-full hover:bg-green-400 transition z-10' onClick={() => {}}>
           Find someone to chat with
         </button>
       </div>
@@ -262,7 +242,7 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId, searchResult }) => {
           ))}
         </div>
         <div className='flex w-full'>
-          <MessageTypeBox websocket={webSocketRef.current} />
+          <MessageTypeBox  />
         </div>
       </div>
     </div>
