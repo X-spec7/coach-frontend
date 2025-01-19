@@ -13,11 +13,9 @@ const MessagesPage = () => {
   const [currentChattingMember, setCurrentChattingMember] = useState({});
 
   useEffect(() => {
-    console.log("current onlineUserList ---->", onlineUserList)
   }, [currentChatUser])
 
   useEffect(() => {
-    console.log("currentChattingMember----->", currentChattingMember)
   }, [currentChattingMember])
 
   return (

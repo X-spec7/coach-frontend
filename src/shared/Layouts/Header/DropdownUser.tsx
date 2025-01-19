@@ -32,8 +32,6 @@ const DropdownUser = () => {
       setIsUserLoaded(true)
     }
   }, [user])
-
-  console.log('avatar: ', user.profilePicture)
   
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className='relative'>

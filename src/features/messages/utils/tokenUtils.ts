@@ -1,51 +1,51 @@
-import { jwtDecode } from "jwt-decode";
-import type { IContactUser } from "../types";
+import { jwtDecode } from "jwt-decode"
+import type { IContactUser } from "../types"
 
 
 const getUserId = (): string => {
-  let token = localStorage.getItem('access_token');
+  let token = localStorage.getItem('access_token')
   
   if (token) {
-    let decodedToken = jwtDecode<any>(token);
-    return decodedToken.user_id;
+    let decodedToken = jwtDecode<any>(token)
+    return decodedToken.user_id
   }
-  return "";
-};
+  return ""
+}
 
 const getFormatedChatUser = (chatUsers: any, onlineUserList: any) => {
-  const userId = getUserId();
+  const userId = getUserId()
   return chatUsers.reduce((acumulator:any, item: any) => {
     if (item.type === "DM" || item.type === "SELF") {
-      let newResult: any = {};
-      newResult["roomId"] = item.roomId;
-      let member = null;
+      let newResult: any = {}
+      newResult["roomId"] = item.roomId
+      let member = null
       for (let user of item.member) {
         if (user.id !== userId || item.type === "SELF") {
-          member = user;
+          member = user
         }
       }
       if (member) {
-        newResult["name"] = member.first_name + " " + member.last_name;
-        newResult["image"] = member.image;
-        newResult["id"] = member.id;
-        newResult["isOnline"] = onlineUserList?.includes(member.id);
+        newResult["name"] = member.first_name + " " + member.last_name
+        newResult["image"] = member.image
+        newResult["id"] = member.id
+        newResult["isOnline"] = onlineUserList?.includes(member.id)
       }
-      acumulator.push(newResult);
-      return acumulator;
+      acumulator.push(newResult)
+      return acumulator
     }
-    return acumulator;
-  }, []);
-};
+    return acumulator
+  }, [])
+}
 
 const getActiveChatId = (match: any) => {
-  return match && match.params ? match.params.chatId : null;
-};
+  return match && match.params ? match.params.chatId : null
+}
 
 
 const tokenUtil = {
   getUserId: getUserId,
   getFormatedChatUser: getFormatedChatUser,
   getActiveChatId: getActiveChatId
-};
+}
 
-export default tokenUtil;
+export default tokenUtil

@@ -25,6 +25,7 @@ import { EmotiSmileSvg, PaperClipSvg } from '@/shared/components/Svg'
 dotenv.config()
 
 const backendHostUrl = process.env.NEXT_PUBLIC_BACKEND_HOST_URL
+const wsHostUrl = process.env.NEXT_PUBLIC_WS_BASE_URL
 const defaultAvatarUrl = '/images/avatar/default.png'
 
 interface IChat {
@@ -36,10 +37,10 @@ interface IChat {
 }
 
 let socket = new WebSocket(
-  `ws://127.0.0.1:8000/ws/users/${tokenUtil.getUserId()}/chat/`
-);
-let typingTimer = 0;
-let isTypingSignalSent = false;
+  `${wsHostUrl}/ws/users/${tokenUtil.getUserId()}/chat/`
+)
+let typingTimer = 0
+let isTypingSignalSent = false
 
 const Chat: React.FC<IChat> = ({ isShow, currentChatUserId, searchResult, currentChattingMember, setOnlineUserList }) => {
   const chatRef = useRef<HTMLDivElement | null>(null)
@@ -51,9 +52,9 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId, searchResult, curren
   const [messages, setMessages] = useState<any[]>([])
   // chat related states 
   const [roomName, setRoomName] = useState('')
-  const [inputMessage, setInputMessage] = useState<string>('');
+  const [inputMessage, setInputMessage] = useState<string>('')
   // websocket
-  const [typing, setTyping] = useState(false);
+  const [typing, setTyping] = useState(false)
   // input Message
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
@@ -84,15 +85,12 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId, searchResult, curren
     if (currentChatId) {
       const url = ApiEndpoints.CHAT_MESSAGE_URL.replace(
         Constants.CHAT_ID_PLACE_HOLDER, currentChatId
-      ) + "?limit=20&offset=0";
+      ) + "?limit=20&offset=0"
       const chatMessages = await authorizedHttpServer.get(url)
         .then((res) => res.data)
         .catch((err) => err)
 
-
-      console.log("chatMessages  ----->", chatMessages)
       setOtherPersonName(currentChattingMember.name)
-      console.log('image in response: ', currentChattingMember.image)
       if (currentChattingMember.image && currentChattingMember.image.trim() === '') {
         setOtherPersonAvatarUrl(currentChattingMember.image)
       }
@@ -106,36 +104,38 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId, searchResult, curren
     const container = chatRef.current
     if (!container) return
 
-    fetchChatMessage()
+    if (currentChattingMember?.roomId && currentChattingMember.roomId.trim() !== '') {
+      fetchChatMessage()
+    }
     previousScrollHeightRef.current = container.scrollHeight
-  }, [currentChattingMember.roomId])
+  }, [currentChattingMember])
 
   socket.onmessage = (event) => {
-    const data = JSON.parse(event.data);
+    const data = JSON.parse(event.data)
     const chatId = currentChattingMember.roomId
-    const userId = tokenUtil.getUserId();
+    const userId = tokenUtil.getUserId()
+
+    console.log('on message data: ', data)
     if (chatId === data.roomId) {
       if (data.action === SocketActions.MESSAGE) {
-        // data["userImage"] = "http://127.0.0.1:8000/" + data.userImage;
+        // data["userImage"] = "http://127.0.0.1:8000/" + data.userImage
 
-        console.log('data------>', data)
         setMessages((prev) => [
           ...prev,
           data,
         ])
         // setMessages((prevState) => {
-        //   let messagesState = JSON.parse(JSON.stringify(prevState));
-        //   console.log('message state ->', messagesState)
-        //   messagesState.results.unshift(data);
-        //   return messagesState;
-        // });
-        setTyping(false);
+        //   let messagesState = JSON.parse(JSON.stringify(prevState))
+        //   messagesState.results.unshift(data)
+        //   return messagesState
+        // })
+        setTyping(false)
       } else if (data.action === SocketActions.TYPING && data.user !== userId) {
-        setTyping(data.typing);
+        setTyping(data.typing)
       }
     }
     if (data.action === SocketActions.ONLINE_USER) {
-      setOnlineUserList(data.userList);
+      setOnlineUserList(data.userList)
     }
   }
 
@@ -149,10 +149,10 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId, searchResult, curren
           user: tokenUtil.getUserId(),
           roomId: currentChattingMember.roomId
         })
-      );
+      )
     }
-    setInputMessage("");
-  };
+    setInputMessage("")
+  }
 
   const sendTypingSignal = (typing: any) => {
     socket.send(
@@ -162,25 +162,25 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId, searchResult, curren
         user: tokenUtil.getUserId(),
         roomId: currentChattingMember.roomId,
       })
-    );
-  };
+    )
+  }
 
 //   const chatMessageTypingHandler = (event: any) => {
 //   if (event.keyCode !== Constants.ENTER_KEY_CODE) {
 //     if (!isTypingSignalSent) {
-//       sendTypingSignal(true); // Send a typing signal when typing starts
-//       isTypingSignalSent = true;
+//       sendTypingSignal(true) // Send a typing signal when typing starts
+//       isTypingSignalSent = true
 //     }
-//     clearTimeout(typingTimer); // Clear the existing timer
+//     clearTimeout(typingTimer) // Clear the existing timer
 //     typingTimer = setTimeout(() => {
-//       sendTypingSignal(false); // Send a typing signal indicating typing has stopped
-//       isTypingSignalSent = false;
-//     }, 3000); // Reset the timer for 3 seconds
+//       sendTypingSignal(false) // Send a typing signal indicating typing has stopped
+//       isTypingSignalSent = false
+//     }, 3000) // Reset the timer for 3 seconds
 //   } else {
-//     clearTimeout(typingTimer); // Clear the timer if Enter is pressed
-//     isTypingSignalSent = false;
+//     clearTimeout(typingTimer) // Clear the timer if Enter is pressed
+//     isTypingSignalSent = false
 //   }
-// };
+// }
 
   // const getInitialData = async () => {
   //   if (!currentChatUserId) return
@@ -241,8 +241,6 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId, searchResult, curren
     }
   }, [messages, hasMore])
 
-  console.log('avatar: ', otherPersonAvatarUrl)
-
   // const sendMessage = () => {
   //   if (webSocketRef.current && inputMessage.trim()) {
   //     webSocketRef.current.send(
@@ -250,12 +248,12 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId, searchResult, curren
   //         message: inputMessage,
   //         type: 'chat',
   //       })
-  //     );
-  //     setInputMessage('');
+  //     )
+  //     setInputMessage('')
   //   }
-  // };
+  // }
 
-  if (searchResult?.length !== 0 && !searchResult?.find(user => user.id === currentChatUserId)?.lastMessage) {
+  if (currentChatUserId === null || currentChatUserId === undefined || currentChatUserId === '') {
     return (
       <div className='relative flex flex-[2] flex-col justify-center items-center h-full bg-gray-bg-subtle rounded-20'>
         <h2 className='text-5xl font-semibold text-black mb-6 z-10'><span className='text-gray-30'>Hello, </span>COA-CH!</h2>

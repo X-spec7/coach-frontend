@@ -35,7 +35,7 @@ const ChatItem = ( {socketData}: {socketData: any} ) => {
     </div>
   )
 
-  if (socketData.user !== user.id) {
+  if (socketData.user === user.id) {
     return sentChatItem
   } else {
     return receivedChatItem

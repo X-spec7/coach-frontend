@@ -31,16 +31,11 @@ interface IUsers {
 const Users: React.FC<IUsers> = ({ isShow, setCurrentChatUser, setSearchResult, currentChatUserId, onlineUserList, setCurrentChattingMember }) => {
   const searchParams = useSearchParams()
   const query: string | null = searchParams.get('query')
-  const router = useRouter();
 
   const [chatUsers, setChatUsers] = useState<any[]>([])
   const [searchUsers, setSearchUsers] = useState<any[]>([])
 
-  const onClick = (userId: string) => {
-    setCurrentChatUser(userId)
-    const activeChatId = chatUsers.find((user: any) => user.id === userId)
-    setCurrentChattingMember(activeChatId)
-  }
+  
 
   const fetchChatUser = async () => {
     const url = ApiEndpoints.USER_CHAT_URL.replace(
@@ -57,22 +52,10 @@ const Users: React.FC<IUsers> = ({ isShow, setCurrentChatUser, setSearchResult, 
     setChatUsers(formatedChatUser);
   }
 
-  // useEffect(() => {
-  //   const getContacts = async () => {
-  //     await authorizedHttpServer.get('/chat/rooms/sidebar-info/')
-  //       .then((res) => {
-  //         setChatUsers(res.data)
-  //       })
-  //   }
-
-  //   getContacts()
-  // }, [])
-
   useEffect(() => {
     const getSearchResult = async () => {
       await authorizedHttpServer.get(`authentication/users/search/?search=${query}`)
         .then((res) => {
-          console.log("this is all user data----->", res.data)
           setSearchUsers(res.data)
           setSearchResult(res.data)
         })
@@ -82,12 +65,10 @@ const Users: React.FC<IUsers> = ({ isShow, setCurrentChatUser, setSearchResult, 
   }, [searchParams])
 
   useEffect(() => {
-    console.log("location path name---->", window.location.pathname)
     fetchChatUser();
   }, [])
 
   useEffect(() => {
-    console.log("chatuserlist---->", chatUsers)
   }, [chatUsers])
 
   const getConnectedUserIds = () => {
@@ -122,6 +103,18 @@ const Users: React.FC<IUsers> = ({ isShow, setCurrentChatUser, setSearchResult, 
     });
     return updatedChatList;
   };
+
+  const onUserItemClicked = (userId: string) => {
+    // const isExstingUserInChattingHistory = chatUsers.find((item) => item.id === userId)
+    // if (!isExstingUserInChattingHistory) {
+    //   addMemberClickHandler(userId)
+    //   return
+    // } 
+
+    setCurrentChatUser(userId)
+    const activeChatId = chatUsers.find((user: any) => user.id === userId)
+    setCurrentChattingMember(activeChatId)
+  }
 
   const groupUsersByDate = (users: IContactUser[]) => {
     const today = new Date()
@@ -178,7 +171,7 @@ const Users: React.FC<IUsers> = ({ isShow, setCurrentChatUser, setSearchResult, 
                     user={user}
                     isSelected={user.id === currentChatUserId}
                     isTodayOrYesterday
-                    onClick={() => onClick(user.id)}
+                    onClick={() => onUserItemClicked(user.id)}
                   />
                   {index < todayUsers.length -1 && (
                     <div className='w-full h-[1px] bg-stroke' />
@@ -199,7 +192,7 @@ const Users: React.FC<IUsers> = ({ isShow, setCurrentChatUser, setSearchResult, 
                     user={user}
                     isSelected={user.id === currentChatUserId}
                     isTodayOrYesterday
-                    onClick={() => onClick(user.id)}
+                    onClick={() => onUserItemClicked(user.id)}
                   />
                   {index < yesterdayUsers.length -1 && (
                     <div className='w-full h-[1px] bg-stroke' />
@@ -219,7 +212,7 @@ const Users: React.FC<IUsers> = ({ isShow, setCurrentChatUser, setSearchResult, 
                     key={index}
                     user={user}
                     isSelected={user.id === currentChatUserId}
-                    onClick={() => onClick(user.id)}
+                    onClick={() => onUserItemClicked(user.id)}
                   />
                   {index < restUsers.length -1 && (
                     <div className='w-full h-[1px] bg-stroke' />
@@ -243,7 +236,7 @@ const Users: React.FC<IUsers> = ({ isShow, setCurrentChatUser, setSearchResult, 
                     user={user}
                     isSelected={user.id === currentChatUserId}
                     isTodayOrYesterday
-                    onClick={() => onClick(user.id)}
+                    onClick={() => onUserItemClicked(user.id)}
                   />
                   {index < searchUsers.length -1 && (
                     <div className='w-full h-[1px] bg-stroke' />
@@ -274,15 +267,15 @@ const UserItem: React.FC<IUserItemProps> = ({
   isTodayOrYesterday,
   onClick
 }) => {
-  const containerStyle = `flex items-center p-4 gap-4 h-18.5 rounded-20
+  const containerStyle = `flex items-center p-4 gap-4 h-18.5 rounded-20 cursor-pointer
     ${isSelected ? 'bg-gray-subtle' : 'bg-white'}
     `
 
   // !type assertion
-  const dateObj = new Date(user?.lastMessage?.sentDate!)
+  // const dateObj = new Date(user?.lastMessage?.sentDate!)
 
-  let time: string = get12HourTimeFromDateObject(dateObj)
-  let date: string | null = getDateFromDateObject(user?.lastMessage?.sentDate!)
+  // let time: string = get12HourTimeFromDateObject(dateObj)
+  // let date: string | null = getDateFromDateObject(user?.lastMessage?.sentDate!)
 
   return (
     <div className={containerStyle} onClick={onClick}>
@@ -317,11 +310,11 @@ const UserItem: React.FC<IUserItemProps> = ({
           </div>
 
           {/* Time */}
-          {isTodayOrYesterday ? (
+          {/* {isTodayOrYesterday ? (
             <p className={`text-xxs ${isSelected ? 'text-gray-20' : 'text-black'}`}>{time}</p>
           ) : (
-            <p className='text-gray-20 text-xxs'>{date}</p>
-          )}
+             p className='text-gray-20 text-xxs'>{date}</p>
+          )} */}
         </div>
 
         {/* Chat content and unread message */}

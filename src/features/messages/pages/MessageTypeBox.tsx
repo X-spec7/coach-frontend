@@ -25,7 +25,6 @@ const MessageTypeBox: React.FC<MessageTypeBoxProps> = ({ websocket }) => {
   }
 
   const onClick = () => {
-    console.log("this is websocket---->", websocket)
     if (message.trim() === '') {
       alert('Please enter a message before sending.')      
       return
