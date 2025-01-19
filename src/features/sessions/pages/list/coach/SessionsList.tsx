@@ -3,7 +3,7 @@
 import SessionCard from './SessionCard'
 import sharedSessionService, { clientSessionService, coachSessionService } from '@/features/sessions/service'
 import { useEffect, useState } from 'react'
-import { ISessionWithBookedStatus } from '@/features/sessions/types'
+import { ISession, ISessionWithBookedStatus } from '@/features/sessions/types'
 import { formatTimeToDisplay } from '@/shared/utils/format'
 
 interface ISessionsListProps {
@@ -28,11 +28,11 @@ const SessionsList: React.FC<ISessionsListProps> = ({
   query,
   currentPage
 }) => {
-  const [sessions, setSessions] = useState<ISessionWithBookedStatus[]>([])
-  const [selectedSession, setSelectedSession] = useState<ISessionWithBookedStatus | null>(null)
+  const [sessions, setSessions] = useState<ISession[]>([])
+  const [selectedSession, setSelectedSession] = useState<ISession | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   
-  const onSessionCardClicked = (session: ISessionWithBookedStatus) => {
+  const onSessionCardClicked = (session: ISession) => {
     setSelectedSession(session)
     setIsModalOpen(true)
   }
@@ -50,7 +50,7 @@ const SessionsList: React.FC<ISessionsListProps> = ({
 
   useEffect(() => {
     const getSessionsData = async () => {
-      const response = await clientSessionService.getSessions({
+      const response = await coachSessionService.getMySessions({
         limit: 15,
         offset: (currentPage - 1) * 15,
         query: query,
