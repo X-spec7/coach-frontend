@@ -1,6 +1,4 @@
 import { jwtDecode } from "jwt-decode"
-import type { IContactUser } from "../types"
-
 
 const getUserId = (): string => {
   let token = localStorage.getItem('access_token')

@@ -1,18 +1,22 @@
 'use client'
 
 import { useSearchParams, usePathname, useRouter } from 'next/navigation'
+import { useEffect, useRef, useState } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
 
 interface SearchFieldProps {
   width: string
   height: string
   placeholder: string
+  value?: string
 }
 
-const SearchField: React.FC<SearchFieldProps> = ({ width, height, placeholder }) => {
+const SearchField: React.FC<SearchFieldProps> = ({ width, height, placeholder, value }) => {
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const { replace } = useRouter()
+
+  const [inputValue, setInputValue] = useState<string>(value || '')
 
   const handleSearch = useDebouncedCallback((term: string) => {
     const params = new URLSearchParams(searchParams)
@@ -26,6 +30,10 @@ const SearchField: React.FC<SearchFieldProps> = ({ width, height, placeholder })
     params.delete('page')
     replace(`${pathname}?${params.toString()}`)
   }, 300)
+
+  useEffect(() => {
+    setInputValue(value || '')
+  }, [value])
   
   return (
     <div className={`relative ${width} ${height} bg-gray-bg rounded-4xl`}>
@@ -56,9 +64,12 @@ const SearchField: React.FC<SearchFieldProps> = ({ width, height, placeholder })
       <input
         type='text'
         placeholder={placeholder}
+        value={inputValue}
         className='w-full h-full bg-transparent pl-9 font-regular text-black placeholder:text-gray-20 placeholder:text-sm focus:outline-none'
         onChange={(e) => {
-          handleSearch(e.target.value)
+          const newValue = e.target.value
+          setInputValue(newValue)
+          handleSearch(newValue)
         }}
       />
     </div>

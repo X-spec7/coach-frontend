@@ -50,16 +50,14 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId, searchResult, curren
   const [otherPersonName, setOtherPersonName] = useState('')
   const [otherPersonAvatarUrl, setOtherPersonAvatarUrl] = useState('')
   const [messages, setMessages] = useState<any[]>([])
-  // chat related states 
-  const [roomName, setRoomName] = useState('')
   const [inputMessage, setInputMessage] = useState<string>('')
-  // websocket
-  const [typing, setTyping] = useState(false)
   // input Message
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   const previousScrollHeightRef = useRef(0)
   const isLoadingMoreRef = useRef(false)
+
+  console.log('current chatting member in chatting: ', currentChattingMember)
 
   useEffect(() => {
     adjustHeight()
@@ -96,7 +94,6 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId, searchResult, curren
       }
       setMessages(chatMessages.results)
       setHasMore(chatMessages.count)
-      setRoomName(currentChattingMember.roomId)
     }
   }
 
@@ -108,32 +105,22 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId, searchResult, curren
       fetchChatMessage()
     }
     previousScrollHeightRef.current = container.scrollHeight
-  }, [currentChattingMember])
+  }, [currentChattingMember, currentChatUserId])
 
   socket.onmessage = (event) => {
     const data = JSON.parse(event.data)
+    console.log('on message data: ', data)
+
     const chatId = currentChattingMember.roomId
     const userId = tokenUtil.getUserId()
 
-    console.log('on message data: ', data)
-    if (chatId === data.roomId) {
-      if (data.action === SocketActions.MESSAGE) {
-        // data["userImage"] = "http://127.0.0.1:8000/" + data.userImage
-
-        setMessages((prev) => [
-          ...prev,
-          data,
-        ])
-        // setMessages((prevState) => {
-        //   let messagesState = JSON.parse(JSON.stringify(prevState))
-        //   messagesState.results.unshift(data)
-        //   return messagesState
-        // })
-        setTyping(false)
-      } else if (data.action === SocketActions.TYPING && data.user !== userId) {
-        setTyping(data.typing)
-      }
+    if (data.action === SocketActions.MESSAGE) {
+      setMessages((prev) => [
+        ...prev,
+        data,
+      ])
     }
+    
     if (data.action === SocketActions.ONLINE_USER) {
       setOnlineUserList(data.userList)
     }
@@ -151,6 +138,7 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId, searchResult, curren
         })
       )
     }
+    console.log('sent message')
     setInputMessage("")
   }
 
@@ -164,50 +152,6 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId, searchResult, curren
       })
     )
   }
-
-//   const chatMessageTypingHandler = (event: any) => {
-//   if (event.keyCode !== Constants.ENTER_KEY_CODE) {
-//     if (!isTypingSignalSent) {
-//       sendTypingSignal(true) // Send a typing signal when typing starts
-//       isTypingSignalSent = true
-//     }
-//     clearTimeout(typingTimer) // Clear the existing timer
-//     typingTimer = setTimeout(() => {
-//       sendTypingSignal(false) // Send a typing signal indicating typing has stopped
-//       isTypingSignalSent = false
-//     }, 3000) // Reset the timer for 3 seconds
-//   } else {
-//     clearTimeout(typingTimer) // Clear the timer if Enter is pressed
-//     isTypingSignalSent = false
-//   }
-// }
-
-  // const getInitialData = async () => {
-  //   if (!currentChatUserId) return
-
-  //   offsetRef.current = 10
-
-  //   // const response = await messageService.getMessagesByUserId({
-  //   //   otherPersonId: currentChatUserId,
-  //   //   offset: offsetRef.current,
-  //   //   limit,
-  //   // })
-
-  //   const getAllInfoByTargetedUserId = async () => {
-  //     await authorizedHttpServer.get('/chat/rooms/user-chat-info/', {params: {"user_id": currentChatUserId}})
-  //       .then((res) => {
-  //         setOtherPersonName(res.data.other_person.full_name)
-  //         setOtherPersonAvatarUrl(res.data.other_person.avatar_url)
-  //         setMessages(res.data.messages)
-  //         setHasMore(res.data.messages.length !== res.data.totalMessageCount)
-  //         setRoomName(res.data.room_name)
-  //       })
-  //   }
-
-  //   getAllInfoByTargetedUserId()
-
-  // }
-
 
   const handleScroll = async () => {
     const container = chatRef.current
@@ -240,18 +184,6 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId, searchResult, curren
       return () => container.removeEventListener('scroll', handleScroll)
     }
   }, [messages, hasMore])
-
-  // const sendMessage = () => {
-  //   if (webSocketRef.current && inputMessage.trim()) {
-  //     webSocketRef.current.send(
-  //       JSON.stringify({
-  //         message: inputMessage,
-  //         type: 'chat',
-  //       })
-  //     )
-  //     setInputMessage('')
-  //   }
-  // }
 
   if (currentChatUserId === null || currentChatUserId === undefined || currentChatUserId === '') {
     return (

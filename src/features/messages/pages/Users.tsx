@@ -1,6 +1,6 @@
 'use client'
 
-import { useSearchParams } from 'next/navigation'
+import { usePathname, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 
@@ -13,7 +13,8 @@ import * as dotenv from 'dotenv'
 import tokenUtil from '../utils/tokenUtils'
 import ApiEndpoints from '../api/apiEndPoints'
 import Constants from '../lib/constants'
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation'
+import { format } from 'path'
 
 dotenv.config()
 
@@ -35,22 +36,41 @@ const Users: React.FC<IUsers> = ({ isShow, setCurrentChatUser, setSearchResult, 
   const [chatUsers, setChatUsers] = useState<any[]>([])
   const [searchUsers, setSearchUsers] = useState<any[]>([])
 
-  
-
   const fetchChatUser = async () => {
     const url = ApiEndpoints.USER_CHAT_URL.replace(
       Constants.USER_ID_PLACE_HOLDER,
       tokenUtil.getUserId()
-    );
+    )
+
+    console.log('fetch chat user url: ', url)
     const chatUserLists = await authorizedHttpServer(url)
-      .then((res) => res.data)
+      .then((res) => {
+        console.log('fetched chat user: ', res)
+        return res.data
+      })
       .catch((err) => false)
+
     const formatedChatUser = tokenUtil.getFormatedChatUser(
       chatUserLists,
       onlineUserList
-    );
-    setChatUsers(formatedChatUser);
+    )
+
+    console.log('formatted chat user: ', formatedChatUser)
+    setChatUsers(formatedChatUser)
   }
+
+  useEffect (() => {
+    console.log('chat users: ', chatUsers)
+    const activeChatUser = chatUsers.find((user: any) => {
+      console.log('compare ids: ', user.id, currentChatUserId)
+      console.log('compare id types: ', typeof user.id, typeof currentChatUserId)
+      return user.id === currentChatUserId
+    })
+
+    console.log('activate chat user: ', activeChatUser)
+
+    setCurrentChattingMember(activeChatUser)
+  }, [currentChatUserId, chatUsers])
 
   useEffect(() => {
     const getSearchResult = async () => {
@@ -65,55 +85,47 @@ const Users: React.FC<IUsers> = ({ isShow, setCurrentChatUser, setSearchResult, 
   }, [searchParams])
 
   useEffect(() => {
-    fetchChatUser();
+    console.log('use effect')
+    fetchChatUser()
   }, [])
 
   useEffect(() => {
   }, [chatUsers])
 
-  const getConnectedUserIds = () => {
-    let connectedUsers = "";
-    for (let chatUser of chatUsers) {
-      connectedUsers += chatUser.id + ",";
-    }
-    return connectedUsers.slice(0, -1);
-  };
-
   const addMemberClickHandler = async (memberId: string) => {
-    const userId = tokenUtil.getUserId();
+    const userId = tokenUtil.getUserId()
     let requestBody = {
       members: [memberId, userId],
       type: "DM",
     }
-    await authorizedHttpServer.post('chat/chats/', JSON.stringify(requestBody), {headers: {"Accept": "application/json, text/plain", "Content-Type": "application/json; charset=UTF-8",}})
+
+    await authorizedHttpServer.post('chat/chats/', requestBody)
       .then((res) => `This is success to make a chattroom ${res.data}`)
       .catch((err) => console.log(`this is generating in chatroom ${err}`))
-
-    fetchChatUser();
   }
 
-  const getChatListWithOnlineUser = () => {
-    let updatedChatList = chatUsers.map((user) => {
-      if (onlineUserList.includes(user.id)) {
-        user.isOnline = true;
-      } else {
-        user.isOnline = false;
+  const onUserItemClicked = async (userId: string) => {
+
+    const isIdIncluded = chatUsers.some(user => user.id === userId)
+
+    console.log('selected user id: ', userId)
+
+    console.log('included? ', isIdIncluded)
+    if (!isIdIncluded) {
+      console.log('handling not included case')
+      try {
+        await addMemberClickHandler(userId)
+        console.log('room created')
+
+        await fetchChatUser()
+        console.log('fetched chat user: ', chatUsers)
+      } catch (error) {
+        console.log('error in adding room and fetching', error)
       }
-      return user;
-    });
-    return updatedChatList;
-  };
-
-  const onUserItemClicked = (userId: string) => {
-    // const isExstingUserInChattingHistory = chatUsers.find((item) => item.id === userId)
-    // if (!isExstingUserInChattingHistory) {
-    //   addMemberClickHandler(userId)
-    //   return
-    // } 
-
+    }
+    
+    console.log('setting current chat user')
     setCurrentChatUser(userId)
-    const activeChatId = chatUsers.find((user: any) => user.id === userId)
-    setCurrentChattingMember(activeChatId)
   }
 
   const groupUsersByDate = (users: IContactUser[]) => {
