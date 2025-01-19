@@ -33,6 +33,8 @@ const DropdownUser = () => {
     }
   }, [user])
 
+  console.log('avatar: ', user.profilePicture)
+  
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className='relative'>
       <Link
