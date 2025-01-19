@@ -37,11 +37,15 @@ const getFormatedChatUser = (chatUsers: any, onlineUserList: any) => {
   }, []);
 };
 
+const getActiveChatId = (match: any) => {
+  return match && match.params ? match.params.chatId : null;
+};
 
 
 const tokenUtil = {
   getUserId: getUserId,
   getFormatedChatUser: getFormatedChatUser,
+  getActiveChatId: getActiveChatId
 };
 
 export default tokenUtil;

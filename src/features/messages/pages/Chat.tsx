@@ -16,6 +16,11 @@ import { IContactUser } from '../types'
 import * as dotenv from 'dotenv'
 import authorizedHttpServer from '@/shared/services/authorizedHttp'
 import tokenUtil from '../utils/tokenUtils'
+import ApiEndpoints from '../api/apiEndPoints'
+import Constants from '../lib/constants'
+import SocketActions from '../types/socketActions'
+import { SendButton } from '@/shared/components/Button'
+import { EmotiSmileSvg, PaperClipSvg } from '@/shared/components/Svg'
 
 dotenv.config()
 
@@ -25,7 +30,9 @@ const defaultAvatarUrl = '/images/avatar/default.png'
 interface IChat {
   isShow: boolean
   currentChatUserId?: string
-  searchResult?: IContactUser[]
+  setOnlineUserList: (obj: any[]) => void
+  searchResult?: any[]
+  currentChattingMember: any
 }
 
 let socket = new WebSocket(
@@ -34,82 +41,173 @@ let socket = new WebSocket(
 let typingTimer = 0;
 let isTypingSignalSent = false;
 
-const Chat: React.FC<IChat> = ({ isShow, currentChatUserId, searchResult }) => {
+const Chat: React.FC<IChat> = ({ isShow, currentChatUserId, searchResult, currentChattingMember, setOnlineUserList }) => {
   const chatRef = useRef<HTMLDivElement | null>(null)
 
   const [showScrollDown, setShowScrollDown] = useState(false)
   const [hasMore, setHasMore] = useState(false)
   const [otherPersonName, setOtherPersonName] = useState('')
   const [otherPersonAvatarUrl, setOtherPersonAvatarUrl] = useState('')
-  const [messages, setMessages] = useState<IMessage[]>([])
+  const [messages, setMessages] = useState<any[]>([])
   // chat related states 
   const [roomName, setRoomName] = useState('')
   const [inputMessage, setInputMessage] = useState<string>('');
   // websocket
+  const [typing, setTyping] = useState(false);
+  // input Message
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-  const offsetRef = useRef(0)
   const previousScrollHeightRef = useRef(0)
   const isLoadingMoreRef = useRef(false)
-  const limit = 10
 
-  const getInitialData = async () => {
-    if (!currentChatUserId) return
+  useEffect(() => {
+    adjustHeight()
+  }, [inputMessage])
 
-    offsetRef.current = 10
-
-    // const response = await messageService.getMessagesByUserId({
-    //   otherPersonId: currentChatUserId,
-    //   offset: offsetRef.current,
-    //   limit,
-    // })
-
-    const getAllInfoByTargetedUserId = async () => {
-      await authorizedHttpServer.get('/chat/rooms/user-chat-info/', {params: {"user_id": currentChatUserId}})
-        .then((res) => {
-          setOtherPersonName(res.data.other_person.full_name)
-          setOtherPersonAvatarUrl(res.data.other_person.avatar_url)
-          setMessages(res.data.messages)
-          setHasMore(res.data.messages.length !== res.data.totalMessageCount)
-          setRoomName(res.data.room_name)
-        })
+  const adjustHeight = () => {
+    const textarea = textareaRef.current
+    if (textarea) {
+      textarea.style.height = 'auto'
+      textarea.style.height = `${Math.min(textarea.scrollHeight, 150)}px`
     }
-
-    getAllInfoByTargetedUserId()
-
   }
 
-  const getMoreData = async () => {
-    if (!currentChatUserId || isLoadingMoreRef.current) return
-
-    isLoadingMoreRef.current = true
-    offsetRef.current = messages.length
-
-    // const response = await messageService.getMessagesByUserId({
-    //   otherPersonId: currentChatUserId,
-    //   offset: offsetRef.current,
-    //   limit,
-    // })
-
-    const getMoreAndMoreInfoByTargetedUserId = async () => {
-      await authorizedHttpServer.get('/chat/rooms/user-chat-info/', {params: {"user_id": currentChatUserId}})
-        .then((res) => {
-          setMessages((prev) => [...res.data.messages, ...prev])
-          setHasMore((messages.length + res.data.messages.length) < res.data.totalMessageCount)      
-        })
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      messageSubmitHandler()
     }
+  }
 
-    getMoreAndMoreInfoByTargetedUserId()   
-    
-    isLoadingMoreRef.current = false
+  const fetchChatMessage = async () => {
+    const currentChatId = currentChattingMember.roomId
+    if (currentChatId) {
+      const url = ApiEndpoints.CHAT_MESSAGE_URL.replace(
+        Constants.CHAT_ID_PLACE_HOLDER, currentChatId
+      ) + "?limit=20&offset=0";
+      const chatMessages = await authorizedHttpServer.get(url)
+        .then((res) => res.data)
+        .catch((err) => err)
+
+
+      console.log("chatMessages  ----->", chatMessages)
+      setOtherPersonName(currentChattingMember.name)
+      console.log('image in response: ', currentChattingMember.image)
+      if (currentChattingMember.image && currentChattingMember.image.trim() === '') {
+        setOtherPersonAvatarUrl(currentChattingMember.image)
+      }
+      setMessages(chatMessages.results)
+      setHasMore(chatMessages.count)
+      setRoomName(currentChattingMember.roomId)
+    }
   }
 
   useEffect(() => {
     const container = chatRef.current
     if (!container) return
 
-    getInitialData()
+    fetchChatMessage()
     previousScrollHeightRef.current = container.scrollHeight
-  }, [currentChatUserId])
+  }, [currentChattingMember.roomId])
+
+  socket.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    const chatId = currentChattingMember.roomId
+    const userId = tokenUtil.getUserId();
+    if (chatId === data.roomId) {
+      if (data.action === SocketActions.MESSAGE) {
+        // data["userImage"] = "http://127.0.0.1:8000/" + data.userImage;
+
+        console.log('data------>', data)
+        setMessages((prev) => [
+          ...prev,
+          data,
+        ])
+        // setMessages((prevState) => {
+        //   let messagesState = JSON.parse(JSON.stringify(prevState));
+        //   console.log('message state ->', messagesState)
+        //   messagesState.results.unshift(data);
+        //   return messagesState;
+        // });
+        setTyping(false);
+      } else if (data.action === SocketActions.TYPING && data.user !== userId) {
+        setTyping(data.typing);
+      }
+    }
+    if (data.action === SocketActions.ONLINE_USER) {
+      setOnlineUserList(data.userList);
+    }
+  }
+
+  const messageSubmitHandler = () => {
+    
+    if (inputMessage) {
+      socket.send(
+        JSON.stringify({
+          action: SocketActions.MESSAGE,
+          message: inputMessage,
+          user: tokenUtil.getUserId(),
+          roomId: currentChattingMember.roomId
+        })
+      );
+    }
+    setInputMessage("");
+  };
+
+  const sendTypingSignal = (typing: any) => {
+    socket.send(
+      JSON.stringify({
+        action: SocketActions.TYPING,
+        typing: typing,
+        user: tokenUtil.getUserId(),
+        roomId: currentChattingMember.roomId,
+      })
+    );
+  };
+
+//   const chatMessageTypingHandler = (event: any) => {
+//   if (event.keyCode !== Constants.ENTER_KEY_CODE) {
+//     if (!isTypingSignalSent) {
+//       sendTypingSignal(true); // Send a typing signal when typing starts
+//       isTypingSignalSent = true;
+//     }
+//     clearTimeout(typingTimer); // Clear the existing timer
+//     typingTimer = setTimeout(() => {
+//       sendTypingSignal(false); // Send a typing signal indicating typing has stopped
+//       isTypingSignalSent = false;
+//     }, 3000); // Reset the timer for 3 seconds
+//   } else {
+//     clearTimeout(typingTimer); // Clear the timer if Enter is pressed
+//     isTypingSignalSent = false;
+//   }
+// };
+
+  // const getInitialData = async () => {
+  //   if (!currentChatUserId) return
+
+  //   offsetRef.current = 10
+
+  //   // const response = await messageService.getMessagesByUserId({
+  //   //   otherPersonId: currentChatUserId,
+  //   //   offset: offsetRef.current,
+  //   //   limit,
+  //   // })
+
+  //   const getAllInfoByTargetedUserId = async () => {
+  //     await authorizedHttpServer.get('/chat/rooms/user-chat-info/', {params: {"user_id": currentChatUserId}})
+  //       .then((res) => {
+  //         setOtherPersonName(res.data.other_person.full_name)
+  //         setOtherPersonAvatarUrl(res.data.other_person.avatar_url)
+  //         setMessages(res.data.messages)
+  //         setHasMore(res.data.messages.length !== res.data.totalMessageCount)
+  //         setRoomName(res.data.room_name)
+  //       })
+  //   }
+
+  //   getAllInfoByTargetedUserId()
+
+  // }
+
 
   const handleScroll = async () => {
     const container = chatRef.current
@@ -120,7 +218,7 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId, searchResult }) => {
 
     if (scrollTop === 0 && hasMore && !isLoadingMoreRef.current) {
       previousScrollHeightRef.current = scrollHeight
-      await getMoreData()
+      fetchChatMessage()
     }
   }
 
@@ -143,24 +241,7 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId, searchResult }) => {
     }
   }, [messages, hasMore])
 
-  const handleChatStartButton = useCallback((targetUserId: number) => {
-    const createOrFetchDMRoom = async (currentUserId: number) => {
-      await authorizedHttpServer.post('/chat/rooms/manage/', JSON.stringify({"target_user_id": currentUserId}))
-        .then((res) => {
-          console.log("room name type", typeof res.data.room_name, res.data.room_name)
-          setRoomName(res.data.room_name)
-        })
-        .catch((error) => {
-          console.error('Error creating or fetching room:', error);
-        })
-    };
-
-    if (currentChatUserId)  {
-      createOrFetchDMRoom(targetUserId)
-    }
-  }, [currentChatUserId])
-
-  
+  console.log('avatar: ', otherPersonAvatarUrl)
 
   // const sendMessage = () => {
   //   if (webSocketRef.current && inputMessage.trim()) {
@@ -193,7 +274,7 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId, searchResult }) => {
         <div className='flex justify-start items-center gap-3.5'>
           <div className='relative w-11.5 h-11.5 rounded-full'>
             {
-              otherPersonAvatarUrl !== null ? (
+              otherPersonAvatarUrl !== null && otherPersonAvatarUrl.trim() !== '' ? (
                 <Image
                   src={backendHostUrl + otherPersonAvatarUrl}
                   alt={`${otherPersonName} avatar`}
@@ -238,11 +319,43 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId, searchResult }) => {
             <div className="text-gray-20 text-xs text-center">Loading more...</div>
           )}
           {messages.map((message, index) => (
-            <ChatItem key={index} message={message} />
+            <ChatItem key={index} socketData={message} />
           ))}
         </div>
         <div className='flex w-full'>
-          <MessageTypeBox  />
+           
+          <div className='flex justify-between items-end w-full p-2.5 bg-white rounded-20'>
+            <div className='flex flex-1 justify-start items-end gap-2 bg-[#FFFFFF] p-4'>
+              <EmotiSmileSvg
+                width='24'
+                height='24'
+                color='#4D5260'
+              />
+              <textarea
+                ref={textareaRef}
+                className='flex-1 resize-none border-none outline-none rounded-lg px-3 text-sm focus:outline-none focus:border-transparent overflow-hidden'
+                rows={1}
+                placeholder='Type a message...'
+                value={inputMessage}
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setInputMessage(e.target.value)}
+                onKeyDown={handleKeyDown}
+              />
+              <PaperClipSvg
+                width='18'
+                height='18'
+                color='#4D5260'
+              />
+            </div>
+
+            <div className='mb-2'>
+              <SendButton
+                title='Send'
+                width='w-24'
+                height='h-9.5'
+                onClick={messageSubmitHandler}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -13,6 +13,7 @@ import * as dotenv from 'dotenv'
 import tokenUtil from '../utils/tokenUtils'
 import ApiEndpoints from '../api/apiEndPoints'
 import Constants from '../lib/constants'
+import { useRouter } from 'next/navigation';
 
 dotenv.config()
 
@@ -21,21 +22,24 @@ const backendHostUrl = process.env.NEXT_PUBLIC_BACKEND_HOST_URL
 interface IUsers {
   isShow: boolean
   currentChatUserId?: string
-  onlineUserList: IContactUser[]
+  onlineUserList: any[]
   setCurrentChatUser: (userId: string) => void
-  setSearchResult: (obj: IContactUser[]) => void
+  setSearchResult: (obj: any[]) => void
+  setCurrentChattingMember: (obj: any) => void
 }
 
-const Users: React.FC<IUsers> = ({ isShow, setCurrentChatUser, setSearchResult, currentChatUserId, onlineUserList }) => {
+const Users: React.FC<IUsers> = ({ isShow, setCurrentChatUser, setSearchResult, currentChatUserId, onlineUserList, setCurrentChattingMember }) => {
   const searchParams = useSearchParams()
   const query: string | null = searchParams.get('query')
+  const router = useRouter();
 
   const [chatUsers, setChatUsers] = useState<any[]>([])
   const [searchUsers, setSearchUsers] = useState<any[]>([])
 
   const onClick = (userId: string) => {
-    console.log('setting chat user: ', userId)
     setCurrentChatUser(userId)
+    const activeChatId = chatUsers.find((user: any) => user.id === userId)
+    setCurrentChattingMember(activeChatId)
   }
 
   const fetchChatUser = async () => {
@@ -51,7 +55,6 @@ const Users: React.FC<IUsers> = ({ isShow, setCurrentChatUser, setSearchResult, 
       onlineUserList
     );
     setChatUsers(formatedChatUser);
-    // redirectUserToDefaultChatRoom(formatedChatUser);
   }
 
   // useEffect(() => {
@@ -79,6 +82,7 @@ const Users: React.FC<IUsers> = ({ isShow, setCurrentChatUser, setSearchResult, 
   }, [searchParams])
 
   useEffect(() => {
+    console.log("location path name---->", window.location.pathname)
     fetchChatUser();
   }, [])
 
