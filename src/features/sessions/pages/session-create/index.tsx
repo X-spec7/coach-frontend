@@ -60,6 +60,7 @@ const CreateSessionContent = () => {
     try {
       // Replace with your API call
       await coachSessionService.createSession(sessionData)
+      console.log('Session Data:', sessionData)
       setLoading(false)
       alert('Session Created Successfully')
     } catch (err) {

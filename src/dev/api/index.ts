@@ -5,4 +5,4 @@ export {
 } from './trainers'
 
 export { getContacts as getContacts } from './chat.contact'
-export { getMessagesByUserId as getMessagesByUserId } from './chat.message'
+// export { getMessagesByUserId as getMessagesByUserId } from './chat.message'

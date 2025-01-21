@@ -1,5 +1,5 @@
 export interface IMessage {
-  id: string
+  id: number
   content: string
   isRead: boolean
   isSent: boolean

@@ -1,4 +1,3 @@
-import { getTotalSessionCountMockApi } from "@/dev/api/session"
 import {
   CreateSessionRequestDTO,
   CreateSessionResponseDTO,

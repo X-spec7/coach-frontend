@@ -31,7 +31,6 @@ const Layout: React.FC<ILayoutProps> = ({ children }) => {
     const token = localStorage.getItem('access_token')
     setToken(token)
     if (!token) {
-      // Redirect to SignIn page if there's no token
       router.push('/signin')
     }
   }, [router])

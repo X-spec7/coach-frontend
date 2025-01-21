@@ -69,7 +69,7 @@ const SessionsList: React.FC<ISessionsListProps> = ({
           // <Link href={`/sessions/detail/1`} key={index}>
           //   <SessionCard key={index} session={session} />
           // </Link>
-          <div key={index} onClick={() => {onSessionCardClicked(session)}} className='cursor-pointer'>
+          <div key={index} onClick={() => {onSessionCardClicked(session)}} className='cursor-pointer max-h-80'>
             <SessionCard session={session} />
           </div>
         ))

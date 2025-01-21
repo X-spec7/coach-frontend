@@ -11,14 +11,12 @@
   "dependencies": {
     "@material-tailwind/react": "^2.1.10",
     "@reduxjs/toolkit": "^2.4.0",
-    "@types/jwt-decode": "^3.1.0",
     "apexcharts": "^3.45.2",
     "axios": "^1.7.9",
     "date-fns": "^4.1.0",
     "dotenv": "^16.4.7",
     "flatpickr": "^4.6.13",
     "jsvectormap": "^1.6.0",
-    "jwt-decode": "^4.0.0",
     "next": "^14.2.4",
     "react": "^18",
     "react-apexcharts": "^1.4.1",
@@ -26,6 +24,7 @@
     "react-dom": "^18",
     "react-progressbar-semicircle": "^1.2.1",
     "react-redux": "^9.1.2",
+    "react-use-websocket": "3.0.0",
     "sharp": "^0.33.5",
     "use-debounce": "^10.0.4"
   },

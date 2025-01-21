@@ -1,39 +1,23 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Chat from './Chat'
 import Users from './Users'
-import { IContactUser } from '../types'
 
 const MessagesPage = () => {
   const [display, setDisplay] = useState<'Users' | 'Chat'>('Chat')
-  const [currentChatUser, setCurrentChatUser] = useState<string>()
-  const [searchResult, setSearchResult] = useState<IContactUser[]>([])
-  const [onlineUserList, setOnlineUserList] = useState<any[]>([])
-  const [currentChattingMember, setCurrentChattingMember] = useState({});
-
-  useEffect(() => {
-  }, [currentChatUser])
-
-  useEffect(() => {
-  }, [currentChattingMember])
+  const [currentChatUserId, setCurrentChatUserId] = useState<number>()
 
   return (
     <div className='flex h-230 p-4 gap-4 bg-white rounded-4xl'>
       <Users
         isShow={display === 'Users'}
-        setCurrentChatUser={setCurrentChatUser}
-        setSearchResult={setSearchResult}
-        currentChatUserId={currentChatUser}
-        onlineUserList={onlineUserList}
-        setCurrentChattingMember={setCurrentChattingMember}
+        setCurrentChatUserId={setCurrentChatUserId}
+        currentChatUserId={currentChatUserId}
       />
       <Chat
         isShow={display === 'Chat'}
-        currentChatUserId={currentChatUser}
-        searchResult={searchResult}
-        setOnlineUserList={setOnlineUserList}
-        currentChattingMember={currentChattingMember}
+        currentChatUserId={currentChatUserId}
       />
     </div>
   )

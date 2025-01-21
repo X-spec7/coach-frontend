@@ -32,7 +32,7 @@ const DropdownUser = () => {
       setIsUserLoaded(true)
     }
   }, [user])
-  
+
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className='relative'>
       <Link

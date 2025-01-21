@@ -86,7 +86,7 @@ const Header = (props: HeaderProps) => {
           </Link>
         </div>
 
-        <div className='flex flex-col justify-between items-start max-md:hidden'>
+        <div className='flex flex-col justify-between items-start max-xl:hidden'>
           {
             props.isDetailPage && (
               <BackButton buttonTitle={props.description} handleBack={handleBack} />

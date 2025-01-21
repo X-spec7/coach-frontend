@@ -1,12 +1,12 @@
 import { messagesDummyData } from '../dummy-data'
 import { mockApi } from './api'
-import { GetMessagesByUserIdRequestDTO } from '@/features/messages/types'
+import { GetMessagesByUserIdRequestDTO, GetMessagesByUserIdResponseDTO } from '@/features/messages/types'
 
 export const getMessages = (payload: GetMessagesByUserIdRequestDTO) => {
-  if (payload.otherPersonId === '1') {
+  if (payload.otherPersonId === 1) {
     return {
-      userId: '123',
-      otherPersonId: '1',
+      userId: 123,
+      otherPersonId: 1,
       otherPersonFullname: 'Jack Doeson',
       otherPersonAvatarUrl: '/media/avatar_images/7_avatar.webp',
       totalMessageCount: messagesDummyData.length,
@@ -14,7 +14,7 @@ export const getMessages = (payload: GetMessagesByUserIdRequestDTO) => {
     }
   } else {
     return {
-      userId: '123',
+      userId: 123,
       otherPersonId: payload.otherPersonId,
       otherPersonFullname: 'Rose',
       otherPersonAvatarUrl: '/media/avatar_images/7_avatar.webp',
@@ -24,6 +24,6 @@ export const getMessages = (payload: GetMessagesByUserIdRequestDTO) => {
   }
 }
 
-export const getMessagesByUserId = async (payload: GetMessagesByUserIdRequestDTO) => {
-  return mockApi(getMessages(payload))
-}
+// export const getMessagesByUserId = async (payload: GetMessagesByUserIdRequestDTO): Promise<GetMessagesByUserIdResponseDTO> => {
+//   return mockApi(getMessages(payload))
+// }

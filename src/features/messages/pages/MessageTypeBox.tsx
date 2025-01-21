@@ -5,10 +5,10 @@ import { EmotiSmileSvg, PaperClipSvg } from '@/shared/components/Svg'
 import { useEffect, useRef, useState } from 'react'
 
 interface MessageTypeBoxProps {
-  websocket?: WebSocket | null
+  sendMessage: (message: string) => void
 }
 
-const MessageTypeBox: React.FC<MessageTypeBoxProps> = ({ websocket }) => {
+const MessageTypeBox: React.FC<MessageTypeBoxProps> = ({ sendMessage }) => {
   const [message, setMessage] = useState('')
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
@@ -24,33 +24,17 @@ const MessageTypeBox: React.FC<MessageTypeBoxProps> = ({ websocket }) => {
     }
   }
 
-  const onClick = () => {
-    if (message.trim() === '') {
-      alert('Please enter a message before sending.')      
-      return
+  const onSendButtonClicked = () => {
+    if (message && message.trim() !== '') {
+      sendMessage(message)
     }
-
-    if (!websocket) {
-      return
-    }
-
-    if (websocket && message.trim()) {
-      websocket.send(
-        JSON.stringify({
-          message: message,
-          type: 'chat',
-        })
-      );
-      setMessage('')
-    }
-
-    console.log('Message sent:', message)
+    setMessage('')
   }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
-      onClick()
+      onSendButtonClicked()
     }
   }
 
@@ -83,7 +67,7 @@ const MessageTypeBox: React.FC<MessageTypeBoxProps> = ({ websocket }) => {
           title='Send'
           width='w-24'
           height='h-9.5'
-          onClick={onClick}
+          onClick={onSendButtonClicked}
         />
       </div>
     </div>

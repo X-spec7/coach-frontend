@@ -1,6 +1,10 @@
 export type { IMessage as IMessage } from './message'
 export type { IContactUser as IContactUser } from './contact'
 export type {
-  GetMessagesByUserIdRequestDTO as GetMessagesByUserIdRequestDTO,
-  GetMessagesByUserIdResponseDTO as GetMessagesByUserIdResponseDTO
+  GetMessagesByUserIdRequestDTO,
+  GetMessagesByUserIdResponseDTO,
+  GetContactsResponseDTO,
+  SearchUserRequestDTO,
+  SearchUserResponseDTO,
+  SendMessageRequestDTO,
 } from './dto'
