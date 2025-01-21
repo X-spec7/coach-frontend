@@ -3,26 +3,18 @@
 import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
+import { useSelector } from 'react-redux'
 
 import { SearchField } from '@/shared/components'
-import { useSelector } from 'react-redux'
+import { BACKEND_HOST_URL } from '@/shared/provider/env.provider'
 import { selectUser } from '@/features/user/slice/userSlice'
+import { get12HourTimeFromDateObject, getDateFromDateObject } from '@/shared/utils'
 import { contactService } from '../service'
-import {
-  get12HourTimeFromDateObject,
-  getDateFromDateObject
-} from '@/shared/utils'
 import {
   IContactUser,
   SearchUserRequestDTO
 } from '../types'
-
-import * as dotenv from 'dotenv'
 import { ISearchedUser } from '../types/contact'
-
-dotenv.config()
-
-const backendHostUrl = process.env.NEXT_PUBLIC_BACKEND_HOST_URL
 
 interface IUsers {
   isShow: boolean
@@ -251,7 +243,7 @@ const UserItem: React.FC<IUserItemProps> = ({
       <div className='flex w-10 h-10 rounded-full'>
         {user.avatarUrl ? (
           <Image
-            src={backendHostUrl + user.avatarUrl}
+            src={BACKEND_HOST_URL + user.avatarUrl}
             width={40}
             height={40}
             alt=''

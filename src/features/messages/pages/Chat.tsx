@@ -6,20 +6,14 @@ import Image from 'next/image'
 import ChatItem from './ChatItem'
 import MessageTypeBox from './MessageTypeBox'
 
-import { IMessage, SendMessageRequestDTO } from '../types'
+import { IMessage } from '../types'
 import { ILayoutProps } from '@/shared/types/common.type'
 import { EllipsisMenu } from '@/shared/components'
 import { PhoneSvg, VideoCameraSvg, SidebarSimpleSvg } from '@/shared/components/Svg'
 import { selectUser } from '@/features/user/slice/userSlice'
 import { messageService } from '../service'
 import { useSelector } from 'react-redux'
-
-import * as dotenv from 'dotenv'
-
-dotenv.config()
-
-const backendHostUrl = process.env.NEXT_PUBLIC_BACKEND_HOST_URL
-const wsBaseUrl = process.env.NEXT_PUBLIC_WS_BASE_URL
+import { BACKEND_HOST_URL, WS_API_BASE_URL } from '@/shared/provider/env.provider'
 
 const defaultAvatarUrl = '/images/user/user-09.png'
 
@@ -156,7 +150,7 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId }) => {
   useEffect(() => {
     if (!webSocketRef.current) {
       console.log('Setting up WebSocket...');
-      const wsUrl = `${wsBaseUrl}/chat/${myself.id}/`;
+      const wsUrl = `${WS_API_BASE_URL}/chat/${myself.id}/`;
       webSocketRef.current = new WebSocket(wsUrl);
       
       webSocketRef.current.onopen = () => console.log('WebSocket opened')
@@ -222,7 +216,7 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId }) => {
               ) : (
                   (otherPersonAvatarUrl && otherPersonAvatarUrl.trim() !== '') ? (
                     <Image
-                      src={backendHostUrl + otherPersonAvatarUrl}
+                      src={BACKEND_HOST_URL + otherPersonAvatarUrl}
                       alt={`${otherPersonName} avatar`}
                       width={46}
                       height={46}
