@@ -10,28 +10,28 @@ const authorizedHttpServer = axios.create({
 
 authorizedHttpServer.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem('access_token');
+        const token = localStorage.getItem('access_token')
         if (token) {
             // @ts-ignore
-            config.headers.Authorization = `Bearer ${token}`;
+            config.headers.Authorization = `Bearer ${token}`
         }
         
-        return config;
+        return config
     },
     (error) => {
-        return Promise.reject(error);
+        return Promise.reject(error)
     }
-);
+)
 
 authorizedHttpServer.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response && error.response.status === 401) {
-            console.error('Session expired. Redirecting to login.');
-            window.location.href = '/signin';
+            console.error('Session expired. Redirecting to login.')
+            window.location.href = '/signin'
         }
-        return Promise.reject(error);
+        return Promise.reject(error)
     }
-);
+)
 
 export default authorizedHttpServer
