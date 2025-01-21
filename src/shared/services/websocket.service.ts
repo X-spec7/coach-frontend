@@ -3,7 +3,7 @@ import { WS_API_BASE_URL } from '../constants'
 class WebSocketService {
   private static instance: WebSocketService
   private ws: WebSocket | null = null
-  private messageHandlers: Record<string, (data: any) => void> = {}
+  private messageHandlers: Record<string, ((data: any) => void)[]> = {}
 
   private constructor() {}
 
@@ -25,8 +25,10 @@ class WebSocketService {
 
     this.ws.onmessage = (event) => {
       const data = JSON.parse(event.data)
-      const handler = this.messageHandlers[data.type]
-      if (handler) handler(data)
+      const handlers = this.messageHandlers[data.type]
+      if (handlers) {
+        handlers.forEach((handler) => handler(data))
+      }
     }
   }
 
@@ -46,11 +48,22 @@ class WebSocketService {
   }
 
   registerOnMessageHandler(type: string, handler: (data: any) => void) {
-    this.messageHandlers[type] = handler
+    if (!this.messageHandlers[type]) {
+      this.messageHandlers[type] = []
+    }
+    this.messageHandlers[type].push(handler)
   }
 
-  unRegisterOnMessageHandler(type: string) {
-    delete this.messageHandlers[type]
+  unRegisterOnMessageHandler(type: string, handler: (data: any) => void) {
+    if (this.messageHandlers[type]) {
+      this.messageHandlers[type] = this.messageHandlers[type].filter(
+        (h) => h !== handler
+      )
+
+      if (this.messageHandlers[type].length === 0) {
+        delete this.messageHandlers[type]
+      }
+    }
   }
 
   get connectionStatus(): string {

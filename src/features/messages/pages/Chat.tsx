@@ -152,15 +152,16 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId }) => {
   // <------------- HANDLE SOCKET ------------->
 
   useEffect(() => {
-    websocketService.registerOnMessageHandler('chat', (data: any) => {
+    const handleMessageReceived = (data: any) => {
       if (data.message) {
         setMessages((prev) => [data.message, ...prev])
       }
       handleScrollOnMessageReceived()
-    })
+    }
+    websocketService.registerOnMessageHandler('chat', handleMessageReceived)
 
     return () => {
-      websocketService.unRegisterOnMessageHandler('chat')
+      websocketService.unRegisterOnMessageHandler('chat', handleMessageReceived)
     }
   }, [])
 
