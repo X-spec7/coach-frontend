@@ -2,12 +2,14 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useSelector } from 'react-redux'
+
+import { useAppDispatch } from '@/redux/hook'
 import { DefaultLayout } from '@/shared/Layouts'
 import Loader from '@/shared/components/Loader'
 import { ILayoutProps } from '@/shared/types/common.type'
 import { getProfileAsync, selectUser } from '@/features/user/slice/userSlice'
-import { useSelector } from 'react-redux'
-import { useAppDispatch } from '@/redux/hook'
+import { WebSocketProvider } from '@/shared/provider'
 
 const Layout: React.FC<ILayoutProps> = ({ children }) => {
   const router = useRouter()
@@ -22,7 +24,7 @@ const Layout: React.FC<ILayoutProps> = ({ children }) => {
   const [isUserProfileLoaded, setIsUserProfileLoaded] = useState(() => !!(user && user.firstName !== ''))
 
   useEffect(() => {
-    setIsUserProfileLoaded(!!(user && user.firstName !== ''))
+    setIsUserProfileLoaded(!!(user && user.id && user.firstName !== ''))
   }, [user])
 
   const [token, setToken] = useState<string | null>()
@@ -51,7 +53,9 @@ const Layout: React.FC<ILayoutProps> = ({ children }) => {
 
   return (
     <DefaultLayout>
-      {children}
+      <WebSocketProvider userId={user.id!}>
+        {children}
+      </WebSocketProvider>
     </DefaultLayout>
   )
 }

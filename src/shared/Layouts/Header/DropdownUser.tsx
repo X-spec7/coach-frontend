@@ -4,15 +4,10 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useSelector } from 'react-redux'
 import ClickOutside from '@/shared/components/ClickOutside'
 import { selectUser } from '@/features/user/slice/userSlice'
-import { useSelector } from 'react-redux'
-
-import * as dotenv from 'dotenv'
-
-dotenv.config()
-
-const backendHostUrl = process.env.NEXT_PUBLIC_BACKEND_HOST_URL
+import { BACKEND_HOST_URL } from '@/shared/constants'
 
 const DropdownUser = () => {
   const router = useRouter()
@@ -48,7 +43,7 @@ const DropdownUser = () => {
             <Image
               width={36}
               height={36}
-              src={backendHostUrl + user.profilePicture}
+              src={BACKEND_HOST_URL + user.profilePicture}
               style={{
                 width: 'auto',
                 height: 'auto',

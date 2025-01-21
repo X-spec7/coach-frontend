@@ -18,7 +18,9 @@ const RootLayout: React.FC<ILayoutProps> = ({ children }) => {
     <html lang='en'>
       <body suppressHydrationWarning={true}>
         <>
-          <Provider store={store}>{children}</Provider>
+          <Provider store={store}>
+            {children}
+          </Provider>
         </>
       </body>
     </html>

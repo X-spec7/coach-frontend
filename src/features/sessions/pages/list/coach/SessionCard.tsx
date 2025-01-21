@@ -2,13 +2,7 @@ import React from 'react'
 import Image from 'next/image'
 import { ISession } from '@/features/sessions/types'
 import { formatTimeToDisplay } from '@/shared/utils/format'
-
-import * as dotenv from 'dotenv'
-
-dotenv.config()
-
-const backendHostUrl = process.env.NEXT_PUBLIC_BACKEND_HOST_URL
-
+import { BACKEND_HOST_URL } from '@/shared/constants'
 interface ISesssionCardProps {
   session: ISession
 }
@@ -25,7 +19,10 @@ const SessionCard: React.FC<ISesssionCardProps> = ({ session }) => {
 
       <div className='w-29 h-29 rounded-20'>
         <Image
-          src={(session.bannerImageUrl && session.bannerImageUrl !== '') ? backendHostUrl + session.bannerImageUrl : defaultBannerImageUrl}
+          src={(session.bannerImageUrl && session.bannerImageUrl !== '')
+            ? BACKEND_HOST_URL + session.bannerImageUrl
+            : defaultBannerImageUrl
+          }
           width={114}
           height={114}
           // add trainer id or name to alt

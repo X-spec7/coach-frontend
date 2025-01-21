@@ -6,20 +6,15 @@ import Image from 'next/image'
 import ChatItem from './ChatItem'
 import MessageTypeBox from './MessageTypeBox'
 
-import { IMessage, SendMessageRequestDTO } from '../types'
+import { IMessage } from '../types'
 import { ILayoutProps } from '@/shared/types/common.type'
 import { EllipsisMenu } from '@/shared/components'
 import { PhoneSvg, VideoCameraSvg, SidebarSimpleSvg } from '@/shared/components/Svg'
 import { selectUser } from '@/features/user/slice/userSlice'
 import { messageService } from '../service'
 import { useSelector } from 'react-redux'
-
-import * as dotenv from 'dotenv'
-
-dotenv.config()
-
-const backendHostUrl = process.env.NEXT_PUBLIC_BACKEND_HOST_URL
-const wsBaseUrl = process.env.NEXT_PUBLIC_WS_BASE_URL
+import { BACKEND_HOST_URL, WS_API_BASE_URL } from '@/shared/constants'
+import { useWebSocket } from '@/shared/provider'
 
 const defaultAvatarUrl = '/images/user/user-09.png'
 
@@ -29,6 +24,9 @@ interface IChat {
 }
 
 const Chat: React.FC<IChat> = ({ isShow, currentChatUserId }) => {
+
+  const websocketService = useWebSocket()
+  
   const myself = useSelector(selectUser)
 
   const chatRef = useRef<HTMLDivElement | null>(null)
@@ -154,50 +152,29 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId }) => {
   // <------------- HANDLE SOCKET ------------->
 
   useEffect(() => {
-    if (!webSocketRef.current) {
-      console.log('Setting up WebSocket...');
-      const wsUrl = `${wsBaseUrl}/chat/${myself.id}/`;
-      webSocketRef.current = new WebSocket(wsUrl);
-      
-      webSocketRef.current.onopen = () => console.log('WebSocket opened')
-      webSocketRef.current.onclose = () => console.log('WebSocket closed')
-      webSocketRef.current.onerror = (error) => console.error('WebSocket error:', error)
-
-      webSocketRef.current.onmessage = (event: MessageEvent) => {
-        const data = JSON.parse(event.data)
-        
-        const message_type = data.type
-        if (message_type === "chat") {
-          const message = data.message
-        
-          if (message) {
-            setMessages((prevMessages) => [message, ...prevMessages])
-          }
-        }
-
-        handleScrollOnMessageReceived()
+    const handleMessageReceived = (data: any) => {
+      if (data.message) {
+        setMessages((prev) => [data.message, ...prev])
       }
-  
-      return () => {
-        if (webSocketRef.current && webSocketRef.current.readyState === 1) {
-          webSocketRef.current.close()
-        }
-      }
+      handleScrollOnMessageReceived()
     }
+    websocketService.registerOnMessageHandler('chat', handleMessageReceived)
 
-  }, [myself.id, currentChatUserId])
+    return () => {
+      websocketService.unRegisterOnMessageHandler('chat', handleMessageReceived)
+    }
+  }, [])
 
   const sendMessage = (message: string) => {
-    if (webSocketRef.current && webSocketRef.current.readyState === WebSocket.OPEN) {
+    if (websocketService.connectionStatus === 'OPEN') {
       const messagePayload = {
-        type: "send_message",
         recipient_id: currentChatUserId,
         message: message,
       }
-  
-      webSocketRef.current.send(JSON.stringify(messagePayload))
+
+      websocketService.sendMessage('send_message', messagePayload)
     } else {
-      console.error("WebSocket connection is not open")
+      alert('WebSocket is disconnected. Please check your connection.')
     }
   }
   
@@ -222,7 +199,7 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId }) => {
               ) : (
                   (otherPersonAvatarUrl && otherPersonAvatarUrl.trim() !== '') ? (
                     <Image
-                      src={backendHostUrl + otherPersonAvatarUrl}
+                      src={BACKEND_HOST_URL + otherPersonAvatarUrl}
                       alt={`${otherPersonName} avatar`}
                       width={46}
                       height={46}
@@ -269,7 +246,7 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId }) => {
       <div className='relative flex flex-col w-full h-full px-4 pt-19.5'>
         <div ref={chatRef} className='flex flex-1 flex-col gap-4 pb-4 overflow-y-auto no-scrollbar'>
           {isLoadingMoreRef.current && (
-            <div className="text-gray-20 text-xs text-center">Loading more...</div>
+            <div className='text-gray-20 text-xs text-center'>Loading more...</div>
           )}
           {[...messages].reverse().map((message, index) => (
             <ChatItem key={index} message={message} />

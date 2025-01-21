@@ -1,12 +1,8 @@
 import axios from 'axios'
-import * as dotenv from 'dotenv'
-
-dotenv.config()
-
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
+import { REST_API_BASE_URL } from '../constants'
 
 const httpPublic = axios.create({
-  baseURL: baseUrl,
+  baseURL: REST_API_BASE_URL,
   headers: {
     'Content-Type': 'application/json'
   }
