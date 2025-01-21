@@ -4,8 +4,6 @@ import { IMessage } from './message'
 export interface GetMessagesByUserIdResponseDTO {
   message: string
   data: {
-    userId: number
-    otherPersonId: number
     otherPersonFullname: string
     otherPersonAvatarUrl: string
     totalMessageCount: number
