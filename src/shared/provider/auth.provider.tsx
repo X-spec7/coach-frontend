@@ -1,5 +1,8 @@
-import { useReducer, useMemo, createContext, useContext } from 'react'
+'use client'
+
+import { useReducer, useMemo, createContext, useContext, useEffect } from 'react'
 import { ILayoutProps, IUser } from '../types'
+import useLocalStorage from '../hooks/useLocalStorage'
 
 interface State {
   isAuthenticated: boolean
@@ -34,10 +37,23 @@ interface AuthContextType extends State {
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export const AuthProvider: React.FC<ILayoutProps> = ({ children }) => {
+  const [cachedUser, setCachedUser] = useLocalStorage<IUser | null>('coachCachedState', null)
   const [state, dispatch] = useReducer(authReducer, initialState)
 
-  const login = (user: IUser) => dispatch({ type: 'LOGIN', payload: user })
-  const logout = () => dispatch({ type: 'LOGOUT' })
+  useEffect(() => {
+    if (cachedUser) {
+      dispatch({type: 'LOGIN', payload: cachedUser})
+    }
+  })
+
+  const login = (user: IUser) => {
+    setCachedUser(user)
+    dispatch({ type: 'LOGIN', payload: user }) 
+  }
+  const logout = () => {
+    setCachedUser(null)
+    dispatch({ type: 'LOGOUT' })
+  }
 
   const value = useMemo(() => ({ ...state, login, logout }), [state])
 
