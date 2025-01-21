@@ -2,25 +2,31 @@ import httpPublic from '@/shared/services/httpPublic'
 
 import tokenService from './token.service'
 import { LoginPayloadDTO, RegisterPayloadDTO } from '../types'
+import { LoginResponseDTO, RegisterResponseDTO } from '../types/auth.dto'
 
 class AuthService {
-  async register(payload: RegisterPayloadDTO) {
-
+  async register(payload: RegisterPayloadDTO): Promise<RegisterResponseDTO> {
     return httpPublic
       .post('/authentication/register/', payload)
       .then((response) => {
-        return response.data
+        return {
+          ...response.data,
+          status: response.status
+        }
       })
   }
   
-  async login(payload: LoginPayloadDTO) {
+  async login(payload: LoginPayloadDTO): Promise<LoginResponseDTO> {
     return httpPublic
       .post('/authentication/login/', payload)
       .then((response) => {
         if (response.data.result.token) {
           tokenService.setLocalAccessToken(response.data.result.token)
         }
-        return response
+        return {
+          ...response.data,
+          status: response.status,
+        }
       })
   }
 

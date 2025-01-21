@@ -3,13 +3,10 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useAppDispatch } from '@/redux/hook'
 
-import { registerAsync } from '../../slice/userSlice'
-import { RegisterPayloadDTO } from '../../types/auth.type'
+import { authService } from '../../services'
 
 const SignUpPage: React.FC = () => {
-  const dispatch = useAppDispatch()
   const router = useRouter()
 
   const [formData, setFormData] = useState({
@@ -53,20 +50,13 @@ const SignUpPage: React.FC = () => {
     try {
       setIsSubmitting(true)
 
-      const registerPayload: RegisterPayloadDTO = {
-        first_name: formData.firstName,
-        last_name: formData.lastName,
-        email: formData.email,
-        password: formData.password,
-        user_type: formData.userType
-      }
+      const response = await authService.register(formData)
 
-      dispatch(registerAsync(registerPayload))
-        .unwrap()
-        .then((result) => {
-          router.push('/signin')
-        })
-      
+      if (response.status === 201) {
+        router.push('signin')
+      } else {
+        alert(response.message)
+      }
     } catch (err) {
       setError('Registration failed. Please try again.')
     } finally {

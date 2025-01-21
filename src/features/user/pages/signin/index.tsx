@@ -3,13 +3,14 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useAppDispatch } from '@/redux/hook'
 
-import { loginAsync } from '../../slice/userSlice'
+import { authService } from '../../services'
+import { useAuth } from '@/shared/provider/auth.provider'
 
 const SignInPage: React.FC = () => {
   const router = useRouter()
-  const dispatch = useAppDispatch()
+
+  const { login } = useAuth()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -30,14 +31,18 @@ const SignInPage: React.FC = () => {
     setLoading(true)
 
     try {
-      dispatch(loginAsync({ email, password }))
-        .unwrap()
-        .then((result) => {
-          router.push('/dashboard')
-        })
+      const response = await authService.login({ email, password })
+
+      if (response.status === 200) {
+        login(response.user)
+        router.push('/dashboard')
+      } else {
+        alert(response.message)
+      }
+
     } catch (err) {
       console.error('Login error:', err)
-      setError('Invalid email or password. Please try again.')
+      alert('Something went wrong, please try again.')
     } finally {
       setLoading(false)
     }
