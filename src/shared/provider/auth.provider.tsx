@@ -1,13 +1,13 @@
 import { useReducer, useMemo, createContext, useContext } from 'react'
-import { ILayoutProps } from '../types'
+import { ILayoutProps, IUser } from '../types'
 
 interface State {
   isAuthenticated: boolean
-  user: string | null
+  user: IUser | null
 }
 
 type Action =
-  | { type: 'LOGIN'; payload: string }
+  | { type: 'LOGIN'; payload: IUser }
   | { type: 'LOGOUT' }
 
 const initialState: State = {
@@ -27,7 +27,7 @@ function authReducer(state: State, action: Action): State {
 }
 
 interface AuthContextType extends State {
-  login: (user: string) => void
+  login: (user: IUser) => void
   logout: () => void
 }
 
@@ -36,7 +36,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export const AuthProvider: React.FC<ILayoutProps> = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState)
 
-  const login = (user: string) => dispatch({ type: 'LOGIN', payload: user })
+  const login = (user: IUser) => dispatch({ type: 'LOGIN', payload: user })
   const logout = () => dispatch({ type: 'LOGOUT' })
 
   const value = useMemo(() => ({ ...state, login, logout }), [state])
