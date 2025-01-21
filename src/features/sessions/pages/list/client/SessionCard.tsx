@@ -2,7 +2,7 @@ import React from 'react'
 import Image from 'next/image'
 import { ISessionWithBookedStatus } from '@/features/sessions/types'
 import { formatTimeToDisplay } from '@/shared/utils/format'
-import { BACKEND_HOST_URL } from '@/shared/provider/env.provider'
+import { BACKEND_HOST_URL } from '@/shared/constants'
 
 interface ISesssionCardProps {
   session: ISessionWithBookedStatus

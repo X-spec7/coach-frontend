@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { REST_API_BASE_URL } from '../provider/env.provider'
+import { REST_API_BASE_URL } from '../constants'
 
 const authorizedHttpServer = axios.create({
     baseURL: REST_API_BASE_URL,

@@ -6,7 +6,7 @@ import Image from 'next/image'
 import { useSelector } from 'react-redux'
 
 import { SearchField } from '@/shared/components'
-import { BACKEND_HOST_URL } from '@/shared/provider/env.provider'
+import { BACKEND_HOST_URL } from '@/shared/constants'
 import { selectUser } from '@/features/user/slice/userSlice'
 import { get12HourTimeFromDateObject, getDateFromDateObject } from '@/shared/utils'
 import { contactService } from '../service'

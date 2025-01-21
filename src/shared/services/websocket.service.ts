@@ -1,4 +1,4 @@
-import { WS_API_BASE_URL } from '../provider/env.provider'
+import { WS_API_BASE_URL } from '../constants'
 
 class WebSocketService {
   private static instance: WebSocketService
@@ -51,6 +51,22 @@ class WebSocketService {
 
   unRegisterOnMessageHandler(type: string) {
     delete this.messageHandlers[type]
+  }
+
+  get connectionStatus(): string {
+    if (!this.ws) return 'DISCONNECTED'
+    switch (this.ws.readyState) {
+      case WebSocket.CONNECTING:
+        return 'CONNECTING'
+      case WebSocket.OPEN:
+        return 'OPEN'
+      case WebSocket.CLOSING:
+        return 'CLOSING'
+      case WebSocket.CLOSED:
+        return 'CLOSED'
+      default:
+        return 'UNKNOWN'
+    }
   }
 }
 

@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import { TitleWithEllipsis } from '@/shared/components'
 import { selectUser } from '@/features/user/slice/userSlice'
 import { useSelector } from 'react-redux'
-import { BACKEND_HOST_URL } from '@/shared/provider/env.provider'
+import { BACKEND_HOST_URL } from '@/shared/constants'
 
 interface ProfileProps {
   fullname: string
