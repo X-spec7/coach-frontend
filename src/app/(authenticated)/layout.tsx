@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux'
 import { useAppDispatch } from '@/redux/hook'
 import { DefaultLayout } from '@/shared/Layouts'
 import Loader from '@/shared/components/Loader'
-import { ILayoutProps } from '@/shared/types/common.type'
+import { ILayoutProps } from '@/shared/types'
 import { getProfileAsync, selectUser } from '@/features/user/slice/userSlice'
 import { WebSocketProvider } from '@/shared/provider'
 

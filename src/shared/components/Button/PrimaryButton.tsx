@@ -1,6 +1,6 @@
-import { PrimaryButtonProps } from '@/shared/types/common.type'
+import { IPrimaryButtonProps } from '@/shared/types'
 
-const PrimaryButton: React.FC<PrimaryButtonProps> = ({width, height, title, onClick}) => {
+const PrimaryButton: React.FC<IPrimaryButtonProps> = ({width, height, title, onClick}) => {
   return (
     <button
       className={`bg-green text-gray-30 ${width} ${height}`}

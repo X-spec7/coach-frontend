@@ -1,7 +1,7 @@
 import { SendButtonSvg } from '../Svg'
-import { PrimaryButtonProps } from '@/shared/types/common.type'
+import { IPrimaryButtonProps } from '@/shared/types'
 
-const SendButton: React.FC<PrimaryButtonProps> = ({width, height, title, onClick}) => {
+const SendButton: React.FC<IPrimaryButtonProps> = ({width, height, title, onClick}) => {
   return (
     <button
       className={`flex justify-center items-center rounded-20 gap-2 bg-green text-gray-30 font-medium ${width} ${height}`}

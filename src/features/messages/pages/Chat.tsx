@@ -7,7 +7,7 @@ import ChatItem from './ChatItem'
 import MessageTypeBox from './MessageTypeBox'
 
 import { IMessage } from '../types'
-import { ILayoutProps } from '@/shared/types/common.type'
+import { ILayoutProps } from '@/shared/types'
 import { EllipsisMenu } from '@/shared/components'
 import { PhoneSvg, VideoCameraSvg, SidebarSimpleSvg } from '@/shared/components/Svg'
 import { selectUser } from '@/features/user/slice/userSlice'
