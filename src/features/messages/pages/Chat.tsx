@@ -128,11 +128,9 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId }) => {
     if (container && !scrollListenerAttached.current) {
       container.addEventListener('scroll', handleScroll)
       scrollListenerAttached.current = true
-      console.log('attached listener')
     }
     return () => {
-      if (container && !scrollListenerAttached.current) {
-        console.log('removing listener')
+      if (container && scrollListenerAttached.current) {
         container.removeEventListener('scroll', handleScroll)
         scrollListenerAttached.current = false
       }
