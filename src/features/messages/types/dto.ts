@@ -40,3 +40,10 @@ export interface SendMessageRequestDTO {
   recipientId: string
   message: string
 }
+
+export interface CreateMeetingResponseDTO {
+  message: string
+  joinUrl: string
+  startUrl: string
+  status: number
+}

@@ -1,15 +1,32 @@
 import React from 'react'
 import Image from 'next/image'
 import { useCall } from '@/shared/provider'
+import { useWebSocket } from '@/shared/provider'
 
 const CallModal = () => {
-  const { callStatus, meetingInfo, endCall, acceptCall } = useCall()
+  const { callStatus, callInfo, endCall, acceptCall } = useCall()
+  const websocketService = useWebSocket()
+
+  const handleCancelCall = () => {
+    websocketService.sendMessage('cancle_call')
+    endCall()
+  }
+
+  const handleAcceptCall = () => {
+    websocketService.sendMessage('accept_call')
+    acceptCall()
+  }
+
+  const handleDeclineCall = () => {
+    websocketService.sendMessage('decline_call')
+    endCall()
+  }
 
   if (callStatus === 'Idle') {
     return null // Don't render anything when idle
   }
 
-  if (meetingInfo === null) {
+  if (callInfo === null) {
     alert('Meeting Info invalid, please check it again')
     return null
   }
@@ -24,8 +41,8 @@ const CallModal = () => {
         <div className="flex justify-center mb-4">
           <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-200">
             <Image
-              src={meetingInfo.otherPersonAvatarUrl}
-              alt={meetingInfo.otherPersonName}
+              src={callInfo.otherPersonAvatarUrl}
+              alt={callInfo.otherPersonName}
               width={96}
               height={96}
             />
@@ -33,7 +50,7 @@ const CallModal = () => {
         </div>
         {/* Name */}
         <h2 className="text-xl font-semibold text-gray-800 mb-2">
-          {meetingInfo.otherPersonName}
+          {callInfo.otherPersonName}
         </h2>
         <p className="text-gray-500 text-sm mb-6">
           {isIncoming ? 'Incoming Call' : 'Calling...'}
@@ -42,13 +59,13 @@ const CallModal = () => {
         {isIncoming && (
           <div className="flex justify-around">
             <button
-              onClick={endCall}
+              onClick={handleDeclineCall}
               className="bg-red-600 text-white px-4 py-2 rounded-full shadow hover:bg-red-700"
             >
               Decline
             </button>
             <button
-              onClick={acceptCall}
+              onClick={handleAcceptCall}
               className="bg-green-600 text-white px-4 py-2 rounded-full shadow hover:bg-green-700"
             >
               Accept
@@ -57,7 +74,7 @@ const CallModal = () => {
         )}
         {isOutgoing && (
           <button
-            onClick={endCall}
+            onClick={handleCancelCall}
             className="bg-red-600 text-white px-4 py-2 rounded-full shadow hover:bg-red-700 w-full"
           >
             Cancel Call

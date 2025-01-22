@@ -39,7 +39,7 @@ class WebSocketService {
     }
   }
 
-  sendMessage(type: string, payload: any) {
+  sendMessage(type: string, payload?: any) {
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
       this.ws.send(JSON.stringify({ type, ...payload }))
     } else {

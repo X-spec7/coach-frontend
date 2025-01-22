@@ -1,6 +1,5 @@
 import authorizedHttpServer from '@/shared/services/authorizedHttp'
 import { GetContactsResponseDTO, SearchUserRequestDTO, SearchUserResponseDTO } from '../types'
-import { propTypesOffset } from '@material-tailwind/react/types/components/menu'
 
 class ContactService {
   getContacts = async (): Promise<GetContactsResponseDTO> => {

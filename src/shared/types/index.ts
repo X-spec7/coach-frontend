@@ -21,3 +21,4 @@ export type {
 export type { Progress } from './progress.type'
 export type { Trainer } from './trainer.type'
 export type { IUser } from './user.type'
+export type { ICallInfo } from './call.type'

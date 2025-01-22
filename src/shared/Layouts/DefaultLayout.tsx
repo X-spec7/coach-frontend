@@ -1,11 +1,44 @@
+'use client'
+
 import Sidebar from '@/shared/Layouts/Sidebar'
 import { CallModal } from '../components'
+import { useCall } from '../provider'
+import { useCallback, useEffect } from 'react'
+import { useWebSocket } from '../provider'
 
 export default function DefaultLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const { setIncomingCallInfo, endCall, callStatus } = useCall()
+  const websocketService = useWebSocket()
+
+  // <------------ REGISTER WEBSOCKET HANDLERS -------------->
+  // <------------ CALL WEBSOCKET HANDLERS -------------->
+  const handleIncomingCall = useCallback((data: any) => {
+    if (callStatus === 'Idle') {
+      if (data.callInfo) {
+        setIncomingCallInfo(data.callInfo)
+      } 
+    } else {
+      websocketService.sendMessage('busy')
+    }
+  }, [setIncomingCallInfo])
+
+  useEffect(() => {
+    websocketService.registerOnMessageHandler('incoming_call', handleIncomingCall)
+    websocketService.registerOnMessageHandler('call_cancelled', endCall)
+    websocketService.registerOnMessageHandler('call_declined', endCall)
+    websocketService.registerOnMessageHandler('busy', endCall)
+
+    return () => {
+      websocketService.unRegisterOnMessageHandler('incoming_call', handleIncomingCall)
+      websocketService.unRegisterOnMessageHandler('call_cancelled', endCall)
+      websocketService.unRegisterOnMessageHandler('call_declined', endCall)
+      websocketService.unRegisterOnMessageHandler('busy', endCall)
+    }
+  }, [handleIncomingCall, endCall])
 
   return (
     <>
