@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { ISvgProps } from '@/shared/types/common.type'
+import { ISvgProps } from '@/shared/types'
 
 const IdentificationBadge: React.FC<ISvgProps> = ({ width, height, color }) => {
   return (

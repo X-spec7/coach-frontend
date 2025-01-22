@@ -8,13 +8,13 @@ export interface ILayoutProps {
   children: React.ReactNode
 }
 
-export interface Contact {
+export interface IContact {
   email?: string
   phone?: string
   address?: string
 }
 
-export interface PrimaryButtonProps {
+export interface IPrimaryButtonProps {
   width?: string
   height?: string
   title: string

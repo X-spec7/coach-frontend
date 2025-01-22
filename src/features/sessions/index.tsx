@@ -1,23 +1,14 @@
 'use client'
 
 import React from 'react'
-import { useSelector } from 'react-redux'
 import { useSearchParams } from 'next/navigation'
 
-import { selectUser } from '../user/slice/userSlice'
 import ClientSessionsListPage from './pages/list/client'
 import CoachSessionsListPage from './pages/list/coach'
 import SharedLayout from '@/shared/Layouts/SharedLayout'
-
-interface ISessionsListPageProps {
-  query: string
-  currentPage: number
-  goal: string
-  booked: boolean
-}
+import { useAuth } from '@/shared/provider'
 
 const SessionsListPage:React.FC = () => {
-  const user = useSelector(selectUser)
   
   const searchParams = useSearchParams()
   const query = searchParams.get('query') || ''
@@ -25,7 +16,10 @@ const SessionsListPage:React.FC = () => {
   const goal = searchParams.get('goal') || ''
   const booked = !!searchParams.get('booked')
 
-  if (user.userType === 'Client') {
+  const { user } = useAuth()
+
+  // Assertion is fine cause it is checked in Layout
+  if (user!.userType === 'Client') {
     return (
       <SharedLayout
         headerTitle='Sessions Page'

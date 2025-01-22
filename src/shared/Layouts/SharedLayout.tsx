@@ -1,4 +1,4 @@
-import { ILayoutProps } from '../types/common.type'
+import { ILayoutProps } from '../types'
 import Footer from './Footer'
 import Header from './Header'
 

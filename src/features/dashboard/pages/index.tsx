@@ -1,21 +1,20 @@
 'use client'
 
-import { selectUser } from '@/features/user/slice/userSlice'
-
 import { Header, Footer } from '../../../shared/Layouts'
 import RightSideBar from './RightSideBar'
 import DashboardContent from './DashboardContent'
-import { useSelector } from 'react-redux'
+import { useAuth } from '@/shared/provider'
 
 const Dashboard = () => {
-  const user = useSelector(selectUser)
+  const { user, login } = useAuth()
   
   return (
     <div className="flex justify-between gap-4 p-4 h-full">
       <div className='flex flex-col flex-1'>
+        {/* user assertion is safe because it is checked in the layout */}
         <Header
           isDashboard
-          title={`Hello, ${user.firstName} ${user.lastName}!  👋`}
+          title={`Hello, ${user!.firstName} ${user!.lastName}!  👋`}
           description='Welcome and Let’s do some workout today!'
         />
 

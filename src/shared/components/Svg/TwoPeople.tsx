@@ -1,4 +1,4 @@
-import { ISvgProps } from '@/shared/types/common.type'
+import { ISvgProps } from '@/shared/types'
 
 const TwoPeople: React.FC<ISvgProps> = ({ width, height, color }) => {
   return (

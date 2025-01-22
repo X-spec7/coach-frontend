@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { ISvgProps } from '@/shared/types/common.type'
+import { ISvgProps } from '@/shared/types'
 
 const FootPrintSvg: React.FC<ISvgProps> = ({width, height, color}) => {
   return (

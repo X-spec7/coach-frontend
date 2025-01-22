@@ -1,15 +1,23 @@
 export type {
-  Class as Class,
-  ClassCategory as ClassCategory,
-  ClassLevel as ClassLevel,
+  Class,
+  ClassCategory,
+  ClassLevel,
 } from './class.type'
 
 export type {
-  Meal as Meal,
-  Nutrition as Nutrition,
-  MealDifficulty as MealDifficulty,
-  MealTime as MealTime,
+  Meal,
+  Nutrition,
+  MealDifficulty,
+  MealTime,
 } from './meal.type'
 
-export type { Progress as Progress } from './progress.type'
-export type { Trainer as Trainer } from './trainer.type'
+export type {
+  ISvgProps,
+  ILayoutProps,
+  IContact,
+  IPrimaryButtonProps,
+} from './common.type'
+
+export type { Progress } from './progress.type'
+export type { Trainer } from './trainer.type'
+export type { IUser } from './user.type'

@@ -1,4 +1,4 @@
-import { ILayoutProps } from '@/shared/types/common.type'
+import { ILayoutProps } from '@/shared/types'
 import SharedLayout from '@/shared/Layouts/SharedLayout'
 
 const Layout: React.FC<ILayoutProps> = ({ children }) => {

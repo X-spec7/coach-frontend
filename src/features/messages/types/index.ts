@@ -1,5 +1,5 @@
 export type { IMessage as IMessage } from './message'
-export type { IContactUser as IContactUser } from './contact'
+export type { IContactUser, ISearchedUser } from './contact'
 export type {
   GetMessagesByUserIdRequestDTO,
   GetMessagesByUserIdResponseDTO,

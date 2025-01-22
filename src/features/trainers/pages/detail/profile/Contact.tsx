@@ -1,6 +1,6 @@
 import { EnvelopOpenSvg, PhoneSvg, HouseSvg } from '@/shared/components/Svg'
 import { TitleWithEllipsis } from '@/shared/components'
-import { ILayoutProps } from '@/shared/types/common.type'
+import { ILayoutProps } from '@/shared/types'
 
 interface IContact {
   email?: string

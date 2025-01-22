@@ -1,5 +1,5 @@
 import { Class } from './class.type'
-import { Contact } from './common.type'
+import { IContact } from './common.type'
 
 export interface ICertification {
   title: string
@@ -22,7 +22,7 @@ export interface Trainer {
   members?: number
   rating?: number
   classes?: Class[]
-  contact?: Contact
+  contact?: IContact
   certification?: ICertification[]
   expertise?: string
   reviews?: IReview[]

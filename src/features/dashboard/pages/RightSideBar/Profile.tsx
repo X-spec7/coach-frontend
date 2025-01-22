@@ -4,9 +4,8 @@ import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { TitleWithEllipsis } from '@/shared/components'
-import { selectUser } from '@/features/user/slice/userSlice'
-import { useSelector } from 'react-redux'
 import { BACKEND_HOST_URL } from '@/shared/constants'
+import { useAuth } from '@/shared/provider'
 
 interface ProfileProps {
   fullname: string
@@ -51,9 +50,9 @@ const ProfileDetail: React.FC<ProfileDetailProps> = ({ label, value }) => {
 const profileAvatarUrl = '/images/user/user-01.png'
 
 const Profile: React.FC<ProfileProps> = ({ fullname, level, number, weight, height, age }) => {
+  const { user } = useAuth()
   const router = useRouter()
 
-  const user = useSelector(selectUser)
 
   const onLogout = () => {
     localStorage.removeItem("access_token")
@@ -83,11 +82,11 @@ const Profile: React.FC<ProfileProps> = ({ fullname, level, number, weight, heig
       <div className='flex justify-center items-center gap-4'>
         {!isUserLoaded ? (
           <div className='h-9 w-9 bg-gray-300 animate-pulse rounded-full'></div>
-        ) : (user.profilePicture ? (
+        ) : (user?.avatarImageUrl ? (
           <Image
             width={36}
             height={36}
-            src={BACKEND_HOST_URL + user.profilePicture}
+            src={BACKEND_HOST_URL + user.avatarImageUrl}
             style={{
               width: 'auto',
               height: 'auto',
@@ -108,8 +107,9 @@ const Profile: React.FC<ProfileProps> = ({ fullname, level, number, weight, heig
           />
         ))}
 
+        {/* Assertion is Okay, cause it is checked in the layout */}
         <div>
-          <h4 className='text-lg text-black font-medium'>{user.firstName} {user.lastName}</h4>
+          <h4 className='text-lg text-black font-medium'>{user!.firstName} {user!.lastName}</h4>
           {/* TODO: add svg images here */}
           <div className='flex justify-start items-center gap-1 text-gray-20 text-xs'>
             <p>{level}</p>
