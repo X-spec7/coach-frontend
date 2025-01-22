@@ -8,17 +8,26 @@ const CallModal = () => {
   const websocketService = useWebSocket()
 
   const handleCancelCall = () => {
-    websocketService.sendMessage('cancle_call')
+    const payload = {
+      otherPersonId: callInfo?.otherPersonId
+    }
+    websocketService.sendMessage('cancle_call', payload)
     endCall()
   }
 
   const handleAcceptCall = () => {
-    websocketService.sendMessage('accept_call')
+    const payload = {
+      otherPersonId: callInfo?.otherPersonId
+    }
+    websocketService.sendMessage('accept_call', payload)
     acceptCall()
   }
 
   const handleDeclineCall = () => {
-    websocketService.sendMessage('decline_call')
+    const payload = {
+      otherPersonId: callInfo?.otherPersonId
+    }
+    websocketService.sendMessage('decline_call', payload)
     endCall()
   }
 

@@ -176,6 +176,7 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId }) => {
     
     if (response.status === 201) {
       const outgoingCallInfo: ICallInfo = {
+        otherPersonId: currentChatUserId!,
         meetingLink: response.startUrl,
         otherPersonName: otherPersonName,
         otherPersonAvatarUrl: otherPersonAvatarUrl,
@@ -183,6 +184,7 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId }) => {
       setOutgoingCallInfo(outgoingCallInfo)
 
       const initiateCallInfo: ICallInfo = {
+        otherPersonId: currentChatUserId!,
         meetingLink: response.joinUrl,
         otherPersonAvatarUrl: otherPersonAvatarUrl,
         otherPersonName: otherPersonName,

@@ -1,17 +1,16 @@
 'use client'
+import { useCallback, useEffect } from 'react'
 
 import Sidebar from '@/shared/Layouts/Sidebar'
 import { CallModal } from '../components'
-import { useCall } from '../provider'
-import { useCallback, useEffect } from 'react'
-import { useWebSocket } from '../provider'
+import { useCall, useWebSocket } from '../provider'
 
 export default function DefaultLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const { setIncomingCallInfo, endCall, callStatus } = useCall()
+  const { setIncomingCallInfo, endCall, callStatus, callInfo } = useCall()
   const websocketService = useWebSocket()
 
   // <------------ REGISTER WEBSOCKET HANDLERS -------------->
@@ -22,7 +21,10 @@ export default function DefaultLayout({
         setIncomingCallInfo(data.callInfo)
       } 
     } else {
-      websocketService.sendMessage('busy')
+      const payload = {
+        otherPersonId: data.callInfo.otherPersonId
+      }
+      websocketService.sendMessage('busy', payload)
     }
   }, [setIncomingCallInfo])
 
