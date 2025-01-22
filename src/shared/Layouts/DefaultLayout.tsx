@@ -30,12 +30,15 @@ export default function DefaultLayout({
 
   useEffect(() => {
     websocketService.registerOnMessageHandler('incoming_call', handleIncomingCall)
+    // Currently accept calls endCall
+    websocketService.registerOnMessageHandler('accept_call', endCall)
     websocketService.registerOnMessageHandler('call_cancelled', endCall)
     websocketService.registerOnMessageHandler('call_declined', endCall)
     websocketService.registerOnMessageHandler('busy', endCall)
 
     return () => {
       websocketService.unRegisterOnMessageHandler('incoming_call', handleIncomingCall)
+      websocketService.unRegisterOnMessageHandler('accept_call', endCall)
       websocketService.unRegisterOnMessageHandler('call_cancelled', endCall)
       websocketService.unRegisterOnMessageHandler('call_declined', endCall)
       websocketService.unRegisterOnMessageHandler('busy', endCall)
