@@ -1,4 +1,5 @@
 import Sidebar from '@/shared/Layouts/Sidebar'
+import { CallModal } from '../components'
 
 export default function DefaultLayout({
   children,
@@ -8,7 +9,7 @@ export default function DefaultLayout({
 
   return (
     <>
-      <div className='flex w-full min-h-screen bg-gray-bg'>
+      <div className='relative flex w-full min-h-screen bg-gray-bg'>
         {/* <!-- ===== Sidebar Start ===== --> */}
         <Sidebar />
         {/* <!-- ===== Sidebar End ===== --> */}
@@ -24,6 +25,9 @@ export default function DefaultLayout({
           </main>
         </div>
         {/* <!-- ===== Content Area End ===== --> */}
+
+        {/* <!-- ===== Call Dialog ===== --> */}
+        <CallModal />
       </div>
     </>
   )

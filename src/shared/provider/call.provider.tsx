@@ -29,7 +29,6 @@ type Action =
   | { type: 'OUTGOING_CALL', payload: IMeetingInfo }
   | { type: 'INCOMING_CALL', payload: IMeetingInfo }
   | { type: 'CALL_ENDED' }
-  | { type: 'CALL_REJECTED' }
   | { type: 'CALL_ACCEPTED' }
 
 function callReducer(state: State, action: Action): State {
@@ -38,10 +37,8 @@ function callReducer(state: State, action: Action): State {
       return { callStatus: 'Outgoing', meetingInfo: action.payload }
     case 'INCOMING_CALL':
       return { callStatus: 'Incoming', meetingInfo: action.payload }
-    // TODO: check if this case can exist
+    // use for canceling, rejecting
     case 'CALL_ENDED':
-      return { callStatus: 'Idle', meetingInfo: null}
-    case 'CALL_REJECTED':
       return { callStatus: 'Idle', meetingInfo: null}
     // set to idle because of the impossibility of detecting ending call cause the app is using external zoom service
     // call status just reflects app's status, not user's status
@@ -51,10 +48,10 @@ function callReducer(state: State, action: Action): State {
 }
 
 interface CallContextType extends State {
-  incomingCall: (meetingInfo: IMeetingInfo) => void
-  outgoingCall: (meetingInfo: IMeetingInfo) => void
-  callRejected: () => void
-  callAccepted: () => void
+  setIncomingCallInfo: (meetingInfo: IMeetingInfo) => void
+  setOutgoingCallInfo: (meetingInfo: IMeetingInfo) => void
+  endCall: () => void
+  acceptCall: () => void
 }
 
 const CallContext = createContext<CallContextType | undefined>(undefined)
@@ -62,25 +59,25 @@ const CallContext = createContext<CallContextType | undefined>(undefined)
 export const CallProvider: React.FC<ILayoutProps> =({ children }) => {
   const [state, dispatch] = useReducer(callReducer, initialState)
 
-  const incomingCall = (meetingInfo: IMeetingInfo) => {
+  const setIncomingCallInfo = (meetingInfo: IMeetingInfo) => {
     dispatch({ type: 'INCOMING_CALL', payload: meetingInfo})
   }
-  const outgoingCall = (meetingInfo: IMeetingInfo) => {
+  const setOutgoingCallInfo = (meetingInfo: IMeetingInfo) => {
     dispatch({ type: 'OUTGOING_CALL', payload: meetingInfo})
   }
-  const callRejected = () => {
-    dispatch({ type: 'CALL_REJECTED' })
+  const endCall = () => {
+    dispatch({ type: 'CALL_ENDED' })
   }
-  const callAccepted = () => {
+  const acceptCall = () => {
     dispatch({ type: 'CALL_ACCEPTED' })
   }
 
   const value = useMemo(() => ({
     ...state,
-    incomingCall,
-    outgoingCall,
-    callRejected,
-    callAccepted,
+    setIncomingCallInfo,
+    setOutgoingCallInfo,
+    endCall,
+    acceptCall,
   }), [state])
 
   return <CallContext.Provider value={value}>{children}</CallContext.Provider>

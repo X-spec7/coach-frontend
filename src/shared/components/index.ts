@@ -8,6 +8,7 @@ export { default as Pagination } from './Pagination'
 export { default as Loader } from './Loader'
 export { default as Calendar } from './Calendar'
 export { default as Modal } from './Modal'
+export { default as CallModal } from './Modal/CallModal'
 
 export {
   PrimaryButton as PrimaryButton,
