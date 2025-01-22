@@ -1,6 +1,6 @@
 'use client'
 
-import { useReducer, useMemo, createContext, useContext, useEffect } from 'react'
+import { useReducer, useMemo, createContext, useContext, useEffect, useCallback } from 'react'
 import { ILayoutProps, IUser } from '../types'
 import useLocalStorage from '../hooks/useLocalStorage'
 
@@ -44,18 +44,19 @@ export const AuthProvider: React.FC<ILayoutProps> = ({ children }) => {
     if (cachedUser) {
       dispatch({type: 'LOGIN', payload: cachedUser})
     }
-  })
+  }, [cachedUser])
 
-  const login = (user: IUser) => {
+  const login = useCallback((user: IUser) => {
     setCachedUser(user)
     dispatch({ type: 'LOGIN', payload: user }) 
-  }
-  const logout = () => {
+  }, [setCachedUser])
+
+  const logout = useCallback(() => {
     setCachedUser(null)
     dispatch({ type: 'LOGOUT' })
-  }
+  }, [setCachedUser])
 
-  const value = useMemo(() => ({ ...state, login, logout }), [state])
+  const value = useMemo(() => ({ ...state, login, logout }), [state, login, logout])
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
