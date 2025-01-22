@@ -12,7 +12,7 @@ import { EllipsisMenu } from '@/shared/components'
 import { PhoneSvg, VideoCameraSvg, SidebarSimpleSvg } from '@/shared/components/Svg'
 import { meetingService, messageService } from '../service'
 import { BACKEND_HOST_URL } from '@/shared/constants'
-import { useCall, useWebSocket } from '@/shared/provider'
+import { useCall, useWebSocket, useAuth } from '@/shared/provider'
 
 const defaultAvatarUrl = '/images/user/user-09.png'
 
@@ -24,6 +24,7 @@ interface IChat {
 const Chat: React.FC<IChat> = ({ isShow, currentChatUserId }) => {
 
   const websocketService = useWebSocket()
+  const { user } = useAuth()
   const { setOutgoingCallInfo } = useCall()
   
   const chatRef = useRef<HTMLDivElement | null>(null)
@@ -186,8 +187,8 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId }) => {
       const initiateCallInfo: ICallInfo = {
         otherPersonId: currentChatUserId!,
         meetingLink: response.joinUrl,
-        otherPersonAvatarUrl: otherPersonAvatarUrl,
-        otherPersonName: otherPersonName,
+        otherPersonAvatarUrl: user!.avatarImageUrl ?? '',
+        otherPersonName: user!.firstName + user!.lastName,
       }
       websocketService.sendMessage('initiate_call', initiateCallInfo)
     } else {

@@ -1,4 +1,5 @@
 'use client'
+
 import { useCallback, useEffect } from 'react'
 
 import Sidebar from '@/shared/Layouts/Sidebar'
@@ -10,7 +11,7 @@ export default function DefaultLayout({
 }: {
   children: React.ReactNode
 }) {
-  const { setIncomingCallInfo, endCall, callStatus, callInfo } = useCall()
+  const { setIncomingCallInfo, endCall, callStatus, callInfo, handleCallAccepted } = useCall()
   const websocketService = useWebSocket()
 
   // <------------ REGISTER WEBSOCKET HANDLERS -------------->
@@ -26,21 +27,24 @@ export default function DefaultLayout({
       }
       websocketService.sendMessage('busy', payload)
     }
-  }, [setIncomingCallInfo])
+  }, [setIncomingCallInfo, websocketService, callStatus])
 
   useEffect(() => {
     websocketService.registerOnMessageHandler('incoming_call', handleIncomingCall)
+    // Currently accept calls endCall
+    websocketService.registerOnMessageHandler('call_accepted', handleCallAccepted)
     websocketService.registerOnMessageHandler('call_cancelled', endCall)
     websocketService.registerOnMessageHandler('call_declined', endCall)
     websocketService.registerOnMessageHandler('busy', endCall)
 
     return () => {
       websocketService.unRegisterOnMessageHandler('incoming_call', handleIncomingCall)
+      websocketService.unRegisterOnMessageHandler('call_accepted', handleCallAccepted)
       websocketService.unRegisterOnMessageHandler('call_cancelled', endCall)
       websocketService.unRegisterOnMessageHandler('call_declined', endCall)
       websocketService.unRegisterOnMessageHandler('busy', endCall)
     }
-  }, [handleIncomingCall, endCall])
+  }, [handleIncomingCall, endCall, websocketService, handleCallAccepted])
 
   return (
     <>

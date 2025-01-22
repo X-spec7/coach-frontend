@@ -24,8 +24,8 @@ class AuthService {
     return httpPublic
       .post('/authentication/login/', payload)
       .then((response) => {
-        if (response.data.result.token) {
-          tokenService.setLocalAccessToken(response.data.result.token)
+        if (response.data.token) {
+          tokenService.setLocalAccessToken(response.data.token)
         }
         return {
           ...response.data,

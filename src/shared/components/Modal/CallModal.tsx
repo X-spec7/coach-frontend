@@ -2,6 +2,9 @@ import React from 'react'
 import Image from 'next/image'
 import { useCall } from '@/shared/provider'
 import { useWebSocket } from '@/shared/provider'
+import { BACKEND_HOST_URL } from '@/shared/constants'
+
+const defaultAvatarUrl = '/images/user/user-09.png'
 
 const CallModal = () => {
   const { callStatus, callInfo, endCall, acceptCall } = useCall()
@@ -42,6 +45,7 @@ const CallModal = () => {
 
   const isOutgoing = callStatus === 'Outgoing'
   const isIncoming = callStatus === 'Incoming'
+  const isAccepted = callStatus === 'Accepted'
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -49,12 +53,22 @@ const CallModal = () => {
         {/* Avatar */}
         <div className="flex justify-center mb-4">
           <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-200">
-            <Image
-              src={callInfo.otherPersonAvatarUrl}
-              alt={callInfo.otherPersonName}
-              width={96}
-              height={96}
-            />
+            {callInfo.otherPersonAvatarUrl && callInfo.otherPersonAvatarUrl !== '' ? (
+              <Image
+                src={BACKEND_HOST_URL + callInfo.otherPersonAvatarUrl}
+                alt={callInfo.otherPersonName}
+                width={96}
+                height={96}
+              />
+            ) : (
+              <Image
+                src={defaultAvatarUrl}
+                alt={callInfo.otherPersonName}
+                width={96}
+                height={96}
+              />
+            )}
+            
           </div>
         </div>
         {/* Name */}
@@ -62,33 +76,43 @@ const CallModal = () => {
           {callInfo.otherPersonName}
         </h2>
         <p className="text-gray-500 text-sm mb-6">
-          {isIncoming ? 'Incoming Call' : 'Calling...'}
+          {isIncoming && 'Incoming Call'}
+          {isOutgoing && 'Calling...'}
+          {isAccepted && 'Call accepted, click the button to join'}
         </p>
         {/* Buttons */}
         {isIncoming && (
           <div className="flex justify-around">
             <button
               onClick={handleDeclineCall}
-              className="bg-red-600 text-white px-4 py-2 rounded-full shadow hover:bg-red-700"
+              className="bg-red-30 text-white px-8 py-2 rounded-full shadow hover:bg-red-600"
             >
               Decline
             </button>
             <button
               onClick={handleAcceptCall}
-              className="bg-green-600 text-white px-4 py-2 rounded-full shadow hover:bg-green-700"
+              className="bg-green-dark text-white px-8 py-2 rounded-full shadow hover:bg-green-500"
             >
               Accept
             </button>
           </div>
         )}
-        {isOutgoing && (
+        {isOutgoing && 
           <button
             onClick={handleCancelCall}
-            className="bg-red-600 text-white px-4 py-2 rounded-full shadow hover:bg-red-700 w-full"
+            className="bg-red-30 text-white px-4 py-2 rounded-full shadow hover:bg-red-700 w-full"
           >
             Cancel Call
           </button>
-        )}
+        }
+        {callStatus === 'Accepted' &&
+          <button
+          onClick={acceptCall}
+          className="bg-green-dark text-white px-4 py-2 rounded-full shadow hover:bg-red-700 w-full"
+          >
+            Join Meeting
+          </button>
+        }
       </div>
     </div>
   )
