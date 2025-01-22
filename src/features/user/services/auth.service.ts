@@ -1,8 +1,12 @@
 import httpPublic from '@/shared/services/httpPublic'
-
 import tokenService from './token.service'
-import { LoginPayloadDTO, RegisterPayloadDTO } from '../types'
-import { LoginResponseDTO, RegisterResponseDTO } from '../types/auth.dto'
+
+import {
+  LoginPayloadDTO,
+  RegisterPayloadDTO,
+  LoginResponseDTO,
+  RegisterResponseDTO,
+} from '../types'
 
 class AuthService {
   async register(payload: RegisterPayloadDTO): Promise<RegisterResponseDTO> {

@@ -10,9 +10,7 @@ import { IMessage } from '../types'
 import { ILayoutProps } from '@/shared/types'
 import { EllipsisMenu } from '@/shared/components'
 import { PhoneSvg, VideoCameraSvg, SidebarSimpleSvg } from '@/shared/components/Svg'
-import { selectUser } from '@/features/user/slice/userSlice'
 import { messageService } from '../service'
-import { useSelector } from 'react-redux'
 import { BACKEND_HOST_URL, WS_API_BASE_URL } from '@/shared/constants'
 import { useWebSocket } from '@/shared/provider'
 
@@ -27,8 +25,6 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId }) => {
 
   const websocketService = useWebSocket()
   
-  const myself = useSelector(selectUser)
-
   const chatRef = useRef<HTMLDivElement | null>(null)
   const hasMoreRef = useRef<boolean>(false)
 

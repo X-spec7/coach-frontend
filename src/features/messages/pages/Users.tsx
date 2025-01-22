@@ -3,18 +3,17 @@
 import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
-import { useSelector } from 'react-redux'
 
+import { contactService } from '../service'
+import { useAuth } from '@/shared/provider'
 import { SearchField } from '@/shared/components'
 import { BACKEND_HOST_URL } from '@/shared/constants'
-import { selectUser } from '@/features/user/slice/userSlice'
 import { get12HourTimeFromDateObject, getDateFromDateObject } from '@/shared/utils'
-import { contactService } from '../service'
 import {
   IContactUser,
-  SearchUserRequestDTO
+  SearchUserRequestDTO,
+  ISearchedUser
 } from '../types'
-import { ISearchedUser } from '../types/contact'
 
 interface IUsers {
   isShow: boolean
@@ -29,7 +28,8 @@ const Users: React.FC<IUsers> = ({ isShow, setCurrentChatUserId, currentChatUser
   const query: string | null = searchParams.get('query')
   const page: string | null = searchParams.get('page')
 
-  const myself = useSelector(selectUser)
+  const { user } = useAuth()
+
 
   const [contactUsers, setContactUsers] = useState<IContactUser[]>([])
   const [searchedUsers, setSearchedUsers] = useState<ISearchedUser[]>([])
@@ -56,8 +56,8 @@ const Users: React.FC<IUsers> = ({ isShow, setCurrentChatUserId, currentChatUser
 
     const response = await contactService.searchUsers(payload)
 
-    if (myself && myself.id) {
-      const filteredUsers = response.users.filter(user => user.id !== myself.id!)
+    if (user && user.id) {
+      const filteredUsers = response.users.filter(filterUser => filterUser.id !== user.id!)
       setSearchedUsers(filteredUsers)
     }
   }

@@ -1,21 +1,31 @@
 import authorizedHttpServer from '@/shared/services/authorizedHttp'
 
-import { ProfilePayloadDTO } from '../types'
+import {
+  UpdateProfilePayloadDTO,
+  GetProfileResponseDTO,
+  UpdateProfileResponseDTO,
+} from '../types'
 
 class ProfileService {
-  async updateProfile(payload: ProfilePayloadDTO) {
+  async updateProfile(payload: UpdateProfilePayloadDTO): Promise<UpdateProfileResponseDTO> {
     return authorizedHttpServer
       .post('/authentication/profile/update/', payload)
       .then((response) => {
-        return response
+        return {
+          status: response.status,
+          ...response.data,
+        }
       })
   }
 
-  async getProfile() {
+  async getProfile(): Promise<GetProfileResponseDTO> {
     return authorizedHttpServer
       .get('/authentication/profile/get/')
       .then((response) => {
-        return response
+        return {
+          status: response.status,
+          ...response.data,
+        }
       })
   }
 }

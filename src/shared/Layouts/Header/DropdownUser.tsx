@@ -1,32 +1,23 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useSelector } from 'react-redux'
 import ClickOutside from '@/shared/components/ClickOutside'
-import { selectUser } from '@/features/user/slice/userSlice'
 import { BACKEND_HOST_URL } from '@/shared/constants'
+import { useAuth } from '@/shared/provider'
 
 const DropdownUser = () => {
   const router = useRouter()
-
-  const user = useSelector(selectUser)
+  const { user } = useAuth()
 
   const [dropdownOpen, setDropdownOpen] = useState(false)
-  const [isUserLoaded, setIsUserLoaded] = useState(false)
 
   const onLogout = () => {
     localStorage.removeItem("access_token")
     router.push('/signin')
   }
-
-  useEffect(() => {
-    if (user.firstName !== '') {
-      setIsUserLoaded(true)
-    }
-  }, [user])
 
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className='relative'>
@@ -37,7 +28,27 @@ const DropdownUser = () => {
       >
 
         <span className='h-9 w-9 rounded-full'>
-          {!isUserLoaded ? (
+          {
+            user?.avatarImageUrl && user.avatarImageUrl !== '' ? (
+              <Image
+                width={36}
+                height={36}
+                src={BACKEND_HOST_URL + user.avatarImageUrl}
+                style={{ width: 'auto', height: 'auto' }}
+                alt='User'
+                className='rounded-full'
+              />
+            ) : (
+              <Image
+                width={36}
+                height={36}
+                src={'/images/user/user-01.png'}
+                style={{ width: 'auto', height: 'auto', }}
+                alt='User'
+              />
+            )
+          }
+          {/* {!isUserLoaded ? (
             <div className='h-full w-full bg-gray-300 animate-pulse rounded-full'></div>
           ) : (user.profilePicture ? (
             <Image
@@ -62,12 +73,12 @@ const DropdownUser = () => {
               }}
               alt='User'
             />
-          ))}
+          ))} */}
         </span>
 
         <span className='hidden text-right lg:block'>
           <span className='block text font-medium text-gray-30'>
-            {user.firstName} {user.lastName}
+            {user!.firstName} {user!.lastName}
           </span>
         </span>
 

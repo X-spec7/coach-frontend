@@ -1,54 +1,39 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useSelector } from 'react-redux'
 
-import { useAppDispatch } from '@/redux/hook'
 import { DefaultLayout } from '@/shared/Layouts'
-import Loader from '@/shared/components/Loader'
 import { ILayoutProps } from '@/shared/types'
-import { getProfileAsync, selectUser } from '@/features/user/slice/userSlice'
 import { WebSocketProvider } from '@/shared/provider'
+import { useAuth } from '@/shared/provider'
+import { Loader } from '@/shared/components'
+import { profileService } from '@/features/user/services'
 
 const Layout: React.FC<ILayoutProps> = ({ children }) => {
   const router = useRouter()
-  const user = useSelector(selectUser)
-  
-  const dispatch = useAppDispatch()
 
-  useEffect(() => {
-    dispatch(getProfileAsync())
-  }, [dispatch])
-
-  const [isUserProfileLoaded, setIsUserProfileLoaded] = useState(() => !!(user && user.firstName !== ''))
-
-  useEffect(() => {
-    setIsUserProfileLoaded(!!(user && user.id && user.firstName !== ''))
-  }, [user])
-
-  const [token, setToken] = useState<string | null>()
+  const { user, login } = useAuth()
 
   useEffect(() => {
     const token = localStorage.getItem('access_token')
-    setToken(token)
     if (!token) {
       router.push('/signin')
     }
+
   }, [router])
 
-  if (token === null) {
-    return (
-      <></>
-    )
-  }
-
-  if (!isUserProfileLoaded) {
-    dispatch(getProfileAsync())
-    
-    return (
-      <Loader />
-    )
+  if (!user) {
+    profileService.getProfile()
+      .then((res) => {
+        if (res.status === 200) {
+          login(res.user)
+        } else {
+          // TODO: update exception handling
+          alert('Something went wrong')
+        }
+      })
+    return <Loader />
   }
 
   return (

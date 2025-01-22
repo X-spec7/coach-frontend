@@ -1,21 +1,20 @@
-export interface ProfilePayloadDTO {
-  first_name: string
-  last_name: string
-  address: string
-  phone_number: string
-  years_of_experience: number
-  specialization: string
-  avatar_image: any
-  banner_image: any
-}
+import { IUser } from '@/shared/types'
 
-export interface ProfilePayloadType {
+export interface UpdateProfilePayloadDTO {
   firstName: string
   lastName: string
   address: string
   phoneNumber: string
   yearsOfExperience: number
-  specialization: number
+  specialization: string
   avatarImage: any
   bannerImage: any
 }
+
+export interface GetProfileResponseDTO {
+  message: string
+  user: IUser
+  status: number
+}
+
+export interface UpdateProfileResponseDTO extends GetProfileResponseDTO {}
