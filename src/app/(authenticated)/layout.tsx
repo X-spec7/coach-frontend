@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 
 import { DefaultLayout } from '@/shared/Layouts'
 import { ILayoutProps } from '@/shared/types'
-import { WebSocketProvider } from '@/shared/provider'
+import { WebSocketProvider, CallProvider } from '@/shared/provider'
 import { useAuth } from '@/shared/provider'
 import { Loader } from '@/shared/components'
 import { profileService } from '@/features/user/services'
@@ -37,11 +37,13 @@ const Layout: React.FC<ILayoutProps> = ({ children }) => {
   }
 
   return (
-    <DefaultLayout>
-      <WebSocketProvider userId={user.id!}>
-        {children}
-      </WebSocketProvider>
-    </DefaultLayout>
+    <WebSocketProvider userId={user.id!}>
+      <CallProvider>
+        <DefaultLayout>
+          {children}
+        </DefaultLayout>
+      </CallProvider>
+    </WebSocketProvider>
   )
 }
 

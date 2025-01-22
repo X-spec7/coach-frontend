@@ -7,12 +7,12 @@ import ChatItem from './ChatItem'
 import MessageTypeBox from './MessageTypeBox'
 
 import { IMessage } from '../types'
-import { ILayoutProps } from '@/shared/types'
+import { ICallInfo, ILayoutProps } from '@/shared/types'
 import { EllipsisMenu } from '@/shared/components'
 import { PhoneSvg, VideoCameraSvg, SidebarSimpleSvg } from '@/shared/components/Svg'
-import { messageService } from '../service'
-import { BACKEND_HOST_URL, WS_API_BASE_URL } from '@/shared/constants'
-import { useWebSocket } from '@/shared/provider'
+import { meetingService, messageService } from '../service'
+import { BACKEND_HOST_URL } from '@/shared/constants'
+import { useCall, useWebSocket } from '@/shared/provider'
 
 const defaultAvatarUrl = '/images/user/user-09.png'
 
@@ -24,6 +24,7 @@ interface IChat {
 const Chat: React.FC<IChat> = ({ isShow, currentChatUserId }) => {
 
   const websocketService = useWebSocket()
+  const { setOutgoingCallInfo } = useCall()
   
   const chatRef = useRef<HTMLDivElement | null>(null)
   const hasMoreRef = useRef<boolean>(false)
@@ -32,8 +33,6 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId }) => {
   const [otherPersonName, setOtherPersonName] = useState('')
   const [otherPersonAvatarUrl, setOtherPersonAvatarUrl] = useState('')
   const [messages, setMessages] = useState<IMessage[]>([])
-  
-  const webSocketRef = useRef<WebSocket | null>(null)
 
   const offsetRef = useRef<number>(0)
   const previousScrollHeightRef = useRef(0)
@@ -171,6 +170,30 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId }) => {
       alert('WebSocket is disconnected. Please check your connection.')
     }
   }
+
+  const startCall = async  () => {
+    const response = await meetingService.createMeeting()
+    
+    if (response.status === 201) {
+      const outgoingCallInfo: ICallInfo = {
+        otherPersonId: currentChatUserId!,
+        meetingLink: response.startUrl,
+        otherPersonName: otherPersonName,
+        otherPersonAvatarUrl: otherPersonAvatarUrl,
+      }
+      setOutgoingCallInfo(outgoingCallInfo)
+
+      const initiateCallInfo: ICallInfo = {
+        otherPersonId: currentChatUserId!,
+        meetingLink: response.joinUrl,
+        otherPersonAvatarUrl: otherPersonAvatarUrl,
+        otherPersonName: otherPersonName,
+      }
+      websocketService.sendMessage('initiate_call', initiateCallInfo)
+    } else {
+      alert('Failed to create meeting, please try again')
+    }
+  }
   
   if (currentChatUserId === null || currentChatUserId === undefined) {
     return (
@@ -223,10 +246,10 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId }) => {
           </div>
         </div>
         <div className='flex justify-end items-center gap-2.5'>
-          <SvgWrapper>
+          <SvgWrapper onClick={startCall}>
             <PhoneSvg width='20' height='20' color='#4D5260' />
           </SvgWrapper>
-          <SvgWrapper>
+          <SvgWrapper onClick={startCall}>
             <VideoCameraSvg width='20' height='20' color='#4D5260' />
           </SvgWrapper>
           <SvgWrapper>
@@ -254,9 +277,16 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId }) => {
   )
 }
 
-const SvgWrapper: React.FC<ILayoutProps> = ({ children }) => {
+interface ISvgWrapperProps extends ILayoutProps {
+  onClick?: () => void
+}
+
+const SvgWrapper: React.FC<ISvgWrapperProps> = ({ children, onClick }) => {
   return (
-    <div className='flex justify-center items-center w-9 h-9 bg-gray-bg-subtle rounded-full'>
+    <div
+      className='flex justify-center items-center w-9 h-9 bg-gray-bg-subtle rounded-full'
+      onClick={onClick}
+    >
       {children}
     </div>
   )
