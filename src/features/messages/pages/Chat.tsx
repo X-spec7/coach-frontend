@@ -187,7 +187,7 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId }) => {
       const initiateCallInfo: ICallInfo = {
         otherPersonId: currentChatUserId!,
         meetingLink: response.joinUrl,
-        otherPersonAvatarUrl: user!.avatarImageUrl!,
+        otherPersonAvatarUrl: user!.avatarImageUrl ?? '',
         otherPersonName: user!.firstName + user!.lastName,
       }
       websocketService.sendMessage('initiate_call', initiateCallInfo)
