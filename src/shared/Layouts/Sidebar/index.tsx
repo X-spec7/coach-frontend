@@ -2,12 +2,11 @@
 
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { setSidebarOpen, selectIsSidebarOpen } from '@/redux/globalAppSlice'
-import { useSelector, useDispatch } from 'react-redux'
 
 import SidebarItem from '@/shared/Layouts/Sidebar/SidebarItem'
 import { ClickOutside } from '@/shared/components'
 import useLocalStorage from '@/shared/hooks/useLocalStorage'
+import { useGlobalAppState } from '@/shared/provider'
 
 import { LogoutSvg } from './Svg'
 
@@ -56,13 +55,11 @@ const menuGroups = [
 ]
 
 const Sidebar = () => {
+  const { isSidebarOpen, toggleSidebar } = useGlobalAppState()
   const router = useRouter()
-  const dispatch = useDispatch()
-  
-  const isSidebarOpen = useSelector(selectIsSidebarOpen)
 
   const handleToggleSidebar = () => {
-    dispatch(setSidebarOpen(false))
+    toggleSidebar()
   }
   
   const [pageName, setPageName] = useLocalStorage('selectedMenu', 'dashboard')
