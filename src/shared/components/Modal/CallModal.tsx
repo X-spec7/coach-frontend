@@ -14,7 +14,7 @@ const CallModal = () => {
     const payload = {
       otherPersonId: callInfo?.otherPersonId
     }
-    websocketService.sendMessage('cancle_call', payload)
+    websocketService.sendMessage('cancel_call', payload)
     endCall()
   }
 
@@ -85,13 +85,13 @@ const CallModal = () => {
           <div className="flex justify-around">
             <button
               onClick={handleDeclineCall}
-              className="bg-red-30 text-white px-8 py-2 rounded-full shadow hover:bg-red-600"
+              className="bg-red-30 text-white px-12 py-2 rounded-full shadow hover:bg-red-600"
             >
               Decline
             </button>
             <button
               onClick={handleAcceptCall}
-              className="bg-green-dark text-white px-8 py-2 rounded-full shadow hover:bg-green-500"
+              className="bg-green-dark text-white px-12 py-2 rounded-full shadow hover:bg-green-600"
             >
               Accept
             </button>
@@ -108,7 +108,7 @@ const CallModal = () => {
         {callStatus === 'Accepted' &&
           <button
           onClick={acceptCall}
-          className="bg-green-dark text-white px-4 py-2 rounded-full shadow hover:bg-red-700 w-full"
+          className="bg-green-dark text-white px-4 py-2 rounded-full shadow hover:bg-green-600 w-full"
           >
             Join Meeting
           </button>
