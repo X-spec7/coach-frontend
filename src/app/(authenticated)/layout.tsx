@@ -5,10 +5,10 @@ import { useRouter } from 'next/navigation'
 
 import { DefaultLayout } from '@/shared/Layouts'
 import { ILayoutProps } from '@/shared/types'
-import { WebSocketProvider, CallProvider } from '@/shared/provider'
 import { useAuth } from '@/shared/provider'
 import { Loader } from '@/shared/components'
 import { profileService } from '@/features/user/services'
+import { AuthenticatedAppProvider } from '@/shared/provider'
 
 const Layout: React.FC<ILayoutProps> = ({ children }) => {
   const router = useRouter()
@@ -37,13 +37,11 @@ const Layout: React.FC<ILayoutProps> = ({ children }) => {
   }
 
   return (
-    <WebSocketProvider userId={user.id!}>
-      <CallProvider>
-        <DefaultLayout>
-          {children}
-        </DefaultLayout>
-      </CallProvider>
-    </WebSocketProvider>
+    <AuthenticatedAppProvider>
+      <DefaultLayout>
+        {children}
+      </DefaultLayout>
+    </AuthenticatedAppProvider>
   )
 }
 

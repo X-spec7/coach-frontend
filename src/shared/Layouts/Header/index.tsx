@@ -3,13 +3,12 @@
 import Link from 'next/link'
 import { useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { useDispatch, useSelector } from 'react-redux'
 
 import DropdownUser from './DropdownUser'
 import DropdownNotification from './DropdownNotification'
 import { SearchField } from '@/shared/components'
 import { BackButton } from '@/shared/components/Button'
-import { toggleSidebar, selectIsSidebarOpen } from '@/redux/globalAppSlice'
+import { useGlobalAppState } from '@/shared/provider'
 
 interface HeaderProps {
   isDashboard?: boolean
@@ -19,9 +18,8 @@ interface HeaderProps {
 }
 
 const Header = (props: HeaderProps) => {
-  const isSidebarOpen = useSelector(selectIsSidebarOpen)
+  const { isSidebarOpen, toggleSidebar } = useGlobalAppState()
 
-  const dispatch = useDispatch()
   const router = useRouter()
 
   const handleBack = useCallback(() => {
@@ -29,7 +27,7 @@ const Header = (props: HeaderProps) => {
   }, [router])
   
   const handleToggleSidebar = () => {
-    dispatch(toggleSidebar())
+    toggleSidebar()
   }
 
   return (

@@ -1,6 +1,6 @@
 'use client'
 
-import { useReducer, useMemo, createContext, useContext, useCallback, useRef } from 'react'
+import { useReducer, useMemo, createContext, useContext, useCallback } from 'react'
 import { ILayoutProps } from '../types'
 import { ICallInfo } from '../types'
 
@@ -8,14 +8,12 @@ type CallStatus = 'Idle' | 'Incoming' | 'Outgoing' | 'Busy' | 'Accepted'
 
 interface State {
   // unreadMessageCount: number
-  // isSidebarOpen: boolean
   callStatus: CallStatus
   callInfo: ICallInfo | null
 }
 
 const initialState: State = {
   // unreadMessageCount: 0,
-  // isSidebarOpen: false,
   callStatus: 'Idle',
   callInfo: null,
 }

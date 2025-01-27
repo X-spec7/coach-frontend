@@ -1,8 +1,5 @@
 'use client'
 
-import { Provider } from 'react-redux'
-import { createStore } from '@/redux/store'
-
 import 'jsvectormap/dist/jsvectormap.css'
 import 'flatpickr/dist/flatpickr.min.css'
 
@@ -13,18 +10,13 @@ import { ILayoutProps } from '@/shared/types'
 import { AuthProvider } from '@/shared/provider'
 
 const RootLayout: React.FC<ILayoutProps> = ({ children }) => {
-  const store = createStore()
 
   return (
     <html lang='en'>
       <body suppressHydrationWarning={true}>
-        <>
-          <Provider store={store}>
-            <AuthProvider>
-              {children}
-            </AuthProvider>
-          </Provider>
-        </>
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </body>
     </html>
   )
