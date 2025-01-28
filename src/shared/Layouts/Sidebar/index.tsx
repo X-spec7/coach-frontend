@@ -6,62 +6,23 @@ import Link from 'next/link'
 import SidebarItem from '@/shared/Layouts/Sidebar/SidebarItem'
 import { ClickOutside } from '@/shared/components'
 import useLocalStorage from '@/shared/hooks/useLocalStorage'
-import { useGlobalAppState } from '@/shared/provider'
+import { useAuth, useGlobalAppState } from '@/shared/provider'
+import { CLIENT_MENU_ITEMS, ADMIN_MENU_ITEMS } from '@/shared/constants'
 
 import { LogoutSvg } from './Svg'
-
-const menuGroups = [
-  {
-    name: 'MENU',
-    menuItems: [
-      {
-        label: 'Dashboard',
-        route: '/dashboard',
-      },
-      {
-        label: 'Statistics',
-        route: '/statistics',
-      },
-      {
-        label: 'Exercises',
-        route: '/exercises',
-      },
-      {
-        label: 'Schedule',
-        route: '/schedule',
-      },
-      {
-        label: 'Classes',
-        route: '/classes',
-      },
-      {
-        label: 'Sessions',
-        route: '/sessions',
-      },
-      {
-        label: 'Trainers',
-        route: '/trainers',
-      },
-      {
-        label: 'Messages',
-        route: '/messages',
-      },
-      {
-        label: 'Meal Plan',
-        route: '/meal-plan',
-      },
-    ],
-  },
-]
 
 const Sidebar = () => {
   const { isSidebarOpen, toggleSidebar } = useGlobalAppState()
   const router = useRouter()
 
+  const { user } = useAuth()
+
+  const menuItems = user?.isSuperuser ? ADMIN_MENU_ITEMS : CLIENT_MENU_ITEMS
+
   const handleToggleSidebar = () => {
     toggleSidebar()
   }
-  
+
   const [pageName, setPageName] = useLocalStorage('selectedMenu', 'dashboard')
 
   const onLogout = () => {
@@ -77,7 +38,7 @@ const Sidebar = () => {
           flex flex-col justify-between
           h-[calc(100%-32px)] box-border my-4 ml-4 px-4 py-8 w-55 lg:translate-x-0
           bg-white rounded-4xl max-lg:border-stroke max-lg:border-2
-          duration-200 ease-linear ${ isSidebarOpen ? "-translate-x-2" : "-translate-x-60"}`}
+          duration-200 ease-linear ${isSidebarOpen ? "-translate-x-2" : "-translate-x-60"}`}
       >
         <div>
           {/* <!-- SIDEBAR HEADER --> */}
@@ -114,7 +75,18 @@ const Sidebar = () => {
           <div className='no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear'>
             {/* <!-- Sidebar Menu --> */}
             <nav className='mt-5 lg:mt-6'>
-              {menuGroups.map((group, groupIndex) => (
+              <ul className='mb-8 flex flex-col gap-2'>
+                {menuItems.map((menuItem, menuIndex) => (
+                  <SidebarItem
+                    key={menuIndex}
+                    item={menuItem}
+                    pageName={pageName}
+                    setPageName={setPageName}
+                  />
+                ))}
+              </ul>
+
+              {/* {menuGroups.map((group, groupIndex) => (
                 <div key={groupIndex}>
                   <ul className='mb-8 flex flex-col gap-2'>
                     {group.menuItems.map((menuItem, menuIndex) => (
@@ -127,12 +99,12 @@ const Sidebar = () => {
                     ))}
                   </ul>
                 </div>
-              ))}
+              ))} */}
             </nav>
             {/* <!-- Sidebar Menu --> */}
           </div>
         </div>
-        
+
         <div>
           <div className='lg:flex lg:flex-col gap-4 p-4 bg-blue rounded-20 hidden'>
             <div className='h-8'>
