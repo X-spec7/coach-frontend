@@ -1,5 +1,3 @@
-'use client'
-
 import { useRouter } from 'next/navigation'
 import { useAuth } from '../provider'
 import { IUserRoleGuard } from '../types'
