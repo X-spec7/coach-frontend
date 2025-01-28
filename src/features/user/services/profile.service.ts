@@ -20,7 +20,7 @@ class ProfileService {
 
   async getProfile(): Promise<GetProfileResponseDTO> {
     return authorizedHttpServer
-      .get('/authentication/profile/get/')
+      .get('/users/profile/get/')
       .then((response) => {
         return {
           status: response.status,

@@ -1,13 +1,9 @@
 'use client'
 
-import { ChangeEvent, useEffect, useState } from 'react'
+import { ChangeEvent, useState } from 'react'
 import Image from 'next/image'
-import { useAppDispatch } from '@/redux/hook'
-import { getProfileAsync, updateProfileAsync } from '@/features/user/slice/userSlice'
-import { ProfilePayloadDTO } from '@/features/user/types'
 
 const CoachProfileContent = () => {
-  const dispatch = useAppDispatch()
 
   const [avatar, setAvatar] = useState<string | ArrayBuffer | null>(null)
   const [banner, setBanner] = useState<string | ArrayBuffer | null>(null)
@@ -44,7 +40,7 @@ const CoachProfileContent = () => {
     setLoading(true)
     setError(null)
 
-    const formDataToSubmit: ProfilePayloadDTO = {
+    const formDataToSubmit = {
       first_name: formData.firstName,
       last_name: formData.lastName,
       address: formData.address,
@@ -55,17 +51,6 @@ const CoachProfileContent = () => {
       banner_image: banner,
     }
 
-    try {
-      dispatch(updateProfileAsync(formDataToSubmit))
-        .unwrap()
-        .then((result) => {
-          setLoading(false)
-        })
-    } catch (err) {
-      console.log('Profile update error: ', err)
-      setError('Profile Update Failed')
-      setLoading(false)
-    }
   }
 
   return (

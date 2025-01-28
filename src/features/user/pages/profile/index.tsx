@@ -2,9 +2,10 @@
 
 import { Header, Footer } from '@/shared/Layouts'
 import CoachProfileContent from './content/CoachProfileContent'
+import ClientProfileContent from './content/ClientProfileContent'
 import { useAuth } from '@/shared/provider'
 
-const CoachProfilePage = () => {
+const UpdateProfilePage = () => {
   const { user } = useAuth()
   
   // User assertion works fine cause it is checked in the layout
@@ -15,11 +16,17 @@ const CoachProfilePage = () => {
         description='Let’s complete your wonderful today!'
       />
 
-      <CoachProfileContent />
+      {
+        user?.userType === 'Coach' ? (
+          <CoachProfileContent />
+        ) : (
+          <ClientProfileContent />
+        )
+      }
 
       <Footer />
     </div>
   )
 }
 
-export default CoachProfilePage
+export default UpdateProfilePage
