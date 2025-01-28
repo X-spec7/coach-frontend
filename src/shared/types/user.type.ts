@@ -4,6 +4,7 @@ export interface IUser {
   lastName: string
   userType: string
   email: string
+  address: string
   isSuperuser: boolean
   phoneNumber?: string
   avatarImageUrl?: string

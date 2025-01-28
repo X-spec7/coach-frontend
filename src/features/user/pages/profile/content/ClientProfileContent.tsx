@@ -1,15 +1,19 @@
 'use client'
 
+import { useAuth } from '@/shared/provider'
 import { ChangeEvent, FormEvent, useState } from 'react'
 
 const ClientProfileContent = () => {
+  const { user } = useAuth()
+
   const [avatar, setAvatar] = useState<string | ArrayBuffer | null>(null)
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    address: '',
-    phoneNumber: '',
+    firstName: user?.firstName ?? '',
+    lastName: user?.lastName ?? '',
+    address: user?.address ?? '',
+    phoneNumber: user?.phoneNumber ?? '',
   })
+
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
@@ -33,20 +37,50 @@ const ClientProfileContent = () => {
     }
   }
 
+  const validateFormData = () => {
+    if (!formData.firstName || formData.firstName === '') {
+      setError('First name is required')
+      return false
+    }
+
+    if (!formData.lastName || formData.lastName === '') {
+      setError('Last name is required')
+      return false
+    }
+
+    if (!formData.address || formData.address === '') {
+      setError('Address is required')
+      return false
+    }
+
+    if (!formData.phoneNumber || formData.phoneNumber === '') {
+      setError('Phone number is required')
+      return false
+    }
+
+    return true
+  }
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError(null)
     setSuccess(null)
 
-    // Simulating an API call
-    try {
-      // Example: Replace with your API call
-      await new Promise((resolve) => setTimeout(resolve, 2000))
-      setSuccess('Profile updated successfully!')
-    } catch (err) {
-      setError('Failed to update profile. Please try again.')
-    } finally {
+    const isFormDataValid = validateFormData()
+
+    if (isFormDataValid) {
+      // Simulating an API call
+      try {
+        // Example: Replace with your API call
+        await new Promise((resolve) => setTimeout(resolve, 2000))
+        setSuccess('Profile updated successfully!')
+      } catch (err) {
+        setError('Failed to update profile. Please try again.')
+      } finally {
+        setLoading(false)
+      }
+    } else {
       setLoading(false)
     }
   }
