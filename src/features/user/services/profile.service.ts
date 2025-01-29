@@ -9,11 +9,11 @@ import {
 } from '../types'
 
 class ProfileService {
-  async updateProfile(
+  async updateCoachProfile(
     payload: UpdateCoachProfilePayloadDTO
   ): Promise<UpdateCoachProfileResponseDTO> {
     return authorizedHttpServer
-      .post('/users/coach/profile/update/', payload)
+      .post('/users/profile/coach/update/', payload)
       .then((response) => {
         return {
           status: response.status,
@@ -26,7 +26,7 @@ class ProfileService {
     payload: UpdateClientProfilePayloadDTO
   ): Promise<UpdateClientProfileResponseDTO> {
     return authorizedHttpServer
-      .post('/users/profile/update/', payload)
+      .post('/users/profile/client/update/', payload)
       .then((response) => {
         return {
           status: response.status,

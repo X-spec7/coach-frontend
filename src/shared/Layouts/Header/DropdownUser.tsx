@@ -31,6 +31,7 @@ const DropdownUser = () => {
           {
             user?.avatarImageUrl && user.avatarImageUrl !== '' ? (
               <Image
+                key={user.avatarImageUrl}
                 width={36}
                 height={36}
                 src={BACKEND_HOST_URL + user.avatarImageUrl}

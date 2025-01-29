@@ -1,4 +1,4 @@
-import { IUser } from '@/shared/types'
+import { ICoachProfile, IUser } from '@/shared/types'
 import { BaseRestApiResponseType } from '@/shared/types'
 
 export interface UpdateClientProfilePayloadDTO {
@@ -9,7 +9,9 @@ export interface UpdateClientProfilePayloadDTO {
   avatar: any
 }
 
-export interface UpdateClientProfileResponseDTO extends GetProfileResponseDTO {}
+export interface UpdateClientProfileResponseDTO extends BaseRestApiResponseType {
+  user: IUser
+}
 
 export interface UpdateCoachProfilePayloadDTO {
   firstName: string
@@ -26,4 +28,6 @@ export interface GetProfileResponseDTO extends BaseRestApiResponseType {
   user: IUser
 }
 
-export interface UpdateCoachProfileResponseDTO extends GetProfileResponseDTO {}
+export interface UpdateCoachProfileResponseDTO extends BaseRestApiResponseType {
+  user: ICoachProfile
+}

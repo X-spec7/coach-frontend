@@ -80,7 +80,6 @@ const ClientProfileUpdateForm = () => {
           ...formData
         }
 
-        console.log('update profile payload: ', payload)
         const res = await profileService.updateClientProfile(payload)
         if (res.status === 200) {
           setSuccess('Profile updated successfully!')

@@ -10,4 +10,10 @@ export interface IUser {
   avatarImageUrl?: string
 }
 
+export interface ICoachProfile extends IUser {
+  yearsOfExperience?: number
+  specialization?: string
+  bannerImageUrl?: string
+}
+
 export type IUserRoleGuard = 'Client' | 'Coach' | 'Admin'

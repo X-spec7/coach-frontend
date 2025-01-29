@@ -3,6 +3,10 @@
 import { ChangeEvent, useState } from 'react'
 import Image from 'next/image'
 import { UpdateCoachProfilePayloadDTO } from '@/features/user/types'
+import { profileService } from '@/features/user/services'
+import { useAuth } from '@/shared/provider'
+import { ICoachProfile, IUser } from '@/shared/types'
+import { BACKEND_HOST_URL } from '@/shared/constants'
 
 interface IFormData {
   firstName: string
@@ -15,15 +19,22 @@ interface IFormData {
 
 const CoachProfileUpdateForm = () => {
 
-  const [avatar, setAvatar] = useState<string | ArrayBuffer | null>(null)
-  const [banner, setBanner] = useState<string | ArrayBuffer | null>(null)
+  const { user, login } = useAuth()
+
+  const isCoach = (user: IUser | ICoachProfile | null): user is ICoachProfile =>
+    user?.userType === 'Coach'
+
+  const getFullImageUrl = (path?: string) => (path ? BACKEND_HOST_URL + path : null)
+
+  const [avatar, setAvatar] = useState<string | ArrayBuffer | null>(getFullImageUrl(user?.avatarImageUrl))
+  const [banner, setBanner] = useState<string | ArrayBuffer | null>(getFullImageUrl(isCoach(user) ? user.bannerImageUrl : undefined))
   const [formData, setFormData] = useState<IFormData>({
-    firstName: '',
-    lastName: '',
-    address: '',
-    phoneNumber: '',
-    yearsOfExperience: undefined,
-    specialization: ''
+    firstName: user?.firstName ?? '',
+    lastName: user?.lastName ?? '',
+    address: user?.address ?? '',
+    phoneNumber: user?.phoneNumber ?? '',
+    yearsOfExperience: isCoach(user) ? user.yearsOfExperience ?? undefined : undefined,
+    specialization: isCoach(user) ? user.specialization ?? '' : ''
   })
 
   const [loading, setLoading] = useState(false)
@@ -84,12 +95,29 @@ const CoachProfileUpdateForm = () => {
 
     if (isFormDataValid) {
       const payload: UpdateCoachProfilePayloadDTO = {
-        avatar,
-        banner,
+        avatar: typeof avatar === "string" && !avatar.startsWith("http") ? avatar : null,
+        banner: typeof banner === "string" && !banner.startsWith("http") ? banner : null,
         ...formData,
         // NOTE: assertion is safe because it is already validated in validate function
         yearsOfExperience: formData.yearsOfExperience as number
       }
+
+      console.log('payload in coach profile update: ', payload)
+      
+      try {
+        const res = await profileService.updateCoachProfile(payload)
+
+        if (res.status === 200) {
+          login(res.user)
+        } else {
+          setError(res.message)
+        }
+      } catch (error) {
+        console.log('error in updating coach profile')
+      } finally {
+        setLoading(false)
+      }
+
     } else {
       setLoading(false)
     }
@@ -139,6 +167,7 @@ const CoachProfileUpdateForm = () => {
             />
             {avatar && typeof avatar === 'string' ? (
               <Image
+                key={avatar}
                 src={avatar}
                 alt='Avatar Preview'
                 fill
