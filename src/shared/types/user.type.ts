@@ -1,4 +1,5 @@
-import { ICertification } from "./trainer.type"
+import { IClass } from "./class.type"
+import { ICertification, IReview } from "./trainer.type"
 
 export interface IUser {
   id: number
@@ -17,6 +18,13 @@ export interface ICoachProfile extends IUser {
   specialization?: string
   bannerImageUrl?: string
   certifications?: ICertification[]
+}
+
+export interface ICoachDetail extends ICoachProfile {
+  members?: number
+  rating?: number
+  classes: IClass[]
+  reviews: IReview[]
 }
 
 export type IUserRoleGuard = 'Client' | 'Coach' | 'Admin'

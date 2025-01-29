@@ -7,7 +7,7 @@ export type ClassLevel = 'Beginner' | 'Intermediate' | 'Advanced' | 'All Levels'
 
 export type ClassCategory = 'Strength' | 'Cardio' | 'Core' | 'Flexibility' | 'Strength Training' | 'Cardio Workouts' | 'Mind & Body'
 
-export interface Class{
+export interface IClass{
   category: string
   title: string
   tutor: string

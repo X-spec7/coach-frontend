@@ -9,7 +9,11 @@ interface ITrainersListProps {
   currentPage: number
 }
 
-const TrainersList: React.FC<ITrainersListProps> = async ({ query, currentPage, expertise }) => {
+const TrainersList: React.FC<ITrainersListProps> = async ({
+  query,
+  currentPage,
+  expertise
+}) => {
   const response = await trainersService.getTrainers({
     pageSize: 15,
     pageNum: currentPage,
