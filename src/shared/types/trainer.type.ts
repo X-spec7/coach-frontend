@@ -1,4 +1,4 @@
-import { Class } from './class.type'
+import { IClass } from './class.type'
 import { IContact } from './common.type'
 
 export interface ICertification {
@@ -21,7 +21,7 @@ export interface Trainer {
   experience?: number
   members?: number
   rating?: number
-  classes?: Class[]
+  classes?: IClass[]
   contact?: IContact
   certification?: ICertification[]
   expertise?: string
