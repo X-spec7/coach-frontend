@@ -28,6 +28,7 @@ export { default as FileTextSvg } from './FileText'
 export { default as HouseSvg } from './House'
 export { default as StarSvg } from './Star'
 export { default as TrashSvg } from './TrashSvg'
+export { default as EditSvg } from './Edit'
 
 export { default as SendButtonSvg } from './SendButton'
 

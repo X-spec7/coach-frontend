@@ -8,10 +8,14 @@ import { useAuth } from '@/shared/provider'
 import { ICoachProfile, IUser } from '@/shared/types'
 import { BACKEND_HOST_URL } from '@/shared/constants'
 import { ICertification } from '@/shared/types/trainer.type'
-import { PlusGreenSvg, TrashSvg } from '@/shared/components/Svg'
 import { DefaultModal } from '@/shared/components'
-import CertificationAddModalForm from './CertificationAddModalForm'
+import {
+  PlusGreenSvg,
+  TrashSvg,
+  EditSvg,
+} from '@/shared/components/Svg'
 
+import CertificationAddModalForm from './CertificationAddModalForm'
 interface IFormData {
   firstName: string
   lastName: string
@@ -32,7 +36,8 @@ const CoachProfileUpdateForm = () => {
 
   const [avatar, setAvatar] = useState<string | ArrayBuffer | null>(getFullImageUrl(user?.avatarImageUrl))
   const [banner, setBanner] = useState<string | ArrayBuffer | null>(getFullImageUrl(isCoach(user) ? user.bannerImageUrl : undefined))
-  const [certifications, setCertifications] = useState<ICertification[]>([])
+  const [certifications, setCertifications] = useState<ICertification[]>(isCoach(user) ? user.certifications ?? [] : [])
+  const [editingIndex, setEditingIndex] = useState<number | null>(null)
 
   const [formData, setFormData] = useState<IFormData>({
     firstName: user?.firstName ?? '',
@@ -45,7 +50,7 @@ const CoachProfileUpdateForm = () => {
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [showCertificationAddModal, setShowCertificationAddModal] = useState<boolean>(false)
+  const [showCertificationModal, setShowCertificationModal] = useState<boolean>(false)
 
   const removeCertification = (index: number) => {
     setCertifications(certifications.filter((_, i) => i !== index))
@@ -60,6 +65,17 @@ const CoachProfileUpdateForm = () => {
       ...prevCertifications,
       { certificationTitle, certificationDetail },
     ])
+  }
+
+  const editCertification = (
+    index: number,
+    updatedCertification: ICertification
+  ) => {
+    setCertifications((prevCertifications) =>
+      prevCertifications.map((cert, i) =>
+        i === index ? { ...cert, ...updatedCertification } : cert
+      )
+    )
   }
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>, type: string) => {
@@ -119,6 +135,7 @@ const CoachProfileUpdateForm = () => {
       const payload: UpdateCoachProfilePayloadDTO = {
         avatar: typeof avatar === "string" && !avatar.startsWith("http") ? avatar : null,
         banner: typeof banner === "string" && !banner.startsWith("http") ? banner : null,
+        certifications,
         ...formData,
         // NOTE: assertion is safe because it is already validated in validate function
         yearsOfExperience: formData.yearsOfExperience as number
@@ -260,15 +277,27 @@ const CoachProfileUpdateForm = () => {
           <div className='flex flex-col w-full mt-4'>
             <div className='flex justify-between items-center w-full border-b border-stroke pb-2'>
               <h3 className='text-lg font-bold'>Certifications</h3>
-              <button className='flex items-center w-6 h-6' onClick={() => setShowCertificationAddModal(true)}>
+              <button className='flex items-center w-6 h-6' onClick={() => {
+                setEditingIndex(null) 
+                setShowCertificationModal(true)
+              }}>
                 <PlusGreenSvg />
               </button>
             </div>
             {certifications.map((cert, index) => (
               <div key={index} className='flex items-center justify-between border-gray-20 border-2 bg-gray-100 p-2 rounded-md mt-2'>
                 <span>{cert.certificationTitle}</span>
-                <div onClick={() => removeCertification(index)}>
-                  <TrashSvg width="25" height="25" color="#333333" />
+                <div className='flex items-center justify-end gap-2'>
+                  <button onClick={() => {
+                    setEditingIndex(index)
+                    setShowCertificationModal(true)
+                  }}>
+                    <EditSvg width="25" height="25" color="#333333" />
+                  </button>
+
+                  <button onClick={() => removeCertification(index)}>
+                    <TrashSvg width="25" height="25" color="#333333" />
+                  </button>
                 </div>
               </div>
             ))}
@@ -287,11 +316,15 @@ const CoachProfileUpdateForm = () => {
         </div>
       </div>
 
-      {showCertificationAddModal && (
-        <DefaultModal onClose={() => setShowCertificationAddModal(false)}>
+      {showCertificationModal && (
+        <DefaultModal onClose={() => setShowCertificationModal(false)}>
           <CertificationAddModalForm
-            onClose={() => setShowCertificationAddModal(false)}
-            onAddCertification={addCertification}
+            onClose={() => setShowCertificationModal(false)}
+            isAdd={editingIndex === null}
+            onAddCertification={editingIndex === null ? addCertification : undefined}
+            onEditCertification={editingIndex !== null ? (updatedCert) => editCertification(editingIndex, updatedCert) : undefined}
+            originalCertificationTitle={editingIndex !== null ? certifications[editingIndex].certificationTitle : ''}
+            originalCertificationDetail={editingIndex !== null ? certifications[editingIndex].certificationDetail : ''}
           />
         </DefaultModal>
       )}

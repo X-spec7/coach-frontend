@@ -1,5 +1,6 @@
 import { ICoachProfile, IUser } from '@/shared/types'
 import { BaseRestApiResponseType } from '@/shared/types'
+import { ICertification } from '@/shared/types/trainer.type'
 
 export interface UpdateClientProfilePayloadDTO {
   firstName: string
@@ -20,6 +21,7 @@ export interface UpdateCoachProfilePayloadDTO {
   phoneNumber: string
   yearsOfExperience: number
   specialization: string
+  certifications: ICertification[]
   avatar: any
   banner: any
 }

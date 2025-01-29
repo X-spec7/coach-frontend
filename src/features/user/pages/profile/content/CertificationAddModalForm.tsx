@@ -4,25 +4,37 @@ import { ICertification } from '@/shared/types/trainer.type'
 import { useState } from 'react'
 
 interface ICertificationModalFormProps {
-  onAddCertification: ({certificationTitle, certificationDetail}: ICertification) => void
+  onAddCertification?: ({certificationTitle, certificationDetail}: ICertification) => void
+  onEditCertification?: ({certificationTitle, certificationDetail}: ICertification) => void
   onClose: () => void
+  isAdd: boolean
+  originalCertificationTitle?: string
+  originalCertificationDetail?: string
 }
 
 const CertificationAddModalForm: React.FC<ICertificationModalFormProps> = ({
   onAddCertification,
-  onClose
+  onEditCertification,
+  onClose,
+  isAdd,
+  originalCertificationTitle,
+  originalCertificationDetail,
 }) => {
-  const [certificationTitle, setCertificationTitle] = useState<string>('')
-  const [certificationDetail, setCertificationDetail] = useState<string>('')
+  const [certificationTitle, setCertificationTitle] = useState<string>(originalCertificationTitle ?? '')
+  const [certificationDetail, setCertificationDetail] = useState<string>(originalCertificationDetail ?? '')
   const [error, setError] = useState<string | null>(null)
+
+  const handleCertificationButtonTitle = isAdd ? 'Add Certification' : 'Update Certification'
   
-  const handleAddCertification = () => {
+  const handleCertification = () => {
     if (!certificationTitle.trim() || !certificationDetail.trim()) {
       setError('Both fields are required!')
       return
     }
 
-    onAddCertification({ certificationTitle, certificationDetail })
+    if (isAdd && onAddCertification) onAddCertification({ certificationTitle, certificationDetail })
+    if (!isAdd && onEditCertification) onEditCertification({ certificationTitle, certificationDetail })
+      
     setCertificationTitle('')
     setCertificationDetail('')
     setError(null)
@@ -53,8 +65,8 @@ const CertificationAddModalForm: React.FC<ICertificationModalFormProps> = ({
         <button onClick={onClose} className='px-4 py-2 bg-gray-300 rounded hover:bg-gray-400'>
           Cancel
         </button>
-        <button onClick={handleAddCertification} className='px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600'>
-          Add Certification
+        <button onClick={handleCertification} className='px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600'>
+          {handleCertificationButtonTitle}
         </button>
       </div>
     </div>
