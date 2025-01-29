@@ -109,13 +109,13 @@ const ClientProfileUpdateForm = () => {
         <div className="flex flex-col items-center gap-4">
           <input
             type="file"
-            id="avatar"
+            id="client.profile.avatar"
             accept="image/*"
             onChange={handleAvatarChange}
             className="hidden"
           />
           <div
-            onClick={() => document.getElementById('avatar')?.click()}
+            onClick={() => document.getElementById('client.profile.avatar')?.click()}
             className="w-32 h-32 rounded-full bg-gray-200 overflow-hidden border-2 border-gray-300 border-dashed cursor-pointer"
           >
             {avatar ? (

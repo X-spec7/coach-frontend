@@ -138,6 +138,7 @@ const CoachProfileUpdateForm = () => {
             <input
               type='file'
               accept='image/*'
+              id='coach.profile.banner'
               className='absolute inset-0 w-full h-full opacity-0 cursor-pointer'
               onChange={(e) => handleFileChange(e, 'banner')}
             />
@@ -146,6 +147,7 @@ const CoachProfileUpdateForm = () => {
                 src={banner}
                 alt="Banner Preview"
                 layout="fill"
+                onClick={() => document.getElementById('coach.profile.banner')?.click()}
               />
             ) : (
               <p className="text-gray-30 text-xl font-medium">Drag and drop or click to upload</p>
@@ -162,6 +164,7 @@ const CoachProfileUpdateForm = () => {
             <input
               type='file'
               accept='image/*'
+              id='coach.profile.avatar'
               className='absolute inset-0 w-full h-full opacity-0 cursor-pointer'
               onChange={(e) => handleFileChange(e, 'avatar')}
             />
@@ -172,6 +175,7 @@ const CoachProfileUpdateForm = () => {
                 alt='Avatar Preview'
                 fill
                 className='rounded-full'
+                onClick={() => document.getElementById('coach.profile.avatar')?.click()}
               />
             ) : (
               <p className='text-gray-30 text-md font-medium'>Upload Avatar</p>
