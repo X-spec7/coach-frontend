@@ -2,13 +2,16 @@
 
 import { profileService } from '@/features/user/services'
 import { UpdateClientProfilePayloadDTO } from '@/features/user/types'
+import { BACKEND_HOST_URL } from '@/shared/constants'
 import { useAuth } from '@/shared/provider'
 import { ChangeEvent, FormEvent, useState } from 'react'
 
 const ClientProfileUpdateForm = () => {
   const { user, login } = useAuth()
 
-  const [avatar, setAvatar] = useState<string | ArrayBuffer | null>(null)
+  const getFullImageUrl = (path?: string) => (path ? `${BACKEND_HOST_URL}${path}?t=${new Date().getTime()}` : null)
+
+  const [avatar, setAvatar] = useState<string | ArrayBuffer | null>(getFullImageUrl(user?.avatarImageUrl))
   const [formData, setFormData] = useState({
     firstName: user?.firstName ?? '',
     lastName: user?.lastName ?? '',

@@ -24,7 +24,7 @@ const CoachProfileUpdateForm = () => {
   const isCoach = (user: IUser | ICoachProfile | null): user is ICoachProfile =>
     user?.userType === 'Coach'
 
-  const getFullImageUrl = (path?: string) => (path ? BACKEND_HOST_URL + path : null)
+  const getFullImageUrl = (path?: string) => (path ? `${BACKEND_HOST_URL}${path}?t=${new Date().getTime()}` : null)
 
   const [avatar, setAvatar] = useState<string | ArrayBuffer | null>(getFullImageUrl(user?.avatarImageUrl))
   const [banner, setBanner] = useState<string | ArrayBuffer | null>(getFullImageUrl(isCoach(user) ? user.bannerImageUrl : undefined))
