@@ -4,24 +4,12 @@ import SessionCard from './SessionCard'
 import sharedSessionService, { clientSessionService } from '@/features/sessions/service'
 import { useEffect, useState } from 'react'
 import { ISessionWithBookedStatus } from '@/features/sessions/types'
+import { DefaultModal } from '@/shared/components'
 
 interface ISessionsListProps {
   query: string
   goal: string
   currentPage: number
-}
-
-const Modal: React.FC<{ onClose: () => void; children: React.ReactNode }> = ({ onClose, children }) => {
-  return (
-    <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50'>
-      <div className='relative bg-white p-6 rounded shadow-lg w-full max-w-md'>
-        <button className='absolute top-2  right-4 text-3xl text-gray-500 hover:text-gray-700' onClick={onClose}>
-          &times;
-        </button>
-        {children}
-      </div>
-    </div>
-  )
 }
 
 const SessionsList: React.FC<ISessionsListProps> = ({
@@ -86,7 +74,7 @@ const SessionsList: React.FC<ISessionsListProps> = ({
         ))
       }
       {isModalOpen && selectedSession && (
-        <Modal onClose={() => setIsModalOpen(false)}>
+        <DefaultModal onClose={() => setIsModalOpen(false)}>
           <div className='p-4'>
             <h2 className='text-xl font-bold mb-4'>
               {selectedSession.booked ? 'Join this session' : 'Book this session'}
@@ -121,7 +109,7 @@ const SessionsList: React.FC<ISessionsListProps> = ({
               </button>
             </div>
           </div>
-        </Modal>
+        </DefaultModal>
       )}
 
     </div>

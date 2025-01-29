@@ -3,10 +3,11 @@
 import { useReducer, useMemo, createContext, useContext, useEffect, useCallback } from 'react'
 import { ILayoutProps, IUser } from '../types'
 import useLocalStorage from '../hooks/useLocalStorage'
+import { ICoachProfile } from '../types'
 
 interface State {
   isAuthenticated: boolean
-  user: IUser | null
+  user: IUser | ICoachProfile | null
 }
 
 type Action =
@@ -30,14 +31,14 @@ function authReducer(state: State, action: Action): State {
 }
 
 interface AuthContextType extends State {
-  login: (user: IUser) => void
+  login: (user: IUser | ICoachProfile) => void
   logout: () => void
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export const AuthProvider: React.FC<ILayoutProps> = ({ children }) => {
-  const [cachedUser, setCachedUser] = useLocalStorage<IUser | null>('coachCachedState', null)
+  const [cachedUser, setCachedUser] = useLocalStorage<IUser | ICoachProfile | null>('coachCachedState', null)
   const [state, dispatch] = useReducer(authReducer, initialState)
 
   useEffect(() => {
@@ -46,7 +47,7 @@ export const AuthProvider: React.FC<ILayoutProps> = ({ children }) => {
     }
   }, [cachedUser])
 
-  const login = useCallback((user: IUser) => {
+  const login = useCallback((user: IUser | ICoachProfile) => {
     setCachedUser(user)
     dispatch({ type: 'LOGIN', payload: user }) 
   }, [setCachedUser])

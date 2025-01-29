@@ -18,8 +18,13 @@ export type {
   IPrimaryButtonProps,
 } from './common.type'
 
-export type { IUser, IUserRoleGuard } from './user.type'
+export type {
+  IUser,
+  IUserRoleGuard,
+  ICoachProfile,
+} from './user.type'
 
 export type { Progress } from './progress.type'
 export type { Trainer } from './trainer.type'
 export type { ICallInfo } from './call.type'
+export type { BaseRestApiResponseType } from './api.type'

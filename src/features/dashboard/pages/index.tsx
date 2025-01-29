@@ -11,7 +11,7 @@ const Dashboard = () => {
   return (
     <div className="flex justify-between gap-4 p-4 h-full">
       <div className='flex flex-col flex-1'>
-        {/* user assertion is safe because it is checked in the layout */}
+        {/* NOTE: user assertion is safe because it is checked in the layout */}
         <Header
           isDashboard
           title={`Hello, ${user!.firstName} ${user!.lastName}!  👋`}

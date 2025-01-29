@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
+import { UpdateProfilePage } from '@/features/user/pages'
 
-import { CoachProfilePage } from '@/features/user/pages/profile'
 
 export const metadata: Metadata = {
   title:
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 const Profile = () => {
   return (
     <>
-      <CoachProfilePage />
+      <UpdateProfilePage />
     </>
   )
 }
