@@ -21,11 +21,13 @@ export { default as BarbellSvg } from './Barbell'
 export { default as UserCircleSvg } from './UserCircle'
 export { default as TwoPeopleSvg } from './TwoPeople'
 export { default as PlusSvg } from './Plus'
+export { default as PlusGreenSvg } from './PlusGreen'
 export { default as FadersHorizontalSvg } from './FadersHorizontal'
 export { default as EnvelopOpenSvg } from './EnvelopOpen'
 export { default as FileTextSvg } from './FileText'
 export { default as HouseSvg } from './House'
 export { default as StarSvg } from './Star'
+export { default as TrashSvg } from './TrashSvg'
 
 export { default as SendButtonSvg } from './SendButton'
 

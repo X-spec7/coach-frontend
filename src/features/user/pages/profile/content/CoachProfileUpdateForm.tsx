@@ -7,6 +7,10 @@ import { profileService } from '@/features/user/services'
 import { useAuth } from '@/shared/provider'
 import { ICoachProfile, IUser } from '@/shared/types'
 import { BACKEND_HOST_URL } from '@/shared/constants'
+import { ICertification } from '@/shared/types/trainer.type'
+import { PlusGreenSvg, TrashSvg } from '@/shared/components/Svg'
+import { DefaultModal } from '@/shared/components'
+import CertificationAddModalForm from './CertificationAddModalForm'
 
 interface IFormData {
   firstName: string
@@ -28,6 +32,8 @@ const CoachProfileUpdateForm = () => {
 
   const [avatar, setAvatar] = useState<string | ArrayBuffer | null>(getFullImageUrl(user?.avatarImageUrl))
   const [banner, setBanner] = useState<string | ArrayBuffer | null>(getFullImageUrl(isCoach(user) ? user.bannerImageUrl : undefined))
+  const [certifications, setCertifications] = useState<ICertification[]>([])
+
   const [formData, setFormData] = useState<IFormData>({
     firstName: user?.firstName ?? '',
     lastName: user?.lastName ?? '',
@@ -39,6 +45,22 @@ const CoachProfileUpdateForm = () => {
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [showCertificationAddModal, setShowCertificationAddModal] = useState<boolean>(false)
+
+  const removeCertification = (index: number) => {
+    setCertifications(certifications.filter((_, i) => i !== index))
+  }
+
+  const addCertification = ({certificationTitle, certificationDetail}: ICertification) => {
+    if (!certificationTitle.trim() || !certificationDetail.trim()) {
+      return
+    }
+  
+    setCertifications((prevCertifications) => [
+      ...prevCertifications,
+      { certificationTitle, certificationDetail },
+    ])
+  }
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>, type: string) => {
     const file = e.target.files?.[0]
@@ -124,7 +146,7 @@ const CoachProfileUpdateForm = () => {
   }
 
   return (
-    <div className='flex flex-col gap-8 bg-white rounded-4xl w-full p-8 min-h-230'>
+    <div className='relative flex flex-col gap-8 bg-white rounded-4xl w-full p-8 min-h-230'>
       <h2 className='text-black text-3xl font-600 w-full text-center mt-8 mb-12'>Personal Profile</h2>
 
       <div className='flex justify-center gap-20 w-full'>
@@ -235,6 +257,23 @@ const CoachProfileUpdateForm = () => {
             <option value='life-coach'>Life Coach</option>
           </select>
 
+          <div className='flex flex-col w-full mt-4'>
+            <div className='flex justify-between items-center w-full border-b border-stroke pb-2'>
+              <h3 className='text-lg font-bold'>Certifications</h3>
+              <button className='flex items-center w-6 h-6' onClick={() => setShowCertificationAddModal(true)}>
+                <PlusGreenSvg />
+              </button>
+            </div>
+            {certifications.map((cert, index) => (
+              <div key={index} className='flex items-center justify-between border-gray-20 border-2 bg-gray-100 p-2 rounded-md mt-2'>
+                <span>{cert.certificationTitle}</span>
+                <div onClick={() => removeCertification(index)}>
+                  <TrashSvg width="25" height="25" color="#333333" />
+                </div>
+              </div>
+            ))}
+          </div>
+
           {error && <p className='text-red-500'>{error}</p>}
 
           {/* Submit Button */}
@@ -247,6 +286,15 @@ const CoachProfileUpdateForm = () => {
           </button>
         </div>
       </div>
+
+      {showCertificationAddModal && (
+        <DefaultModal onClose={() => setShowCertificationAddModal(false)}>
+          <CertificationAddModalForm
+            onClose={() => setShowCertificationAddModal(false)}
+            onAddCertification={addCertification}
+          />
+        </DefaultModal>
+      )}
     </div>
   )
 }

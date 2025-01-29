@@ -2,8 +2,8 @@ import { Class } from './class.type'
 import { IContact } from './common.type'
 
 export interface ICertification {
-  title: string
-  year: number
+  certificationTitle: string
+  certificationDetail: string
 }
 
 export interface IReview {
