@@ -1,10 +1,12 @@
 'use client'
 
+import { profileService } from '@/features/user/services'
+import { UpdateClientProfilePayloadDTO } from '@/features/user/types'
 import { useAuth } from '@/shared/provider'
 import { ChangeEvent, FormEvent, useState } from 'react'
 
 const ClientProfileContent = () => {
-  const { user } = useAuth()
+  const { user, login } = useAuth()
 
   const [avatar, setAvatar] = useState<string | ArrayBuffer | null>(null)
   const [formData, setFormData] = useState({
@@ -73,8 +75,19 @@ const ClientProfileContent = () => {
       // Simulating an API call
       try {
         // Example: Replace with your API call
-        await new Promise((resolve) => setTimeout(resolve, 2000))
-        setSuccess('Profile updated successfully!')
+        const payload: UpdateClientProfilePayloadDTO = {
+          avatar,
+          ...formData
+        }
+
+        console.log('update profile payload: ', payload)
+        const res = await profileService.updateClientProfile(payload)
+        if (res.status === 200) {
+          setSuccess('Profile updated successfully!')
+          login(res.user)
+        } else {
+          setError(res.message)
+        }
       } catch (err) {
         setError('Failed to update profile. Please try again.')
       } finally {

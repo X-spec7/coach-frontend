@@ -7,6 +7,8 @@ export type {
 
 export type {
   UpdateProfilePayloadDTO,
+  UpdateProfileResponseDTO,
+  UpdateClientProfilePayloadDTO,
+  UpdateClientProfileResponseDTO,
   GetProfileResponseDTO,
-  UpdateProfileResponseDTO
-} from './profile.type'
+} from './profile.dto'
