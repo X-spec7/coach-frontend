@@ -1,14 +1,14 @@
 'use client'
 
 import { Header, Footer } from '@/shared/Layouts'
-import CoachProfileContent from './content/CoachProfileContent'
-import ClientProfileContent from './content/ClientProfileContent'
+import CoachProfileUpdateForm from './content/CoachProfileUpdateForm'
+import ClientProfileUpdateForm from './content/ClientProfileUpdateForm'
 import { useAuth } from '@/shared/provider'
 
 const UpdateProfilePage = () => {
   const { user } = useAuth()
   
-  // User assertion works fine cause it is checked in the layout
+  // NOTE: User assertion is safe cause it is checked in the layout
   return (
     <div className='flex flex-col items-center gap-4 w-full h-full p-4'>
       <Header
@@ -18,9 +18,9 @@ const UpdateProfilePage = () => {
 
       {
         user?.userType === 'Coach' ? (
-          <CoachProfileContent />
+          <CoachProfileUpdateForm />
         ) : (
-          <ClientProfileContent />
+          <ClientProfileUpdateForm />
         )
       }
 

@@ -5,7 +5,7 @@ import { UpdateClientProfilePayloadDTO } from '@/features/user/types'
 import { useAuth } from '@/shared/provider'
 import { ChangeEvent, FormEvent, useState } from 'react'
 
-const ClientProfileContent = () => {
+const ClientProfileUpdateForm = () => {
   const { user, login } = useAuth()
 
   const [avatar, setAvatar] = useState<string | ArrayBuffer | null>(null)
@@ -114,7 +114,7 @@ const ClientProfileContent = () => {
           />
           <div
             onClick={() => document.getElementById('avatar')?.click()}
-            className="w-32 h-32 rounded-full bg-gray-200 overflow-hidden border-2 border-gray-300 cursor-pointer"
+            className="w-32 h-32 rounded-full bg-gray-200 overflow-hidden border-2 border-gray-300 border-dashed cursor-pointer"
           >
             {avatar ? (
               <img src={avatar as string} alt="Avatar Preview" className="w-full h-full object-cover" />
@@ -194,7 +194,7 @@ const ClientProfileContent = () => {
           {/* Submit Button */}
           <button
             type="submit"
-            className="px-4 py-2 bg-blue-400 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-300 w-full"
+            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-300 w-full"
             disabled={loading}
           >
             {loading ? 'Updating...' : 'Update Profile'}
@@ -205,4 +205,4 @@ const ClientProfileContent = () => {
   )
 }
 
-export default ClientProfileContent
+export default ClientProfileUpdateForm

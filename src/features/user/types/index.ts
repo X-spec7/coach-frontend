@@ -6,8 +6,8 @@ export type {
 } from './auth.dto'
 
 export type {
-  UpdateProfilePayloadDTO,
-  UpdateProfileResponseDTO,
+  UpdateCoachProfilePayloadDTO,
+  UpdateCoachProfileResponseDTO,
   UpdateClientProfilePayloadDTO,
   UpdateClientProfileResponseDTO,
   GetProfileResponseDTO,

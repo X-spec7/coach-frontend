@@ -11,19 +11,19 @@ export interface UpdateClientProfilePayloadDTO {
 
 export interface UpdateClientProfileResponseDTO extends GetProfileResponseDTO {}
 
-export interface UpdateProfilePayloadDTO {
+export interface UpdateCoachProfilePayloadDTO {
   firstName: string
   lastName: string
   address: string
   phoneNumber: string
   yearsOfExperience: number
   specialization: string
-  avatarImage: any
-  bannerImage: any
+  avatar: any
+  banner: any
 }
 
 export interface GetProfileResponseDTO extends BaseRestApiResponseType {
   user: IUser
 }
 
-export interface UpdateProfileResponseDTO extends GetProfileResponseDTO {}
+export interface UpdateCoachProfileResponseDTO extends GetProfileResponseDTO {}

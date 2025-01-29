@@ -2,19 +2,30 @@
 
 import { ChangeEvent, useState } from 'react'
 import Image from 'next/image'
+import { UpdateCoachProfilePayloadDTO } from '@/features/user/types'
 
-const CoachProfileContent = () => {
+interface IFormData {
+  firstName: string
+  lastName: string
+  address: string
+  phoneNumber: string
+  yearsOfExperience: undefined | number
+  specialization: string
+}
+
+const CoachProfileUpdateForm = () => {
 
   const [avatar, setAvatar] = useState<string | ArrayBuffer | null>(null)
   const [banner, setBanner] = useState<string | ArrayBuffer | null>(null)
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<IFormData>({
     firstName: '',
     lastName: '',
     address: '',
-    phone: '',
-    experience: '',
+    phoneNumber: '',
+    yearsOfExperience: undefined,
     specialization: ''
   })
+
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -35,22 +46,53 @@ const CoachProfileContent = () => {
     setFormData({ ...formData, [name]: value })
   }
 
+  const validateFormData = () => {
+    if (!formData.firstName || formData.firstName === '') {
+      setError('First name is required!')
+      return false
+    }
+
+    if (!formData.lastName || formData.lastName === '') {
+      setError('Last name is required!')
+      return false
+    }
+    
+    if (!formData.address || formData.address === '') {
+      setError('Address is required!')
+      return false
+    }
+
+    if (!formData.phoneNumber || formData.phoneNumber === '') {
+      setError('Phone number is required!')
+      return false
+    }
+    
+    if (!formData.yearsOfExperience) {
+      setError('Years of experience is required!')
+      return false
+    }
+
+    return true
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError(null)
 
-    const formDataToSubmit = {
-      first_name: formData.firstName,
-      last_name: formData.lastName,
-      address: formData.address,
-      phone_number: formData.phone,
-      years_of_experience: Number(formData.experience),
-      specialization: formData.specialization,
-      avatar_image: avatar,
-      banner_image: banner,
-    }
+    const isFormDataValid = validateFormData()
 
+    if (isFormDataValid) {
+      const payload: UpdateCoachProfilePayloadDTO = {
+        avatar,
+        banner,
+        ...formData,
+        // NOTE: assertion is safe because it is already validated in validate function
+        yearsOfExperience: formData.yearsOfExperience as number
+      }
+    } else {
+      setLoading(false)
+    }
   }
 
   return (
@@ -85,7 +127,7 @@ const CoachProfileContent = () => {
 
         {/* Right Side - Avatar Image and Input Fields */}
         <div className='flex flex-col gap-4 w-1/2 max-w-125'>
-          <label className='block text-gray-500'>Avatar Image</label>
+          {/* <label className='block text-gray-500'>Avatar Image</label> */}
           <div
             className='relative w-32 h-32 bg-gray-100 rounded-full flex items-center justify-center border border-dashed border-gray-300 cursor-pointer'
           >
@@ -103,7 +145,7 @@ const CoachProfileContent = () => {
                 className='rounded-full'
               />
             ) : (
-              <p className='text-gray-30 text-md font-medium'>Upload</p>
+              <p className='text-gray-30 text-md font-medium'>Upload Avatar</p>
             )}
           </div>
 
@@ -134,17 +176,17 @@ const CoachProfileContent = () => {
           />
           <input
             type='text'
-            name='phone'
+            name='phoneNumber'
             placeholder='Phone Number'
-            value={formData.phone}
+            value={formData.phoneNumber}
             onChange={handleInputChange}
             className='w-full p-2 border rounded-md'
           />
           <input
             type='number'
-            name='experience'
+            name='yearsOfExperience'
             placeholder='Years of Experience'
-            value={formData.experience}
+            value={formData.yearsOfExperience}
             onChange={handleInputChange}
             className='w-full p-2 border rounded-md'
           />
@@ -160,20 +202,20 @@ const CoachProfileContent = () => {
             <option value='life-coach'>Life Coach</option>
           </select>
 
+          {error && <p className='text-red-500'>{error}</p>}
+
           {/* Submit Button */}
           <button
             onClick={handleSubmit}
-            className='mt-6 bg-green text-black py-3 px-4 rounded-md'
+            className='mt-6 bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-md'
             disabled={loading}
           >
             {loading ? 'Updating...' : 'Update Profile'}
           </button>
-
-          {error && <p className='text-red-500'>{error}</p>}
         </div>
       </div>
     </div>
   )
 }
 
-export default CoachProfileContent
+export default CoachProfileUpdateForm
