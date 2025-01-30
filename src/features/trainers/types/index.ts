@@ -1,7 +1,7 @@
-export interface ITrainerCard {
-  trainerId: number
-  trainerName: string
-  trainerBannerImageUrl?: string
+export interface ICoachCard {
+  id: number
+  coachName: string
+  coachBannerImageUrl?: string
   className?: string
   specialization: string
   listed: boolean

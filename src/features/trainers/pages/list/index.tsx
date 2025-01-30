@@ -2,20 +2,20 @@ import { Suspense } from 'react'
 
 import { Pagination, Loader } from '@/shared/components'
 import ContentHeader from './content-header'
-import TrainersList from './TrainersList'
+import TrainersList from './CoachesList'
 import { trainersService } from '../../service'
 
 const countPerPage = 15
 
-interface ITrainersPageProps {
+interface ICoachesPageProps {
   query: string
   currentPage: number
   specialization: string
 }
 
-const TrainersPage: React.FC<ITrainersPageProps> = async ({ query, specialization, currentPage}) => {
+const CoachesPage: React.FC<ICoachesPageProps> = async ({ query, specialization, currentPage}) => {
 
-  const response = await trainersService.getTotalTrainersCount({ query })
+  const response = await trainersService.getTotalCoachesCount({ query })
   // TODO: handle response error case
 
   return (
@@ -39,4 +39,4 @@ const TrainersPage: React.FC<ITrainersPageProps> = async ({ query, specializatio
   )
 }
 
-export default TrainersPage
+export default CoachesPage
