@@ -1,7 +1,7 @@
 import Link from 'next/link'
 
 import trainersService from '../../service/trainers.service'
-import TrainerCard from './TrainerCard'
+import CoachCard from './CoachCard'
 
 interface ITrainersListProps {
   query: string
@@ -15,21 +15,21 @@ const TrainersList: React.FC<ITrainersListProps> = async ({
   specialization
 }) => {
 
-  const response = await trainersService.getTrainers({
+  const response = await trainersService.getCoaches({
     limit: 15,
     offset: (currentPage - 1) * 15,
     query,
     specialization,
   })
-  const trainers = response.trainers
+  const coaches = response.coaches
 
   return (
     <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-y-4 justify-content-between justify-items-center align-items-center w-full min-h-150'>
       {
-        trainers.map((trainer, index) => (
+        coaches.map((coach, index) => (
           // TODO: update url param in future
-          <Link href={`/trainers/detail/${trainer.trainerId}`} key={index}>
-            <TrainerCard key={index} trainer={trainer} />
+          <Link href={`/trainers/detail/${coach.coachId}`} key={index}>
+            <CoachCard key={index} coach={coach} />
           </Link>
         ))
       }

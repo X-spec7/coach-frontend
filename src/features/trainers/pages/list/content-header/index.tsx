@@ -7,11 +7,11 @@ import { useSearchParams, usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 const classCategories = [
-  'All Class Categories',
-  'Fitness Class',
-  'Strength Class',
-  'Flexibility Class',
-  'Mindfullness Class'
+  'All',
+  'Fitness',
+  'Strength',
+  'Flexibility',
+  'Mindfullness',
 ]
 
 const handleAddTrainerButtonClick = () => {

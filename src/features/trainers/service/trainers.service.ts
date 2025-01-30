@@ -1,22 +1,17 @@
 import {
-  getTrainers,
-  getTotalTrainersCount,
-  getTrainerById
-} from '@/dev/api'
-import {
-  GetTrainersPayloadDTO,
-  GetTrainersResponseDTO,
-  GetTotalTrainersCountPayloadDTO,
-  GetTotalTrainersCountResponseDTO,
-  GetTrainerByIdPayloadDTO,
-  GetTrainerByIdResponseDTO
-} from '../types/trainer.dto'
+  GetCoachesPayloadDTO,
+  GetCoachesResponseDTO,
+  GetTotalCoachesCountPayloadDTO,
+  GetTotalCoachesCountResponseDTO,
+  GetCoachByIdPayloadDTO,
+  GetCoachByIdResponseDTO
+} from '../types/coach.dto'
 import authorizedHttpServer from '@/shared/services/authorizedHttp'
 
-class TrainersService {
-  async getTrainers(
-    payload: GetTrainersPayloadDTO
-  ): Promise<GetTrainersResponseDTO> {
+class CoachesService {
+  async getCoaches(
+    payload: GetCoachesPayloadDTO
+  ): Promise<GetCoachesResponseDTO> {
     const params = new URLSearchParams()
     if (payload.limit) {
       params.append('limit', payload.limit.toString())
@@ -41,9 +36,9 @@ class TrainersService {
       })
   }
 
-  async getTotalTrainersCount(
-    payload: GetTotalTrainersCountPayloadDTO
-  ): Promise<GetTotalTrainersCountResponseDTO> {
+  async getTotalCoachesCount(
+    payload: GetTotalCoachesCountPayloadDTO
+  ): Promise<GetTotalCoachesCountResponseDTO> {
     const params = new URLSearchParams()
     if (payload.query) {
       params.append('query', payload.query)
@@ -62,12 +57,12 @@ class TrainersService {
       })
   }
 
-  async getTrainerById(
-    payload: GetTrainerByIdPayloadDTO
-  ): Promise<GetTrainerByIdResponseDTO> {
+  async getCoachById(
+    payload: GetCoachByIdPayloadDTO
+  ): Promise<GetCoachByIdResponseDTO> {
     const params = new URLSearchParams()
-    if (payload.trainerId) {
-      params.append('trainerId', payload.trainerId.toString())
+    if (payload.coachId) {
+      params.append('coachId', payload.coachId.toString())
     }
 
     return authorizedHttpServer
@@ -81,6 +76,6 @@ class TrainersService {
   }
 }
 
-const trainersService = new TrainersService()
+const trainersService = new CoachesService()
 
 export default trainersService
