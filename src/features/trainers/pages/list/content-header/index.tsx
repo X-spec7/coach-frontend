@@ -4,7 +4,6 @@ import { SearchField } from '@/shared/components'
 import { BasicDropdownButton } from '@/shared/components/Button'
 import { PlusSvg, FadersHorizontalSvg } from '@/shared/components/Svg'
 import { useSearchParams, usePathname, useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
 
 const classCategories = [
   'All',

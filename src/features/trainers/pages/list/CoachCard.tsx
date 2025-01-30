@@ -28,7 +28,7 @@ const CoachCard: React.FC<TrainerCardInterface> = ({ coach }) => {
 
         <div className='flex justify-center items-center gap-1.5'>
           <MonitorSvg width='16' height='16' color='#878A94' />
-          <p className='text-xs text-gray-20'>{coach.className ?? 'No Class'}</p>
+          <p className='text-xs text-gray-20'>{coach.className ?? 'No Class Yet'}</p>
         </div>
 
         <span className='text-gray-20 text-xxs py-1.5 px-2.5 bg-gray-bg rounded-20'>

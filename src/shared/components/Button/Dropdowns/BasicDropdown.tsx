@@ -34,7 +34,7 @@ const BasicDropdown: React.FC<BasicDropdownProps> = ({ options, onSelect }) => {
         }
       </button>
       {isOpen && (
-        <ul className='absolute z-10 w-full mt-2 bg-gray-bg border border-gray-300 rounded shadow'>
+        <ul className='absolute z-10 px-2 mt-2 bg-gray-bg border border-gray-300 rounded shadow'>
           {options.map((option, index) => (
             <li
               key={index}

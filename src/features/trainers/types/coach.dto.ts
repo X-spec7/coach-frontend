@@ -16,6 +16,7 @@ export interface GetCoachesResponseDTO extends BaseRestApiResponseType {
 export interface GetTotalCoachesCountPayloadDTO {
   query?: string
   specialization?: string
+  listedState?: string
 }
 
 export interface GetTotalCoachesCountResponseDTO extends BaseRestApiResponseType {

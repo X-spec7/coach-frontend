@@ -1,9 +1,10 @@
-import { Suspense } from 'react'
+'use client'
 
-import { Pagination, Loader } from '@/shared/components'
+import { Pagination } from '@/shared/components'
 import ContentHeader from './content-header'
 import TrainersList from './CoachesList'
 import { trainersService } from '../../service'
+import { useEffect, useState } from 'react'
 
 const countPerPage = 15
 
@@ -13,29 +14,37 @@ interface ICoachesPageProps {
   specialization: string
 }
 
-const CoachesPage: React.FC<ICoachesPageProps> = async ({ query, specialization, currentPage}) => {
+const CoachesPage: React.FC<ICoachesPageProps> = ({ query, specialization, currentPage}) => {
+  const [totalCoachesCount, setTotalCoachesCount] = useState<number>(0)
 
-  const response = await trainersService.getTotalCoachesCount({ query })
-  // TODO: handle response error case
+  useEffect(() => {
+    const getTotalCoachesCount = async () => {
+      const response = await trainersService.getTotalCoachesCount({
+        query,
+        specialization,
+        listedState: "All"
+      })
+      setTotalCoachesCount(response.totalCount)
+    }
+    getTotalCoachesCount()
+  }, [query, specialization])
 
   return (
-      <div className='flex flex-col p-4 gap-4 bg-white rounded-4xl'>
-        <ContentHeader searchPlaceHolder={query} />
+    <div className='flex flex-col p-4 gap-4 bg-white rounded-4xl'>
+      <ContentHeader searchPlaceHolder={query} />
 
-        {/* <!-- MAIN CONTENT --> */}
-        <Suspense fallback={<Loader />}>
-          <TrainersList
-            query={query}
-            specialization={specialization}
-            currentPage={currentPage}
-          />
-        </Suspense>
+      {/* <!-- MAIN CONTENT --> */}
+      <TrainersList
+        query={query}
+        specialization={specialization}
+        currentPage={currentPage}
+      />
 
-        <Pagination
-          countPerPage={countPerPage}
-          totalCounts={response.totalCount}
-        />
-      </div>
+      <Pagination
+        countPerPage={countPerPage}
+        totalCounts={totalCoachesCount}
+      />
+    </div>
   )
 }
 
