@@ -28,7 +28,7 @@ const TrainersList: React.FC<ITrainersListProps> = async ({
       {
         coaches.map((coach, index) => (
           // TODO: update url param in future
-          <Link href={`/trainers/detail/${coach.coachId}`} key={index}>
+          <Link href={`/trainers/detail/${coach.id}`} key={index}>
             <CoachCard key={index} coach={coach} />
           </Link>
         ))

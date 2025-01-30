@@ -1,5 +1,5 @@
 export interface ICoachCard {
-  coachId: number
+  id: number
   coachName: string
   coachBannerImageUrl?: string
   className?: string
