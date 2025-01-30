@@ -1,7 +1,6 @@
-import { Trainer } from '@/shared/types'
+import { ICoachDetail } from '@/shared/types'
 import { ITrainerCard } from '.'
 import { BaseRestApiResponseType } from '@/shared/types'
-
 export interface GetTrainersPayloadDTO {
   offset: number
   limit: number
@@ -16,7 +15,7 @@ export interface GetTrainersResponseDTO extends BaseRestApiResponseType {
 
 export interface GetTotalTrainersCountPayloadDTO {
   query?: string
-  expertise?: string
+  specialization?: string
 }
 
 export interface GetTotalTrainersCountResponseDTO extends BaseRestApiResponseType {
@@ -24,9 +23,9 @@ export interface GetTotalTrainersCountResponseDTO extends BaseRestApiResponseTyp
 }
 
 export interface GetTrainerByIdPayloadDTO {
-  trainerId: string
+  trainerId: number
 }
 
 export interface GetTrainerByIdResponseDTO extends BaseRestApiResponseType {
-  trainer: Trainer
+  coach: ICoachDetail
 }

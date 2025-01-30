@@ -1,16 +1,16 @@
-import { Trainer } from '@/shared/types'
+import { ICoachDetail } from '@/shared/types'
 import TrainerProfile from './profile'
 import TrainingActivity from './TrainingActivity'
 import TrainerSchedule from './TrainerSchedule'
 import Reviews from './Reviews'
 
 interface TrainerDetailPageProps {
-  trainer: Trainer
+  coach: ICoachDetail
 }
 
-const TrainerDetailPage: React.FC<TrainerDetailPageProps> = async ({ trainer }) => {
+const TrainerDetailPage: React.FC<TrainerDetailPageProps> = async ({ coach }) => {
 
-  if (trainer === undefined) {
+  if (coach === undefined) {
     return (
       <div>No Trainer Found</div>
     )
@@ -18,12 +18,12 @@ const TrainerDetailPage: React.FC<TrainerDetailPageProps> = async ({ trainer }) 
 
   return (
     <div className='flex justify-center gap-4'>
-      <TrainerProfile trainer={trainer}/>
+      <TrainerProfile coach={coach}/>
 
       <div className='flex flex-[3] flex-col gap-4'>
         <TrainingActivity />
         <TrainerSchedule />
-        <Reviews reviews={trainer.reviews} />
+        <Reviews reviews={coach.reviews} />
       </div>
     </div>
   )

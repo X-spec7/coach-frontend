@@ -1,11 +1,17 @@
+import { ICoachReview } from "@/shared/types"
+
 interface IOverview {
   experience?: number
   members?: number
-  rating?: number
+  reviews?: ICoachReview[]
 }
 
 // TODO: undefined data case
-const Overview: React.FC<IOverview> = ({ experience, members, rating }) => {
+const Overview: React.FC<IOverview> = ({ experience, members, reviews }) => {
+  const averageRating = reviews?.length
+    ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length
+    : 0
+  
   return (
     <div className='flex justify-between items-center bg-blue rounded-20 px-4 py-3.5'>
       {/* EXPERIENCE */}
@@ -31,10 +37,10 @@ const Overview: React.FC<IOverview> = ({ experience, members, rating }) => {
       {/* RAITING */}
       <div className='flex flex-col items-center justify-center'>
         <p className='text-black text-lg font-bold'>
-          {rating}
+          {averageRating}
           <span className='text-xs text-black font-medium'>/5.0</span>
         </p>
-        <p className='text-gray-30 text-xs'>Rating</p>
+        <p className='text-gray-30 text-xs'>{reviews?.length ? 'Rating' : 'No review'}</p>
       </div>
     </div>
   )

@@ -1,10 +1,10 @@
-import { IClass } from "./class.type"
-import { ICertification, IReview } from "./trainer.type"
+import { ICertification } from "./trainer.type"
 
 export interface IUser {
   id: number
   firstName: string
   lastName: string
+  fullName: string
   userType: string
   email: string
   address: string
@@ -20,12 +20,12 @@ export interface ICoachProfile extends IUser {
   certifications?: ICertification[]
 }
 
-interface ICoachDetailClass {
+export interface ICoachDetailClass {
   title: string
   category: string
 }
 
-interface ICoachReview {
+export interface ICoachReview {
   coachId: number
   reviewerName: string
   reviewerAvatarUrl: string
@@ -36,7 +36,7 @@ interface ICoachReview {
 export interface ICoachDetail extends ICoachProfile {
   members?: number
   classes: ICoachDetailClass[]
-  reviews: ICoachReview[]
+  reviews?: ICoachReview[]
 }
 
 export type IUserRoleGuard = 'Client' | 'Coach' | 'Admin'
