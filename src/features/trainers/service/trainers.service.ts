@@ -10,14 +10,21 @@ import {
   GetTotalTrainersCountResponseDTO,
   GetTrainerByIdPayloadDTO,
   GetTrainerByIdResponseDTO
-} from '../types/trainer.type'
+} from '../types/trainer.dto'
+import authorizedHttpServer from '@/shared/services/authorizedHttp'
 
 class TrainersService {
   async getTrainers(
     payload: GetTrainersPayloadDTO
   ): Promise<GetTrainersResponseDTO> {
-    const response = await getTrainers(payload)
-    return response
+    return authorizedHttpServer
+      .post('/users/trainers/get/', payload)
+      .then((response) => {
+        return {
+          status: response.status,
+          ...response.data
+        }
+      })
   }
 
   async getTotalTrainersCount(

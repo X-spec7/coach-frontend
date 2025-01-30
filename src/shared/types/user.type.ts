@@ -20,11 +20,23 @@ export interface ICoachProfile extends IUser {
   certifications?: ICertification[]
 }
 
+interface ICoachDetailClass {
+  title: string
+  category: string
+}
+
+interface ICoachReview {
+  coachId: number
+  reviewerName: string
+  reviewerAvatarUrl: string
+  rating: number
+  content: string
+}
+
 export interface ICoachDetail extends ICoachProfile {
   members?: number
-  rating?: number
-  classes: IClass[]
-  reviews: IReview[]
+  classes: ICoachDetailClass[]
+  reviews: ICoachReview[]
 }
 
 export type IUserRoleGuard = 'Client' | 'Coach' | 'Admin'

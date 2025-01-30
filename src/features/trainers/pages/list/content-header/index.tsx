@@ -3,6 +3,8 @@
 import { SearchField } from '@/shared/components'
 import { BasicDropdownButton } from '@/shared/components/Button'
 import { PlusSvg, FadersHorizontalSvg } from '@/shared/components/Svg'
+import { useSearchParams, usePathname, useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 const classCategories = [
   'All Class Categories',
@@ -37,6 +39,23 @@ const FadeButton = () => {
 }
 
 const ContentHeader = ({ searchPlaceHolder } : { searchPlaceHolder: string}) => {
+  const searchParams = useSearchParams()
+  const pathname = usePathname()
+  const { replace } = useRouter()
+
+  const onCategorySelected = (selectedOption: string | null) => {
+    const params = new URLSearchParams(searchParams)
+
+    if (selectedOption) {
+      params.set('specialization', selectedOption)
+    } else {
+      params.delete('specialization')
+    }
+
+    params.delete('page')
+    replace(`${pathname}?${params.toString()}`)
+  }
+
   return (
     <div className='flex justify-between items-center w-full h-7.5'>
       <div className='flex justify-start items-center gap-3'>
@@ -45,7 +64,10 @@ const ContentHeader = ({ searchPlaceHolder } : { searchPlaceHolder: string}) => 
           height='h-7.5'
           placeholder={searchPlaceHolder || 'Search for trainer'}
         />
-        <BasicDropdownButton options = {classCategories} />
+        <BasicDropdownButton
+          options = {classCategories}
+          onSelect={onCategorySelected}
+        />
       </div>
 
       <div className='flex justify-end items-center gap-3'>

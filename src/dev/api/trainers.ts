@@ -6,7 +6,7 @@ import {
   GetTotalTrainersCountResponseDTO,
   GetTrainerByIdPayloadDTO,
   GetTrainerByIdResponseDTO
-} from '@/features/trainers/types/trainer.type'
+} from '@/features/trainers/types/trainer.dto'
 
 export const getTrainers = (
   { pageSize, pageNum, query, expertise }: GetTrainersPayloadDTO

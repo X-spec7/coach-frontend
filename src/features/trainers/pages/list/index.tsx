@@ -10,10 +10,10 @@ const countPerPage = 15
 interface ITrainersPageProps {
   query: string
   currentPage: number
-  expertise: string
+  specialization: string
 }
 
-const TrainersPage: React.FC<ITrainersPageProps> = async ({ query, expertise, currentPage}) => {
+const TrainersPage: React.FC<ITrainersPageProps> = async ({ query, specialization, currentPage}) => {
 
   const response = await trainersService.getTotalTrainersCount({ query })
   // TODO: handle response error case
@@ -26,7 +26,7 @@ const TrainersPage: React.FC<ITrainersPageProps> = async ({ query, expertise, cu
         <Suspense fallback={<Loader />}>
           <TrainersList
             query={query}
-            expertise={expertise}
+            specialization={specialization}
             currentPage={currentPage}
           />
         </Suspense>

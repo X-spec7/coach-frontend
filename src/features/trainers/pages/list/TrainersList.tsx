@@ -5,20 +5,21 @@ import TrainerCard from './TrainerCard'
 
 interface ITrainersListProps {
   query: string
-  expertise: string
+  specialization: string
   currentPage: number
 }
 
 const TrainersList: React.FC<ITrainersListProps> = async ({
   query,
   currentPage,
-  expertise
+  specialization
 }) => {
+
   const response = await trainersService.getTrainers({
-    pageSize: 15,
-    pageNum: currentPage,
-    query: query,
-    expertise: expertise
+    limit: 15,
+    offset: (currentPage - 1) * 15,
+    query,
+    specialization,
   })
   const trainers = response.trainers
 
@@ -27,7 +28,7 @@ const TrainersList: React.FC<ITrainersListProps> = async ({
       {
         trainers.map((trainer, index) => (
           // TODO: update url param in future
-          <Link href={`/trainers/detail/1`} key={index}>
+          <Link href={`/trainers/detail/${trainer.trainerId}`} key={index}>
             <TrainerCard key={index} trainer={trainer} />
           </Link>
         ))
