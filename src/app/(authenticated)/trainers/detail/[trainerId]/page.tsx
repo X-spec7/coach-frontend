@@ -5,17 +5,17 @@ import { Loader } from '@/shared/components'
 
 interface Params {
   params: {
-    trainerId: string
+    trainerId: number
   }
 }
 
 export async function generateMetadata({params: { trainerId }}: Params) {
   const response = await trainersService.getTrainerById({ trainerId })
-  const trainer = response?.trainer
+  const coach = response?.coach
   
   return {
-    title: trainer ? `${trainer.name}'s Profile` : 'Trainer Profile',
-    description: `Details about ${trainer?.name || 'this trainer'}.`,
+    title: coach ? `${coach.fullName}'s Profile` : 'Trainer Profile',
+    description: `Details about ${coach?.fullName || 'this trainer'}.`,
   }
 }
 
@@ -24,15 +24,15 @@ const TrainerDetail = async ({params: { trainerId }}: Params) => {
   const response = await trainersService.getTrainerById({ trainerId })
 
   // TODO: add response error handling
-  const trainer = response?.trainer
+  const coach = response?.coach
 
   // TODO: replace skeleton
-  if (trainer === null || trainer === undefined) {
+  if (coach === null || coach === undefined) {
     return <Loader />
   }
   
   return (
-    <TrainerDetailPage trainer={trainer} />
+    <TrainerDetailPage coach={coach} />
   )
 }
 

@@ -2,12 +2,6 @@ import { EnvelopOpenSvg, PhoneSvg, HouseSvg } from '@/shared/components/Svg'
 import { TitleWithEllipsis } from '@/shared/components'
 import { ILayoutProps } from '@/shared/types'
 
-interface IContact {
-  email?: string
-  phone?: string
-  address?: string
-}
-
 const ContactDetailBox: React.FC<ILayoutProps> = ({ children }) => {
   return (
     <div className='flex justify-start items-start gap-3.5'>
@@ -38,7 +32,17 @@ const ContactDetailText: React.FC<IContactDetailText> = ({ title, content }) => 
   )
 }
 
-const Contact: React.FC<{contact?: IContact}> = ({ contact }) => {
+interface IContactProps {
+  email: string
+  phoneNumber?: string
+  address?: string
+}
+
+const Contact: React.FC<IContactProps> = ({
+  email,
+  phoneNumber,
+  address
+}) => {
   return (
     <div className='flex flex-col w-full gap-3.5'>
       <TitleWithEllipsis title='Contact' />
@@ -49,25 +53,29 @@ const Contact: React.FC<{contact?: IContact}> = ({ contact }) => {
           <EnvelopOpenSvg width='18' height='18' color='#4D5260' />
         </ContactSvgBox>
 
-        <ContactDetailText title='Email' content={contact?.email} />
+        <ContactDetailText title='Email' content={email} />
       </ContactDetailBox>
 
       {/* PHONE */}
-      <ContactDetailBox>
-        <ContactSvgBox>
-          <EnvelopOpenSvg width='18' height='18' color='#4D5260' />
-        </ContactSvgBox>
+      {
+        phoneNumber && phoneNumber.trim() !== '' && (
+          <ContactDetailBox>
+            <ContactSvgBox>
+              <PhoneSvg width='18' height='18' color='#4D5260' />
+            </ContactSvgBox>
 
-        <ContactDetailText title='Phone' content={contact?.phone} />
-      </ContactDetailBox>
+            <ContactDetailText title='Phone' content={phoneNumber} />
+          </ContactDetailBox>
+        )
+      }
 
       {/* ADDRESS */}
       <ContactDetailBox>
         <ContactSvgBox>
-          <EnvelopOpenSvg width='18' height='18' color='#4D5260' />
+          <HouseSvg width='18' height='18' color='#4D5260' />
         </ContactSvgBox>
 
-        <ContactDetailText title='Address' content={contact?.address} />
+        <ContactDetailText title='Address' content={address} />
       </ContactDetailBox>
     </div>
   )

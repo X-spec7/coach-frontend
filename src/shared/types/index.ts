@@ -1,5 +1,4 @@
 export type {
-  Class,
   ClassCategory,
   ClassLevel,
 } from './class.type'
@@ -22,6 +21,9 @@ export type {
   IUser,
   IUserRoleGuard,
   ICoachProfile,
+  ICoachDetail,
+  ICoachReview,
+  ICoachDetailClass,
 } from './user.type'
 
 export type { Progress } from './progress.type'

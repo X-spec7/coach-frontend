@@ -13,12 +13,12 @@ const Trainers: React.FC = async (props: {
   searchParams?: Promise<{
     query?: string
     page?: string
-    expertise?: string
+    specialization?: string
   }>;
 }) => {
   const searchParams = await props.searchParams
   const query = searchParams?.query || ''
-  const expertise = searchParams?.expertise || ''
+  const specialization = searchParams?.specialization || ''
   const currentPage = Number(searchParams?.page) || 1
 
   return (
@@ -26,7 +26,7 @@ const Trainers: React.FC = async (props: {
       <TrainersPage
         query={query}
         currentPage={currentPage}
-        expertise={expertise}
+        specialization={specialization}
       />
     </Suspense>
   )
