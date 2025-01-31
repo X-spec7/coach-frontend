@@ -69,6 +69,9 @@ const CoachesList: React.FC<ICoachesListProps> = ({
         if (response.status === 200) {
           setSelectedCoach(response.coach)
           getCoaches()
+          if (listed !== 'all') {
+            setShowModal(false)
+          }
         } else {
           alert('Something went wrong')
           console.log('Error when toggling coach listed state: ', response.message)
