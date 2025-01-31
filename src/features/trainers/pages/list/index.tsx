@@ -31,7 +31,7 @@ const CoachesPage: React.FC<ICoachesPageProps> = ({ query, specialization, curre
 
   return (
     <div className='flex flex-col p-4 gap-4 bg-white rounded-4xl'>
-      <ContentHeader searchPlaceHolder={query} />
+      <ContentHeader searchPlaceHolder={query} dropdownDefaultValue={specialization} />
 
       {/* <!-- MAIN CONTENT --> */}
       <TrainersList

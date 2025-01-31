@@ -6,11 +6,12 @@ import { CaretDownSvg, CaretUpSvg } from '../../Svg'
 interface BasicDropdownProps {
   options: string[]
   onSelect?: (option: string | null) => void
+  dropdownDefaultValue?: string
 }
 
-const BasicDropdown: React.FC<BasicDropdownProps> = ({ options, onSelect }) => {
+const BasicDropdown: React.FC<BasicDropdownProps> = ({ options, onSelect, dropdownDefaultValue }) => {
   const [isOpen, setIsOpen] = useState(false)
-  const [selectedOption, setSelectedOption] = useState(options[0])
+  const [selectedOption, setSelectedOption] = useState(dropdownDefaultValue ?? options[0])
 
   const toggleDropdown = () => setIsOpen((prev) => !prev)
 

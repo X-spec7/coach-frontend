@@ -37,7 +37,12 @@ const FadeButton = () => {
   )
 }
 
-const ContentHeader = ({ searchPlaceHolder } : { searchPlaceHolder: string}) => {
+interface IContentHeaderProps {
+  searchPlaceHolder: string
+  dropdownDefaultValue: string
+}
+
+const ContentHeader: React.FC<IContentHeaderProps> = ({ searchPlaceHolder, dropdownDefaultValue }) => {
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const { replace } = useRouter()
@@ -66,6 +71,7 @@ const ContentHeader = ({ searchPlaceHolder } : { searchPlaceHolder: string}) => 
         <BasicDropdownButton
           options = {classCategories}
           onSelect={onCategorySelected}
+          dropdownDefaultValue={dropdownDefaultValue}
         />
       </div>
 

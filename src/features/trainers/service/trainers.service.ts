@@ -65,6 +65,7 @@ class CoachesService {
   async getCoachById(
     payload: GetCoachByIdPayloadDTO
   ): Promise<GetCoachByIdResponseDTO> {
+    console.log('payload in getting coach: ', payload.coachId)
     const params = new URLSearchParams()
     if (payload.coachId) {
       params.append('coachId', payload.coachId.toString())

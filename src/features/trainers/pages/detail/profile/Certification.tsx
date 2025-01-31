@@ -6,7 +6,7 @@ interface ICertificationProps {
   certifications?: ICertification[]
 }
 
-const CertificationCard = ({ certificationTitle, year }: { certificationTitle: string; year: number }) => {
+const CertificationCard = ({ certificationTitle, certificationDetail }: { certificationTitle: string; certificationDetail: string }) => {
   return (
     <div className='flex justify-start items-center gap-2 p-3 rounded-20 border-stroke border'>
       <div className='flex justify-center items-center w-9 h-9 bg-yellow rounded-2xl'>
@@ -15,7 +15,7 @@ const CertificationCard = ({ certificationTitle, year }: { certificationTitle: s
 
       <div className='flex flex-col items-start gap-1'>
         <p className='text-black text-xs font-medium'>{certificationTitle}</p>
-        <p className='text-gray-20 text-xxs'>{year}</p>
+        <p className='text-gray-20 text-xxs'>{certificationDetail}</p>
       </div>
     </div>
   )
@@ -28,7 +28,7 @@ const Certification: React.FC<ICertificationProps> = ({ certifications }) => {
 
       {
         certifications?.map((certification, index) => (
-          <CertificationCard key={index} certificationTitle={certification.title} year={certification.year} />
+          <CertificationCard key={index} certificationTitle={certification.certificationTitle} certificationDetail={certification.certificationDetail} />
         ))
       }
     </div>

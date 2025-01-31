@@ -19,7 +19,7 @@ const TrainerProfile: React.FC<TrainerProfileProps> = ({ coach }) => {
     <div className='flex flex-col justify-start items-center'>
       <TitleWithEllipsis title='Profile' />
 
-      <div className='w-30 h-30 mt-5.5 rounded-5xl'>
+      <div className='w-30 h-30 mt-5.5 rounded-4xl overflow-hidden'>
         <Image
           src={
             coach.avatarImageUrl && coach.avatarImageUrl.trim() !== ''
@@ -29,7 +29,7 @@ const TrainerProfile: React.FC<TrainerProfileProps> = ({ coach }) => {
           width={120}
           height={120}
           alt={`${coach.fullName} avatar`}
-          className='rounded-5xl'
+          className='rounded-4xl'
         />
       </div>
 

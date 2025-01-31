@@ -4,7 +4,6 @@ import Link from 'next/link'
 
 import trainersService from '../../service/trainers.service'
 import CoachCard from './CoachCard'
-import { ICoachDetail } from '@/shared/types'
 import { ICoachCard } from '../../types'
 import { useEffect, useState } from 'react'
 
