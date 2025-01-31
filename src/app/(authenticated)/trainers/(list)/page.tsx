@@ -20,7 +20,7 @@ const Trainers: React.FC = async (props: {
   const query = searchParams?.query || ''
   const specialization = searchParams?.specialization || 'All'
   const currentPage = Number(searchParams?.page) || 1
-  const listed = searchParams?.listed || 'all'
+  const listed = searchParams?.listed || 'All'
 
   return (
     <CoachesPage

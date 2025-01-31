@@ -28,7 +28,7 @@ const CoachesPage: React.FC<ICoachesPageProps> = ({
       const response = await trainersService.getTotalCoachesCount({
         query,
         specialization,
-        listed
+        listed: listed.toLowerCase()
       })
       setTotalCoachesCount(response.totalCount)
     }

@@ -37,7 +37,7 @@ const CoachesList: React.FC<ICoachesListProps> = ({
       offset: (currentPage - 1) * 15,
       query,
       specialization,
-      listed
+      listed: listed.toLowerCase()
     })
 
     if (response.status === 200) {
@@ -69,6 +69,9 @@ const CoachesList: React.FC<ICoachesListProps> = ({
         if (response.status === 200) {
           setSelectedCoach(response.coach)
           getCoaches()
+          if (listed !== 'All') {
+            setShowModal(false)
+          }
         } else {
           alert('Something went wrong')
           console.log('Error when toggling coach listed state: ', response.message)
