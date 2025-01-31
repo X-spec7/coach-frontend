@@ -12,18 +12,22 @@ const Trainers: React.FC = async (props: {
     query?: string
     page?: string
     specialization?: string
+    listed?: string
   }>
 }) => {
   const searchParams = await props.searchParams
+
   const query = searchParams?.query || ''
   const specialization = searchParams?.specialization || 'All'
   const currentPage = Number(searchParams?.page) || 1
+  const listed = searchParams?.listed || 'all'
 
   return (
     <CoachesPage
       query={query}
       currentPage={currentPage}
       specialization={specialization}
+      listed={listed}
     />
   )
 }

@@ -3,14 +3,21 @@
 import { SearchField } from '@/shared/components'
 import { BasicDropdownButton } from '@/shared/components/Button'
 import { PlusSvg, FadersHorizontalSvg } from '@/shared/components/Svg'
+import { useAuth } from '@/shared/provider'
 import { useSearchParams, usePathname, useRouter } from 'next/navigation'
 
-const classCategories = [
+const COACH_SPECIALITIES = [
   'All',
   'Fitness',
   'Strength',
   'Flexibility',
   'Mindfullness',
+]
+
+const LIST_OPTION = [
+  'All',
+  'Listed',
+  'Unlisted',
 ]
 
 const handleAddTrainerButtonClick = () => {
@@ -40,12 +47,19 @@ const FadeButton = () => {
 interface IContentHeaderProps {
   searchPlaceHolder: string
   dropdownDefaultValue: string
+  listOptionDefaultValue: string
 }
 
-const ContentHeader: React.FC<IContentHeaderProps> = ({ searchPlaceHolder, dropdownDefaultValue }) => {
+const ContentHeader: React.FC<IContentHeaderProps> = ({
+  searchPlaceHolder,
+  dropdownDefaultValue,
+  listOptionDefaultValue,
+}) => {
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const { replace } = useRouter()
+
+  const { user } = useAuth()
 
   const onCategorySelected = (selectedOption: string | null) => {
     const params = new URLSearchParams(searchParams)
@@ -60,6 +74,19 @@ const ContentHeader: React.FC<IContentHeaderProps> = ({ searchPlaceHolder, dropd
     replace(`${pathname}?${params.toString()}`)
   }
 
+  const onListOptionSelected = (selectedOption: string | null) => {
+    const params = new URLSearchParams(searchParams)
+
+    if (selectedOption) {
+      params.set('listed', selectedOption)
+    } else {
+      params.delete('listed')
+    }
+
+    params.delete('page')
+    replace(`${pathname}?${params.toString().toLowerCase()}`)
+  }
+
   return (
     <div className='flex justify-between items-center w-full h-7.5'>
       <div className='flex justify-start items-center gap-3'>
@@ -69,10 +96,17 @@ const ContentHeader: React.FC<IContentHeaderProps> = ({ searchPlaceHolder, dropd
           placeholder={searchPlaceHolder || 'Search for trainer'}
         />
         <BasicDropdownButton
-          options = {classCategories}
+          options={COACH_SPECIALITIES}
           onSelect={onCategorySelected}
           dropdownDefaultValue={dropdownDefaultValue}
         />
+        {user?.isSuperuser && (
+          <BasicDropdownButton
+            options={LIST_OPTION}
+            onSelect={onListOptionSelected}
+            dropdownDefaultValue={listOptionDefaultValue}
+          />
+        )}
       </div>
 
       <div className='flex justify-end items-center gap-3'>

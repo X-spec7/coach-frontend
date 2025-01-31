@@ -12,9 +12,15 @@ interface ICoachesPageProps {
   query: string
   currentPage: number
   specialization: string
+  listed: string
 }
 
-const CoachesPage: React.FC<ICoachesPageProps> = ({ query, specialization, currentPage}) => {
+const CoachesPage: React.FC<ICoachesPageProps> = ({
+  query,
+  specialization,
+  currentPage,
+  listed,
+}) => {
   const [totalCoachesCount, setTotalCoachesCount] = useState<number>(0)
 
   useEffect(() => {
@@ -22,7 +28,7 @@ const CoachesPage: React.FC<ICoachesPageProps> = ({ query, specialization, curre
       const response = await trainersService.getTotalCoachesCount({
         query,
         specialization,
-        listedState: "All"
+        listed
       })
       setTotalCoachesCount(response.totalCount)
     }
@@ -31,13 +37,18 @@ const CoachesPage: React.FC<ICoachesPageProps> = ({ query, specialization, curre
 
   return (
     <div className='flex flex-col p-4 gap-4 bg-white rounded-4xl'>
-      <ContentHeader searchPlaceHolder={query} dropdownDefaultValue={specialization} />
+      <ContentHeader
+        searchPlaceHolder={query}
+        dropdownDefaultValue={specialization}
+        listOptionDefaultValue={listed}
+      />
 
       {/* <!-- MAIN CONTENT --> */}
       <CoachesList
         query={query}
         specialization={specialization}
         currentPage={currentPage}
+        listed={listed}
       />
 
       <Pagination
