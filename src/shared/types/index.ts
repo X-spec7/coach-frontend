@@ -1,6 +1,5 @@
 export type {
-  ClassCategory,
-  ClassLevel,
+  IClass,
 } from './class.type'
 
 export type {
