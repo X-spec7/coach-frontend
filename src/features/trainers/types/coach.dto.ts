@@ -6,6 +6,7 @@ export interface GetCoachesPayloadDTO {
   limit: number
   query?: string
   specialization?: string
+  listed?: string
 }
 
 export interface GetCoachesResponseDTO extends BaseRestApiResponseType {
@@ -16,6 +17,7 @@ export interface GetCoachesResponseDTO extends BaseRestApiResponseType {
 export interface GetTotalCoachesCountPayloadDTO {
   query?: string
   specialization?: string
+  listed?: string
 }
 
 export interface GetTotalCoachesCountResponseDTO extends BaseRestApiResponseType {
@@ -28,4 +30,12 @@ export interface GetCoachByIdPayloadDTO {
 
 export interface GetCoachByIdResponseDTO extends BaseRestApiResponseType {
   coach: ICoachDetail
+}
+
+export interface ToggleCoachListedStatePayloadDTO {
+  coachId: number
+}
+
+export interface ToggleCoachListedStateResponseDTO extends BaseRestApiResponseType {
+  coach: ICoachCard
 }

@@ -4,7 +4,9 @@ import {
   GetTotalCoachesCountPayloadDTO,
   GetTotalCoachesCountResponseDTO,
   GetCoachByIdPayloadDTO,
-  GetCoachByIdResponseDTO
+  GetCoachByIdResponseDTO,
+  ToggleCoachListedStatePayloadDTO,
+  ToggleCoachListedStateResponseDTO
 } from '../types/coach.dto'
 import authorizedHttpServer from '@/shared/services/authorizedHttp'
 
@@ -25,9 +27,12 @@ class CoachesService {
     if (payload.specialization) {
       params.append('specialization', payload.specialization)
     }
+    if (payload.listed) {
+      params.append('listed', payload.listed)
+    }
 
     return authorizedHttpServer
-      .get(`/users/trainers/get/?${params.toString()}`)
+      .get(`/users/coaches/get/?${params.toString()}`)
       .then((response) => {
         return {
           status: response.status,
@@ -46,9 +51,12 @@ class CoachesService {
     if (payload.specialization) {
       params.append('specialization', payload.specialization)
     }
+    if (payload.listed) {
+      params.append('listed', payload.listed)
+    }
 
     return authorizedHttpServer
-      .get(`/users/trainers/get/count/?${params.toString()}`)
+      .get(`/users/coaches/get/count/?${params.toString()}`)
       .then((response) => {
         return {
           status: response.status,
@@ -66,7 +74,20 @@ class CoachesService {
     }
 
     return authorizedHttpServer
-      .get(`/users/trainer/get/?${params.toString()}`)
+      .get(`/users/coach/get/?${params.toString()}`)
+      .then((response) => {
+        return {
+          status: response.status,
+          ...response.data
+        }
+      })
+  }
+
+  async toggleCoachListedState(
+    payload: ToggleCoachListedStatePayloadDTO
+  ): Promise<ToggleCoachListedStateResponseDTO> {
+    return authorizedHttpServer
+      .post('/users/coach/toggle/listed/', payload)
       .then((response) => {
         return {
           status: response.status,

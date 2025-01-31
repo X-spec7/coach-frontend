@@ -4,7 +4,6 @@ import { Pagination, Loader } from '@/shared/components'
 import ContentHeader from './ContentHeader'
 import SessionsList from './SessionsList'
 import { clientSessionService } from '@/features/sessions/service'
-import { getOverlappingDaysInIntervals } from 'date-fns'
 
 const countPerPage = 15
 
@@ -32,7 +31,7 @@ const ClientSessionsListPage: React.FC<IClientSessionListPageProps> = ({
       setTotalSessionCount(response.totalSessionCount)
     }
     getTotalSessionCount()
-  }, [query, currentPage, goal])
+  }, [query, goal])
 
   return (
     <div className='flex flex-col p-4 gap-4 bg-white rounded-4xl'>

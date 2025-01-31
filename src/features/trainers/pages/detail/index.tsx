@@ -8,7 +8,7 @@ interface TrainerDetailPageProps {
   coach: ICoachDetail
 }
 
-const TrainerDetailPage: React.FC<TrainerDetailPageProps> = async ({ coach }) => {
+const TrainerDetailPage: React.FC<TrainerDetailPageProps> = ({ coach }) => {
 
   if (coach === undefined) {
     return (

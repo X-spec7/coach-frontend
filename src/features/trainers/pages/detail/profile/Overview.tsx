@@ -24,10 +24,12 @@ const Overview: React.FC<IOverview> = ({ experience, members, reviews }) => {
       <div className='flex flex-col items-center justify-center'>
         <p className='text-black text-lg font-bold'>
           {
-            members && (
+            members ? (
               members < 100
               ? members
               : `${Math.floor(members / 50) * 50}+`
+            ) : (
+              '0'
             )
           }
         </p>
