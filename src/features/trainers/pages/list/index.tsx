@@ -2,7 +2,7 @@
 
 import { Pagination } from '@/shared/components'
 import ContentHeader from './content-header'
-import TrainersList from './CoachesList'
+import CoachesList from './CoachesList'
 import { trainersService } from '../../service'
 import { useEffect, useState } from 'react'
 
@@ -34,7 +34,7 @@ const CoachesPage: React.FC<ICoachesPageProps> = ({ query, specialization, curre
       <ContentHeader searchPlaceHolder={query} dropdownDefaultValue={specialization} />
 
       {/* <!-- MAIN CONTENT --> */}
-      <TrainersList
+      <CoachesList
         query={query}
         specialization={specialization}
         currentPage={currentPage}

@@ -7,13 +7,13 @@ import CoachCard from './CoachCard'
 import { ICoachCard } from '../../types'
 import { useEffect, useState } from 'react'
 
-interface ITrainersListProps {
+interface ICoachesListProps {
   query: string
   specialization: string
   currentPage: number
 }
 
-const TrainersList: React.FC<ITrainersListProps> = ({
+const CoachesList: React.FC<ICoachesListProps> = ({
   query,
   currentPage,
   specialization
@@ -52,4 +52,4 @@ const TrainersList: React.FC<ITrainersListProps> = ({
   )
 }
 
-export default TrainersList
+export default CoachesList
