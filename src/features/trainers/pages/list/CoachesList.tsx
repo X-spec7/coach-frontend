@@ -49,7 +49,7 @@ const CoachesList: React.FC<ICoachesListProps> = ({
 
   useEffect(() => {
     getCoaches()
-  }, [currentPage, query, specialization])
+  }, [currentPage, query, specialization, listed])
 
   const handleCoachCardClicked = (coach: ICoachCard) => {
     if (user?.isSuperuser) {
@@ -67,14 +67,15 @@ const CoachesList: React.FC<ICoachesListProps> = ({
         const response = await trainersService.toggleCoachListedState({coachId: selectedCoach?.id})
         
         if (response.status === 200) {
+          setSelectedCoach(response.coach)
           getCoaches()
         } else {
           alert('Something went wrong')
           console.log('Error when toggling coach listed state: ', response.message)
         }
       } catch (error) {
+        alert('Something went wrong')
         console.log('Error when toggling coach listed state: ', error)
-        console.log('')
       } finally {
         setIsToggling(false)
       }
