@@ -1,11 +1,17 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 
 import { Pagination, SearchField } from '@/shared/components'
 import { BasicDropdownButton, PrimaryButton } from '@/shared/components/Button'
-import { UserCircleSvg, MonitorSvg, ClockSvg } from '@/shared/components/Svg'
 import { IClass } from '@/shared/types'
+import {
+  UserCircleSvg,
+  MonitorSvg,
+  ClockSvg,
+  BarbellSvg
+} from '@/shared/components/Svg'
 
 const CATEGORY_OPTIONS = [
   'All Category',
@@ -29,14 +35,14 @@ interface IClassListItemProps {
 const ClassListItem: React.FC<IClassListItemProps> = ( {classData }) => {
 
   const CategoryTag = ({category}: {category: string}) => (
-    <div className='px-2 py-3 bg-blue-subtle text-gray-30'>
+    <div className='px-1.5 py-1 bg-blue-subtle text-gray-30 text-xxs2'>
       {category}
     </div>
   )
 
   const LevelTag = ({level}: {level: string}) => (
-    <div className='w-24 h-7 bg-blue'>
-      {classData.level}
+    <div className='flex justify-center items-center w-24 h-7 rounded-20 bg-blue'>
+      {level}
     </div>
   )
 
@@ -46,18 +52,18 @@ const ClassListItem: React.FC<IClassListItemProps> = ( {classData }) => {
 
   return (
     <div className='flex items-center justify-between gap-14 p-4 border border-gray-bg rounded-20'>
-      <div className='flex items-center justify-start gap-4'>
+      <div className='flex items-center justify-start gap-4 w-80'>
         <div className='flex justify-center items-center w-10 h-10 bg-green rounded-full'>
-
+          <BarbellSvg width='20' height='20' color='#4D5260' />
         </div>
-        <div className='flex flex-col justify-start items-center gap-4'>
+        <div className='flex flex-col justify-start items-start gap-1'>
           <h3 className='text-black font-bold text-xs'>{classData.title}</h3>
           <CategoryTag category={classData.category} />
         </div>
       </div>
 
-      <div className='flex items-center justify-between text-black text-xxs'>
-        <div className='flex items-center justify-start gap-2'>
+      <div className='flex flex-1 items-center justify-between text-black text-xxs'>
+        <div className='flex items-center justify-start gap-2 w-32'>
           <UserCircleSvg width='14' height='14' color='#212738' />
           <p>{classData.coachFullname}</p>
         </div>
@@ -74,7 +80,7 @@ const ClassListItem: React.FC<IClassListItemProps> = ( {classData }) => {
 
         <LevelTag level={classData.level} />
 
-        <div className='flex flex-col items-start justify-start gap-2'>
+        <div className='flex flex-col items-start justify-start gap-1'>
           <p className='text-black text-sm font-medium'>&euro; {classData.price}</p>
           <p>for the full course</p>
         </div>
@@ -98,7 +104,7 @@ const AllClasses: React.FC<IAllClassesProps> = ({ allClasses }) => {
   const [totalCount, setTotalCount] = useState(allClasses.length)
 
   return (
-    <div className='flex flex-col gap-4 bg-white rounded-20'>
+    <div className='flex flex-col gap-4 p-4 bg-white rounded-20'>
       {/* Header */}
       <div className='flex items-center justify-between'>
         <h2 className='text-black font-medium'>All Classes</h2>
@@ -112,7 +118,9 @@ const AllClasses: React.FC<IAllClassesProps> = ({ allClasses }) => {
 
       {/* List of classes */}
       {allClasses.map((classData, index) => (
-        <ClassListItem key={index} classData={classData}/>
+        <Link href={'/classes/'}>
+          <ClassListItem key={index} classData={classData}/>
+        </Link>
       ))}
 
       <Pagination countPerPage={6} totalCounts={totalCount} />
