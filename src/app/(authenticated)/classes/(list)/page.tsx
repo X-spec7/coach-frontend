@@ -1,6 +1,6 @@
-import { Metadata } from 'next';
+import { Metadata } from 'next'
 
-import ClassesPage from '@/features/classes';
+import ClassesList from '@/features/classes/pages/list'
 
 export const metadata: Metadata = {
   title:
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 const Classes: React.FC = () => {
   return (
     <>
-      <ClassesPage />
+      <ClassesList />
     </>
   )
 }

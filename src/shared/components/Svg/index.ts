@@ -29,6 +29,9 @@ export { default as HouseSvg } from './House'
 export { default as StarSvg } from './Star'
 export { default as TrashSvg } from './TrashSvg'
 export { default as EditSvg } from './Edit'
+export { default as SpeedoMeterSvg } from './SpeedoMeter'
+export { default as CheckSvg } from './Check'
+export { default as ArrowClockWiseSvg } from './ArrowClockWise'
 
 export { default as SendButtonSvg } from './SendButton'
 
