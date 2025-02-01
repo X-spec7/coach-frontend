@@ -1,3 +1,5 @@
+'use client'
+
 import Image from 'next/image'
 
 import { PrimaryButton } from '@/shared/components'
@@ -14,20 +16,21 @@ import {
 } from '@/shared/components/Svg'
 
 interface IClassOverviewItemProps {
-  key: string
+  keyName: string
   value: string | number
 }
 
-const ClassOverviewItem: React.FC<IClassOverviewItemProps> = ({ key, value }) => {
+const ClassOverviewItem: React.FC<IClassOverviewItemProps> = ({ keyName, value }) => {
+
   return (
     <div className='flex items-center justify-start gap-2'>
-      <div className={`w-9 h-9 rounded-20 ${getBgColorByKey(key)}`}>
-        {getSvgByKey(key)}
+      <div className={`flex justify-center items-center w-9 h-9 rounded-20 ${getBgColorByKey(keyName)}`}>
+        {getSvgByKey(keyName)}
       </div>
 
-      <div className='flex items-start justify-start gap-2'>
+      <div className='flex flex-col items-start justify-start gap-0.5'>
         <p className='text-gray-30 font-semibold text-xs'>{value}</p>
-        <p className='text-gray-20 font-medium text-xxs'>{key}</p>
+        <p className='text-gray-20 font-medium text-xxs'>{keyName}</p>
       </div>
     </div>
   )
@@ -58,29 +61,29 @@ const ClassSpec: React.FC<IClassSpecProps> = ({ classDetailData }) => {
   )
 
   const onTakeClassButtonClicked = () => {
-
+    // 
   }
   return (
-    <div className='flex flex-2 flex-col gap-4 bg-white rounded-4xl'>
+    <div className='flex flex-1 flex-col gap-4 p-4 bg-white rounded-4xl'>
       {/* Header */}
-      <div className='flex items-center justify-center'>
-        <div className='flex items-start justify-start gap-2'>
+      <div className='flex items-center justify-between w-full'>
+        <div className='flex flex-col items-start justify-start gap-0.5'>
           <h2 className='text-black text-2xl font-medium'>{classDetailData.title}</h2>
           <p className='text-gray-20 text-sm'>{classDetailData.category} | {classDetailData.coachFullname}</p>
         </div>
 
         <div className='flex items-center justify-end gap-4'>
-          <div className='flex items-start justify-start gap-2'>
+          <div className='flex flex-col items-start justify-start gap-0.5'>
             <p className='text-black text-lg font-medium'>&euro; {classDetailData.price}</p>
             <p className='text-gray-20 text-xs'>for the full course</p>
           </div>
-          <PrimaryButton title='Take Class' width='w-21' height='h-9' onClick={onTakeClassButtonClicked} />
+          <PrimaryButton title='Take Class' width='w-24' height='h-9' fontSize='text-sm' onClick={onTakeClassButtonClicked} />
         </div>
       </div>
 
       {/* Banner */}
       <div className='w-full bg-gray-bg-subtle rounded-lg'>
-        <div className='relative w-full h-46 rounded-lg'>
+        <div className='relative w-full h-100 rounded-lg'>
           <Image
             src={DEFAULT_CLASS_BANNER_URL}
             alt={`${classDetailData.title} banner image`}
@@ -89,11 +92,11 @@ const ClassSpec: React.FC<IClassSpecProps> = ({ classDetailData }) => {
           />
         </div>
         <div className='flex items-center justify-between w-full p-4'>
-          <ClassOverviewItem key='level' value={classDetailData.level}/>
-          <ClassOverviewItem key='intensity' value={classDetailData.intensity}/>
-          <ClassOverviewItem key='Session Count' value={classDetailData.sessionCount}/>
-          <ClassOverviewItem key='Duration per session' value={classDetailData.durationPerSession}/>
-          <ClassOverviewItem key='Calorie per session' value={classDetailData.caloriePerSession}/>
+          <ClassOverviewItem keyName='level' value={classDetailData.level}/>
+          <ClassOverviewItem keyName='intensity' value={classDetailData.intensity}/>
+          <ClassOverviewItem keyName='Session Count' value={classDetailData.sessionCount}/>
+          <ClassOverviewItem keyName='Duration per session' value={classDetailData.durationPerSession}/>
+          <ClassOverviewItem keyName='Calorie per session' value={classDetailData.caloriePerSession}/>
         </div>
       </div>
 
@@ -102,14 +105,14 @@ const ClassSpec: React.FC<IClassSpecProps> = ({ classDetailData }) => {
       <p className='text-gray-30 text-sm break-words'>{classDetailData.description}</p>
 
       {/* Equipments */}
-      <div className='grid grid-cols-2 justify-items-start items-center'>
+      <div className='grid grid-cols-2 justify-items-start items-center gap-y-1 mt-4'>
         {classDetailData.equipments?.map((equipment, index) => (
           <EquipmentItem key={index} itemTitle={equipment} />
         ))}
       </div>
 
       {/* Benefits */}
-      <div className='grid grid-cols-2 justify-items-start items-center'>
+      <div className='grid grid-cols-2 justify-items-start items-center gap-y-1 mt-4'>
         {classDetailData.benefits?.map((benefit, index) => (
           <BenefitItem key={index} benefit={benefit} />
         ))}
@@ -121,6 +124,7 @@ const ClassSpec: React.FC<IClassSpecProps> = ({ classDetailData }) => {
 export default ClassSpec
 
 const getSvgByKey = (key: string) => {
+  console.log('key in getting svg: ', key)
   switch (key) {
     case 'level':
       return <ChartBarSvg width='16' height='16' color='#4D5260' />
@@ -133,7 +137,7 @@ const getSvgByKey = (key: string) => {
     case 'Calorie per session':
       return <FireSvg width='16' height='16' color='#4D5260' />
     default:
-      return <></>
+      return <>1234</>
   }
 }
 

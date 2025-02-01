@@ -13,11 +13,11 @@ interface IExerciseItemProps {
 
 const ExerciseItem: React.FC<IExerciseItemProps> = ({exercise, index}) => {
   return (
-    <div className='flex items-center justify-start w-full p-4 bg-white rounded-20'>
-      <div className='flex justify-center items-center w-8 h-8'>{index + 1}</div>
-      <div className='flex flex-col items-start justify-start gap-2'>
+    <div className='flex items-center justify-start gap-4 w-full p-4 bg-white rounded-20'>
+      <div className='flex justify-center items-center w-8 h-8 bg-blue-light rounded-full'>{index + 1}</div>
+      <div className='flex flex-col items-start justify-start'>
         <h3 className='text-black font-medium'>{exercise.title}</h3>
-        <div className='flex items-center justify-start gap-3 text-gray-20'>
+        <div className='flex items-center justify-start gap-3 text-gray-20 text-xxs'>
           <div className='flex items-center justify-start gap-1'>
             <ArrowClockWiseSvg width='12' height='12' color='#878A94' />
             <p>{exercise.repsCount} reps &times; {exercise.setCount} sets</p>
