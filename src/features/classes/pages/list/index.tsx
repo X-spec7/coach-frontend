@@ -12,8 +12,8 @@ import {
 
 const ClassesList = () => {
   return (
-    <div className='flex flex-col p-4 gap-4'>
-      <div className='flex items-center gap-4 rounded'>
+    <div className='flex flex-col gap-4'>
+      <div className='flex items-start gap-4 rounded'>
         <div className='flex flex-2 flex-col justify-start gap-4 p-4 bg-white rounded-4xl'>
           <MyClasses myClasses={myClasses} />
           <FeaturedClass classData={featuredClass} />

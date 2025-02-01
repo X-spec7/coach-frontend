@@ -118,7 +118,7 @@ const AllClasses: React.FC<IAllClassesProps> = ({ allClasses }) => {
 
       {/* List of classes */}
       {allClasses.map((classData, index) => (
-        <Link href={'/classes/'}>
+        <Link href={`/classes/detail/${classData.id}`}>
           <ClassListItem key={index} classData={classData}/>
         </Link>
       ))}

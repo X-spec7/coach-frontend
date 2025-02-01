@@ -5,7 +5,7 @@ import ClassSession from './ClassSession'
 
 const ClassDetail = () => {
   return (
-    <div className='flex justify-start items-start w-full p-4'>
+    <div className='flex justify-start items-start w-full'>
       <ClassSpec classDetailData={classDetailData} />
       <div className='flex flex-1 flex-col gap-4'>
         <Exercises exercises={classDetailData.exercises} />

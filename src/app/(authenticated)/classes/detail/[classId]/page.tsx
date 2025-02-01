@@ -1,11 +1,10 @@
 import React from 'react'
+import ClassDetail from '@/features/classes/pages/detail'
 
-const page = () => {
+const Page = () => {
   return (
-    <div>
-      
-    </div>
+    <ClassDetail />
   )
 }
 
-export default page
+export default Page
