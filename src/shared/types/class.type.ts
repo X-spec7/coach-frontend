@@ -1,3 +1,5 @@
+import { IClassExercise } from "./exercise.type"
+
 export interface IClass {
   id: number
   coachId: number
@@ -12,6 +14,7 @@ export interface IClass {
   sessionCount: number
   durationPerSession: number
   caloriePerSession: number
-  benefits: string[]
-  equipments: string[]
+  benefits?: string[]
+  equipments?: string[]
+  exercises?: IClassExercise[]
 }

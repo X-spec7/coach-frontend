@@ -1,11 +1,15 @@
 export interface IExercise {
+  id: number
   title: string
   description: string
   exerciseIconUrl: string
   exerciseGifUrl: string
-  calorie: string
+  caloriePerRound: number
 }
 
 export interface IClassExercise extends IExercise {
-  classWorkoutDailyPlanId: number
+  setCount: number
+  repsCount: number
+  restDuration: number
+  caloriePerSet: number
 }
