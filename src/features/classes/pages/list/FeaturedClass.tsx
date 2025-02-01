@@ -30,7 +30,7 @@ const FeaturedClass: React.FC<IFeaturedClassProps> = ({ classData }) => {
           <Image
             src={DEFAULT_CLASS_BANNER_URL}
             alt=''
-            fill={true} // Takes full width & height of parent
+            fill
             className='object-cover rounded-lg'
           />
         </div>

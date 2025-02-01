@@ -107,9 +107,107 @@ const allClasses: IClass[] = myClasses.concat([
     sessionCount: 6,
     durationPerSession: 40,
     caloriePerSession: 400,
-    benefits: ["Agility", "Strength", "Endurance"],
-    equipments: ["Gloves"]
+    benefits: ["Agility"],
+    equipments: ["Gloves", "Strength", "Endurance", "Barbell", "Resistance Band"]
   }
 ]);
 
-export { myClasses, recommendedClasses, featuredClass, allClasses }
+const classDetailData: IClass = {
+  id: 3,
+  coachId: 103,
+  coachFullname: "Emily Carter",
+  title: "Pilates Core Strength",
+  description: "By combining strength training, cardio, and flexibility exercises, this class offers a well-rounded approach to fitness, targeting all major muscle groups while improving endurance and mobility.",
+  classBannerImageUrl: "https://example.com/pilates.jpg",
+  category: "Pilates",
+  intensity: "Medium",
+  level: "Intermediate",
+  price: 22,
+  sessionCount: 4,
+  durationPerSession: 40,
+  caloriePerSession: 300,
+  benefits: [
+    "Build and tone muscles across the entire body.",
+    "Gain better balance, stability, and core strength.",
+    "Enhance cardiovascular health and endurance.",
+    "Increase metabolism and burn more calories throughout the day.",
+    "Improve overall fitness levels and performance.",
+  ],
+  equipments: ["Gloves", "Strength", "Endurance", "Barbell", "Resistance Band"],
+  exercises: [
+    {
+      id: 1,
+      title: "Plank Hold",
+      description: "Engage your core and maintain a stable plank position.",
+      exerciseIconUrl: "https://example.com/icons/plank.png",
+      exerciseGifUrl: "https://example.com/gifs/plank.gif",
+      caloriePerRound: 50,
+      setCount: 3,
+      repsCount: 30, // Seconds
+      restDuration: 20,
+      caloriePerSet: 15,
+    },
+    {
+      id: 2,
+      title: "Leg Raises",
+      description: "Strengthen your lower abs by raising and lowering your legs.",
+      exerciseIconUrl: "https://example.com/icons/leg-raises.png",
+      exerciseGifUrl: "https://example.com/gifs/leg-raises.gif",
+      caloriePerRound: 40,
+      setCount: 3,
+      repsCount: 12,
+      restDuration: 15,
+      caloriePerSet: 13,
+    },
+    {
+      id: 3,
+      title: "Bicycle Crunches",
+      description: "Alternate knee-to-elbow crunches to engage obliques.",
+      exerciseIconUrl: "https://example.com/icons/bicycle-crunches.png",
+      exerciseGifUrl: "https://example.com/gifs/bicycle-crunches.gif",
+      caloriePerRound: 60,
+      setCount: 4,
+      repsCount: 15,
+      restDuration: 20,
+      caloriePerSet: 18,
+    },
+    {
+      id: 4,
+      title: "Russian Twists",
+      description: "Twist side to side with a weight for core rotation.",
+      exerciseIconUrl: "https://example.com/icons/russian-twists.png",
+      exerciseGifUrl: "https://example.com/gifs/russian-twists.gif",
+      caloriePerRound: 45,
+      setCount: 3,
+      repsCount: 20,
+      restDuration: 20,
+      caloriePerSet: 14,
+    },
+    {
+      id: 5,
+      title: "Flutter Kicks",
+      description: "Keep your legs straight and alternate up-and-down movements.",
+      exerciseIconUrl: "https://example.com/icons/flutter-kicks.png",
+      exerciseGifUrl: "https://example.com/gifs/flutter-kicks.gif",
+      caloriePerRound: 50,
+      setCount: 4,
+      repsCount: 30, // Seconds
+      restDuration: 15,
+      caloriePerSet: 17,
+    },
+    {
+      id: 6,
+      title: "Superman Hold",
+      description: "Engage your back and glutes while holding a superman position.",
+      exerciseIconUrl: "https://example.com/icons/superman-hold.png",
+      exerciseGifUrl: "https://example.com/gifs/superman-hold.gif",
+      caloriePerRound: 55,
+      setCount: 3,
+      repsCount: 30, // Seconds
+      restDuration: 20,
+      caloriePerSet: 16,
+    },
+  ],
+}
+
+export { myClasses, recommendedClasses, featuredClass, allClasses, classDetailData }
