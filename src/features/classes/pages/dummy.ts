@@ -1,0 +1,213 @@
+import { IClass } from "@/shared/types";
+
+const myClasses: IClass[] = [
+  {
+    id: 1,
+    coachId: 101,
+    coachFullname: "John Doe",
+    title: "Morning Yoga Flow",
+    description: "A perfect way to start your day with gentle yoga movements.",
+    classBannerImageUrl: "https://example.com/yoga1.jpg",
+    category: "Yoga",
+    intensity: "Low",
+    level: "Beginner",
+    price: 20,
+    sessionCount: 5,
+    durationPerSession: 45,
+    caloriePerSession: 200,
+    benefits: ["Flexibility", "Stress Relief", "Better Posture"],
+    equipments: ["Yoga Mat"]
+  },
+  {
+    id: 2,
+    coachId: 102,
+    coachFullname: "Jane Smith",
+    title: "HIIT Burn",
+    description: "High-Intensity Interval Training to get you sweating.",
+    classBannerImageUrl: "https://example.com/hiit.jpg",
+    category: "HIIT",
+    intensity: "High",
+    level: "Advanced",
+    price: 25,
+    sessionCount: 6,
+    durationPerSession: 30,
+    caloriePerSession: 500,
+    benefits: ["Fat Burn", "Endurance", "Strength"],
+    equipments: ["Dumbbells", "Jump Rope"]
+  },
+  {
+    id: 3,
+    coachId: 103,
+    coachFullname: "Emily Carter",
+    title: "Pilates Core Strength",
+    description: "By combining strength training, cardio, and flexibility exercises, this class offers a well-rounded approach to fitness, targeting all major muscle groups while improving endurance and mobility.",
+    classBannerImageUrl: "https://example.com/pilates.jpg",
+    category: "Pilates",
+    intensity: "Medium",
+    level: "Intermediate",
+    price: 22,
+    sessionCount: 4,
+    durationPerSession: 40,
+    caloriePerSession: 300,
+    benefits: ["Core Strength", "Flexibility", "Posture"],
+    equipments: ["Resistance Band"]
+  },
+  {
+    id: 4,
+    coachId: 104,
+    coachFullname: "Mike Johnson",
+    title: "Strength Training Basics",
+    description: "Learn the fundamentals of strength training with guided workouts.",
+    classBannerImageUrl: "https://example.com/strength.jpg",
+    category: "Strength Training",
+    intensity: "Medium",
+    level: "Beginner",
+    price: 30,
+    sessionCount: 8,
+    durationPerSession: 50,
+    caloriePerSession: 350,
+    benefits: ["Muscle Gain", "Endurance", "Strength"],
+    equipments: ["Dumbbells", "Barbell"]
+  },
+  {
+    id: 5,
+    coachId: 105,
+    coachFullname: "Sophia Lee",
+    title: "Dance Cardio Blast",
+    description: "A fun, high-energy dance workout to keep you moving!",
+    classBannerImageUrl: "https://example.com/dance.jpg",
+    category: "Cardio",
+    intensity: "High",
+    level: "All Levels",
+    price: 18,
+    sessionCount: 7,
+    durationPerSession: 35,
+    caloriePerSession: 450,
+    benefits: ["Weight Loss", "Endurance", "Fun Workout"],
+    equipments: []
+  }
+];
+
+const recommendedClasses: IClass[] = myClasses.slice(0, 4);
+
+const featuredClass: IClass = myClasses[2];
+
+const allClasses: IClass[] = myClasses.concat([
+  {
+    id: 6,
+    coachId: 106,
+    coachFullname: "Liam Brown",
+    title: "Boxing Fundamentals",
+    description: "Learn the basics of boxing with shadow drills and pad work.",
+    classBannerImageUrl: "https://example.com/boxing.jpg",
+    category: "Boxing",
+    intensity: "Medium",
+    level: "Beginner",
+    price: 28,
+    sessionCount: 6,
+    durationPerSession: 40,
+    caloriePerSession: 400,
+    benefits: ["Agility"],
+    equipments: ["Gloves", "Strength", "Endurance", "Barbell", "Resistance Band"]
+  }
+]);
+
+const classDetailData: IClass = {
+  id: 3,
+  coachId: 103,
+  coachFullname: "Emily Carter",
+  title: "Pilates Core Strength",
+  description: "By combining strength training, cardio, and flexibility exercises, this class offers a well-rounded approach to fitness, targeting all major muscle groups while improving endurance and mobility.",
+  classBannerImageUrl: "https://example.com/pilates.jpg",
+  category: "Pilates",
+  intensity: "Medium",
+  level: "Intermediate",
+  price: 22,
+  sessionCount: 4,
+  durationPerSession: 40,
+  caloriePerSession: 300,
+  benefits: [
+    "Build and tone muscles across the entire body.",
+    "Gain better balance, stability, and core strength.",
+    "Enhance cardiovascular health and endurance.",
+    "Increase metabolism and burn more calories throughout the day.",
+    "Improve overall fitness levels and performance.",
+  ],
+  equipments: ["Gloves", "Strength", "Endurance", "Barbell", "Resistance Band"],
+  exercises: [
+    {
+      id: 1,
+      title: "Plank Hold",
+      description: "Engage your core and maintain a stable plank position.",
+      exerciseIconUrl: "https://example.com/icons/plank.png",
+      exerciseGifUrl: "https://example.com/gifs/plank.gif",
+      caloriePerRound: 50,
+      setCount: 3,
+      repsCount: 30, // Seconds
+      restDuration: 20,
+      caloriePerSet: 15,
+    },
+    {
+      id: 2,
+      title: "Leg Raises",
+      description: "Strengthen your lower abs by raising and lowering your legs.",
+      exerciseIconUrl: "https://example.com/icons/leg-raises.png",
+      exerciseGifUrl: "https://example.com/gifs/leg-raises.gif",
+      caloriePerRound: 40,
+      setCount: 3,
+      repsCount: 12,
+      restDuration: 15,
+      caloriePerSet: 13,
+    },
+    {
+      id: 3,
+      title: "Bicycle Crunches",
+      description: "Alternate knee-to-elbow crunches to engage obliques.",
+      exerciseIconUrl: "https://example.com/icons/bicycle-crunches.png",
+      exerciseGifUrl: "https://example.com/gifs/bicycle-crunches.gif",
+      caloriePerRound: 60,
+      setCount: 4,
+      repsCount: 15,
+      restDuration: 20,
+      caloriePerSet: 18,
+    },
+    {
+      id: 4,
+      title: "Russian Twists",
+      description: "Twist side to side with a weight for core rotation.",
+      exerciseIconUrl: "https://example.com/icons/russian-twists.png",
+      exerciseGifUrl: "https://example.com/gifs/russian-twists.gif",
+      caloriePerRound: 45,
+      setCount: 3,
+      repsCount: 20,
+      restDuration: 20,
+      caloriePerSet: 14,
+    },
+    {
+      id: 5,
+      title: "Flutter Kicks",
+      description: "Keep your legs straight and alternate up-and-down movements.",
+      exerciseIconUrl: "https://example.com/icons/flutter-kicks.png",
+      exerciseGifUrl: "https://example.com/gifs/flutter-kicks.gif",
+      caloriePerRound: 50,
+      setCount: 4,
+      repsCount: 30, // Seconds
+      restDuration: 15,
+      caloriePerSet: 17,
+    },
+    {
+      id: 6,
+      title: "Superman Hold",
+      description: "Engage your back and glutes while holding a superman position.",
+      exerciseIconUrl: "https://example.com/icons/superman-hold.png",
+      exerciseGifUrl: "https://example.com/gifs/superman-hold.gif",
+      caloriePerRound: 55,
+      setCount: 3,
+      repsCount: 30, // Seconds
+      restDuration: 20,
+      caloriePerSet: 16,
+    },
+  ],
+}
+
+export { myClasses, recommendedClasses, featuredClass, allClasses, classDetailData }

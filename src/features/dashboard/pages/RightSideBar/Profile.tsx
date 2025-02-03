@@ -86,7 +86,7 @@ const Profile: React.FC<ProfileProps> = ({ fullname, level, number, weight, heig
           <Image
             width={36}
             height={36}
-            src={BACKEND_HOST_URL + user.avatarImageUrl}
+            src={BACKEND_HOST_URL + user.avatarImageUrl + '?t=' + new Date().getTime()}
             style={{
               width: 'auto',
               height: 'auto',

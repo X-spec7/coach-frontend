@@ -5,17 +5,20 @@ import { CaretDownSvg, CaretUpSvg } from '../../Svg'
 
 interface BasicDropdownProps {
   options: string[]
+  onSelect?: (option: string | null) => void
+  dropdownDefaultValue?: string
 }
 
-const BasicDropdown: React.FC<BasicDropdownProps> = ({ options }) => {
+const BasicDropdown: React.FC<BasicDropdownProps> = ({ options, onSelect, dropdownDefaultValue }) => {
   const [isOpen, setIsOpen] = useState(false)
-  const [selectedOption, setSelectedOption] = useState(options[0])
+  const [selectedOption, setSelectedOption] = useState(dropdownDefaultValue ?? options[0])
 
   const toggleDropdown = () => setIsOpen((prev) => !prev)
 
   const handleOptionClick = (option: string) => {
     setSelectedOption(option)
     setIsOpen(false)
+    if(onSelect) onSelect(option)
   }
 
   return (
@@ -32,7 +35,7 @@ const BasicDropdown: React.FC<BasicDropdownProps> = ({ options }) => {
         }
       </button>
       {isOpen && (
-        <ul className='absolute z-10 w-full mt-2 bg-gray-bg border border-gray-300 rounded shadow'>
+        <ul className='absolute z-10 px-2 mt-2 bg-gray-bg border border-gray-300 rounded shadow'>
           {options.map((option, index) => (
             <li
               key={index}

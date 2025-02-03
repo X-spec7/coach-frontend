@@ -1,13 +1,21 @@
-import { Class } from '@/shared/types'
 import { TitleWithEllipsis } from '@/shared/components'
 import { MonitorSvg } from '@/shared/components/Svg'
+import { ICoachDetailClass } from '@/shared/types'
 
 interface IClassesProps {
-  classes?: Class[]
+  classes?: ICoachDetailClass[]
 }
 
 // TODO: handle no classes case
 const Classes: React.FC<IClassesProps> = ({ classes }) => {
+  if (!classes || classes.length === 0) {
+    return (
+      <div className='flex flex-col gap-3.5'>
+        <TitleWithEllipsis title='Class' />
+        <div className='flex justify-center items-center pt-6 w-full text-black text-lg'>No Classes Yet</div>  
+      </div>
+    )
+  }
   return (
     <div className='flex flex-col gap-3.5'>
       <TitleWithEllipsis title='Class' />

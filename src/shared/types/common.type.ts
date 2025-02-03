@@ -17,6 +17,7 @@ export interface IContact {
 export interface IPrimaryButtonProps {
   width?: string
   height?: string
+  fontSize?: string
   title: string
   onClick?: () => void
 }

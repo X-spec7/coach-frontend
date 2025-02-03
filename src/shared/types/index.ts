@@ -1,7 +1,5 @@
 export type {
-  Class,
-  ClassCategory,
-  ClassLevel,
+  IClass,
 } from './class.type'
 
 export type {
@@ -18,8 +16,16 @@ export type {
   IPrimaryButtonProps,
 } from './common.type'
 
-export type { IUser, IUserRoleGuard } from './user.type'
+export type {
+  IUser,
+  IUserRoleGuard,
+  ICoachProfile,
+  ICoachDetail,
+  ICoachReview,
+  ICoachDetailClass,
+} from './user.type'
 
 export type { Progress } from './progress.type'
 export type { Trainer } from './trainer.type'
 export type { ICallInfo } from './call.type'
+export type { BaseRestApiResponseType } from './api.type'

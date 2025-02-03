@@ -58,7 +58,10 @@ class CoachSessionService {
     return authorizedHttpServer
       .post('/session/create/', request)
       .then((response) => {
-        return response.data as CreateSessionResponseDTO
+        return {
+          status: response.status,
+          ...response.data
+        }
       })
   }
 }

@@ -1,9 +1,9 @@
-import { Class } from './class.type'
+import { IClass } from './class.type'
 import { IContact } from './common.type'
 
 export interface ICertification {
-  title: string
-  year: number
+  certificationTitle: string
+  certificationDetail: string
 }
 
 export interface IReview {
@@ -21,7 +21,7 @@ export interface Trainer {
   experience?: number
   members?: number
   rating?: number
-  classes?: Class[]
+  classes?: IClass[]
   contact?: IContact
   certification?: ICertification[]
   expertise?: string

@@ -1,19 +1,20 @@
-type SessionRange = {
-  minimumDuration: number
-  maximumDuration: number
-}
+import { IClassExercise } from "./exercise.type"
 
-export type ClassLevel = 'Beginner' | 'Intermediate' | 'Advanced' | 'All Levels'
-
-export type ClassCategory = 'Strength' | 'Cardio' | 'Core' | 'Flexibility' | 'Strength Training' | 'Cardio Workouts' | 'Mind & Body'
-
-export interface Class{
-  category: string
+export interface IClass {
+  id: number
+  coachId: number
+  coachFullname: string
   title: string
-  tutor: string
-  videoNumber?: number
-  sessionRange?: SessionRange
-  level?: ClassLevel
-  durationPerSession?: number
-  price?: number
+  description: string
+  classBannerImageUrl: string
+  category: string
+  intensity: string
+  level: string
+  price: number
+  sessionCount: number
+  durationPerSession: number
+  caloriePerSession: number
+  benefits?: string[]
+  equipments?: string[]
+  exercises?: IClassExercise[]
 }

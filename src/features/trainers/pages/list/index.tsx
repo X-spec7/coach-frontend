@@ -1,42 +1,62 @@
-import { Suspense } from 'react'
+'use client'
 
-import { Pagination, Loader } from '@/shared/components'
+import { Pagination } from '@/shared/components'
 import ContentHeader from './content-header'
-import TrainersList from './TrainersList'
+import CoachesList from './CoachesList'
 import { trainersService } from '../../service'
+import { useEffect, useState } from 'react'
 
 const countPerPage = 15
 
-interface ITrainersPageProps {
+interface ICoachesPageProps {
   query: string
   currentPage: number
-  expertise: string
+  specialization: string
+  listed: string
 }
 
-const TrainersPage: React.FC<ITrainersPageProps> = async ({ query, expertise, currentPage}) => {
+const CoachesPage: React.FC<ICoachesPageProps> = ({
+  query,
+  specialization,
+  currentPage,
+  listed,
+}) => {
+  const [totalCoachesCount, setTotalCoachesCount] = useState<number>(0)
 
-  const response = await trainersService.getTotalTrainersCount({ query })
-  // TODO: handle response error case
+  useEffect(() => {
+    const getTotalCoachesCount = async () => {
+      const response = await trainersService.getTotalCoachesCount({
+        query,
+        specialization,
+        listed: listed.toLowerCase()
+      })
+      setTotalCoachesCount(response.totalCount)
+    }
+    getTotalCoachesCount()
+  }, [query, specialization])
 
   return (
-      <div className='flex flex-col p-4 gap-4 bg-white rounded-4xl'>
-        <ContentHeader searchPlaceHolder={query} />
+    <div className='flex flex-col p-4 gap-4 bg-white rounded-4xl'>
+      <ContentHeader
+        searchPlaceHolder={query}
+        dropdownDefaultValue={specialization}
+        listOptionDefaultValue={listed}
+      />
 
-        {/* <!-- MAIN CONTENT --> */}
-        <Suspense fallback={<Loader />}>
-          <TrainersList
-            query={query}
-            expertise={expertise}
-            currentPage={currentPage}
-          />
-        </Suspense>
+      {/* <!-- MAIN CONTENT --> */}
+      <CoachesList
+        query={query}
+        specialization={specialization}
+        currentPage={currentPage}
+        listed={listed}
+      />
 
-        <Pagination
-          countPerPage={countPerPage}
-          totalCounts={response.totalCount}
-        />
-      </div>
+      <Pagination
+        countPerPage={countPerPage}
+        totalCounts={totalCoachesCount}
+      />
+    </div>
   )
 }
 
-export default TrainersPage
+export default CoachesPage
