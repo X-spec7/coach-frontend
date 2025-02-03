@@ -1,7 +1,11 @@
 'use client'
 
-import { useState } from 'react'
 import Link from 'next/link'
+import {
+  usePathname,
+  useRouter,
+  useSearchParams
+} from 'next/navigation'
 
 import { Pagination, SearchField } from '@/shared/components'
 import { BasicDropdownButton, PrimaryButton } from '@/shared/components/Button'
@@ -98,10 +102,48 @@ const ClassListItem: React.FC<IClassListItemProps> = ( {classData }) => {
 
 interface IAllClassesProps {
   allClasses: IClass[]
+  query?: string
+  category?: string
+  level?: string
+  totalClassesCount: number
 }
 
-const AllClasses: React.FC<IAllClassesProps> = ({ allClasses }) => {
-  const [totalCount, setTotalCount] = useState(allClasses.length)
+const AllClasses: React.FC<IAllClassesProps> = ({
+  allClasses,
+  query,
+  category,
+  level,
+  totalClassesCount,
+}) => {
+  const searchParams = useSearchParams()
+  const pathname = usePathname()
+  const { replace } = useRouter()
+
+  const onCategorySelected = (category: string | null) => {
+    const params = new URLSearchParams(searchParams)
+
+    if (category && category !== 'All Category') {
+      params.set('category', category)
+    } else {
+      params.delete('category')
+    }
+
+    params.delete('page')
+    replace(`${pathname}?${params.toString()}`)
+  }
+
+  const onLevelSelected = (level: string | null) => {
+    const params = new URLSearchParams(searchParams)
+    
+    if (level && level !== 'All Level') {
+      params.set('level', level)
+    } else {
+      params.delete('level')
+    }
+
+    params.delete('page')
+    replace(`${pathname}?${params.toString()}`)
+  }
 
   return (
     <div className='flex flex-col gap-4 p-4 bg-white rounded-20'>
@@ -110,9 +152,22 @@ const AllClasses: React.FC<IAllClassesProps> = ({ allClasses }) => {
         <h2 className='text-black font-medium'>All Classes</h2>
 
         <div className='flex items-center justify-end gap-4'>
-          <SearchField width='w-60' height='h-8' placeholder='Search class, trainer, etc' />
-          <BasicDropdownButton options={CATEGORY_OPTIONS} />
-          <BasicDropdownButton options={LEVEL_OPTIONS} />
+          <SearchField
+            width='w-60'
+            height='h-8'
+            placeholder='Search class, trainer, etc'
+            value={query}
+          />
+          <BasicDropdownButton
+            options={CATEGORY_OPTIONS}
+            onSelect={onCategorySelected}
+            dropdownDefaultValue={category}
+          />
+          <BasicDropdownButton
+            options={LEVEL_OPTIONS}
+            onSelect={onLevelSelected}
+            dropdownDefaultValue={level}
+          />
         </div>
       </div>
 
@@ -123,7 +178,7 @@ const AllClasses: React.FC<IAllClassesProps> = ({ allClasses }) => {
         </Link>
       ))}
 
-      <Pagination countPerPage={6} totalCounts={totalCount} />
+      <Pagination countPerPage={6} totalCounts={totalClassesCount} />
     </div>
   )
 }
