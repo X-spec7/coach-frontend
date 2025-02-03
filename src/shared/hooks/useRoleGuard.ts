@@ -6,7 +6,7 @@ export const useRoleGuard = (requiredRole: IUserRoleGuard) => {
   const { user } = useAuth()
   const router = useRouter()
 
-  if (!user) return router.push('/login')
+  if (!user) return router.push('/signin')
   if (requiredRole === 'Admin' && !user.isSuperuser) return router.push('/403')
   if (requiredRole !== user.userType) return router.push('/403')
 }
