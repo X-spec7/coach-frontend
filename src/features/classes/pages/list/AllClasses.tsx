@@ -171,6 +171,10 @@ const AllClasses: React.FC<IAllClassesProps> = ({
         </div>
       </div>
 
+      {allClasses.length === 0 && (
+        <div className='flex justify-center items-center text-gray-30 text-3xl font-semibold py-20'>There are no classes yet</div>
+      )}
+
       {/* List of classes */}
       {allClasses.map((classData, index) => (
         <Link href={`/classes/detail/${classData.id}`}>

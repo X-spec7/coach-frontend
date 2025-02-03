@@ -8,14 +8,13 @@ import RecommendedClass from './RecommendedClass'
 import AllClasses from './AllClasses'
 import { IClass } from '@/shared/types'
 
+import { GetClassesRequestDTO } from '../../types'
+import { classService } from '../../services'
 import {
   recommendedClasses,
-  allClasses,
   myClasses,
   featuredClass
 } from '../dummy'
-import { GetClassesRequestDTO } from '../../types'
-import { classService } from '../../services'
 
 interface IClassesListProps {
   currentPage: number
