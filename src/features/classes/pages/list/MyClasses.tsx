@@ -43,7 +43,6 @@ const MyClasses: React.FC<IMyClassesProps> = ({ myClasses }) => {
     <div className='flex flex-col gap-4'>
       <div className='flex items-center justify-between w-full'>
         <h2 className='text-black font-medium'>My Classes</h2>
-        <div>Toggle Button</div>
       </div>
 
       <div className='flex items-center justify-start gap-4 w-full py-4 overflow-x-auto no-scrollbar'>

@@ -8,10 +8,29 @@ export const metadata: Metadata = {
   description: "This is Classes for COA-CH",
 };
 
-const Classes: React.FC = () => {
+const Classes: React.FC = async (props: {
+  searchParams?: Promise<{
+    query?: string
+    page?: string
+    category?: string
+    level?: string
+  }>
+}) => {
+  const searchParams = await props.searchParams
+
+  const query = searchParams?.query
+  const category = searchParams?.category
+  const currentPage = Number(searchParams?.page) || 1
+  const level = searchParams?.level
+
   return (
     <>
-      <ClassesList />
+      <ClassesList
+        query={query}
+        category={category}
+        currentPage={currentPage}
+        level={level}
+      />
     </>
   )
 }

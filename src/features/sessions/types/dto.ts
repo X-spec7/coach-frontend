@@ -1,3 +1,4 @@
+import { BaseRestApiResponseType } from '@/shared/types'
 import { ISessionWithBookedStatus, ISession } from '.'
 
 // Coach
@@ -14,8 +15,7 @@ export interface CreateSessionRequestDTO {
   equipments: string[]
 }
 
-export interface CreateSessionResponseDTO {
-  message: string
+export interface CreateSessionResponseDTO extends BaseRestApiResponseType {
   sessionId: number
   meetingId: number
 }

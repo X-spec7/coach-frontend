@@ -93,7 +93,8 @@ const ContentHeader: React.FC<IContentHeaderProps> = ({
         <SearchField
           width='w-56'
           height='h-7.5'
-          placeholder={searchPlaceHolder || 'Search for trainer'}
+          placeholder={'Search for trainer'}
+          value={searchPlaceHolder}
         />
         <BasicDropdownButton
           options={COACH_SPECIALITIES}
