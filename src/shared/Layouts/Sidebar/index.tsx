@@ -10,6 +10,7 @@ import { useAuth, useGlobalAppState } from '@/shared/provider'
 import { CLIENT_MENU_ITEMS, ADMIN_MENU_ITEMS } from '@/shared/constants'
 
 import { LogoutSvg } from './Svg'
+import { COACH_MENU_ITEMS } from '@/shared/constants/menu.constants'
 
 const Sidebar = () => {
   const { isSidebarOpen, toggleSidebar } = useGlobalAppState()
@@ -17,7 +18,7 @@ const Sidebar = () => {
 
   const { user } = useAuth()
 
-  const menuItems = user?.isSuperuser ? ADMIN_MENU_ITEMS : CLIENT_MENU_ITEMS
+  const menuItems = user?.isSuperuser ? ADMIN_MENU_ITEMS : (user?.userType === 'Client' ? CLIENT_MENU_ITEMS : COACH_MENU_ITEMS)
 
   const handleToggleSidebar = () => {
     toggleSidebar()

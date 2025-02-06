@@ -58,7 +58,7 @@ const CertificationAddModalForm: React.FC<ICertificationModalFormProps> = ({
           onChange={(e) => setCertificationDetail(e.target.value)}
           className='p-2 border rounded-md w-full h-24 resize-none'
         />
-        {error && <p className='text-red-500 text-sm'>{error}</p>}
+        {error && <p className='text-red-400 text-sm'>{error}</p>}
       </div>
 
       <div className='mt-6 flex justify-end gap-2'>

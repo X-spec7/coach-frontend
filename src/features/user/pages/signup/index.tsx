@@ -53,6 +53,7 @@ const SignUpPage: React.FC = () => {
       const response = await authService.register(formData)
 
       if (response.status === 201) {
+        alert(response.message)
         router.push('signin')
       } else {
         alert(response.message)
