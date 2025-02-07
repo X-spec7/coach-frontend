@@ -25,7 +25,7 @@ export interface ISession {
 export interface IClassSession {
   title: string
   startDate: string
-  duration: string
+  duration: number
   description: string
   totalParticipantNumber: number
   calorie: number

@@ -1,10 +1,24 @@
 import authorizedHttpServer from '@/shared/services/authorizedHttp'
-import { 
+import {
   GetClassesRequestDTO,
   GetClassesResposneDTO,
 } from '../types'
+import { CreateClassRequestDTO, CreateClassResponseDTO } from '../types/class.dto'
 
 class ClassService {
+  async createClass(
+    payload: CreateClassRequestDTO
+  ): Promise<CreateClassResponseDTO> {
+    return authorizedHttpServer
+      .post('/classes/create/', payload)
+      .then((response) => {
+        return {
+          status: response.status,
+          ...response.data
+        }
+      })
+  }
+
   async getClasses(
     payload: GetClassesRequestDTO
   ): Promise<GetClassesResposneDTO> {
@@ -35,7 +49,6 @@ class ClassService {
         }
       })
   }
-
 }
 
 const classService = new ClassService()

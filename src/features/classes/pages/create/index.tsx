@@ -9,6 +9,8 @@ import { DefaultModal } from '@/shared/components'
 import { getDateFromDateObject } from '@/shared/utils'
 import CreateClassSessionForm from './ClassSessionForm'
 import ClassExerciseForm from './ClassExerciseForm'
+import { CreateClassRequestDTO } from '../../types/class.dto'
+import { classService } from '../../services'
 
 const CreateClassForm = () => {
   const [formData, setFormData] = useState({
@@ -17,13 +19,14 @@ const CreateClassForm = () => {
     description: '',
     intensity: '',
     level: '',
-    price: 0,
+    price: '',
   })
 
   const [exercises, setExercises] = useState<IClassExercise[]>([])
   const [sessions, setSessions] = useState<IClassSession[]>([])
 
   const [banner, setBanner] = useState<string | ArrayBuffer | null>()
+  const [benefits, setBenefits] = useState<string[]>([])
 
   const [exerciseModalOpen, setExerciseModalOpen] = useState<boolean>(false)
   const [sessionModalOpen, setSessionModalOpen] = useState<boolean>(false)
@@ -32,6 +35,7 @@ const CreateClassForm = () => {
   const [sessionEditingIndex, setSessionEditingIndex] = useState<number | null>(null)
 
   const [loading, setLoading] = useState<boolean>(false)
+  const [validationError, setValidationError] = useState('')
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>, type: string) => {
     const file = e.target.files?.[0]
@@ -65,10 +69,9 @@ const CreateClassForm = () => {
     index: number,
     updatedSession: IClassSession,
   ) => {
-    console.log('handle editing session: ', updatedSession, index)
-    setSessions((prevSessions) => 
-      prevSessions.map((session, i) => 
-        i === index ? {...session, ...updatedSession} : session
+    setSessions((prevSessions) =>
+      prevSessions.map((session, i) =>
+        i === index ? { ...session, ...updatedSession } : session
       )
     )
   }
@@ -76,9 +79,9 @@ const CreateClassForm = () => {
     index: number,
     updatedExercise: IClassExercise,
   ) => {
-    setExercises((prevExercises) => 
-      prevExercises.map((exercise, i) => 
-        i === index ? {...exercise, updatedExercise} : exercise
+    setExercises((prevExercises) =>
+      prevExercises.map((exercise, i) =>
+        i === index ? { ...exercise, updatedExercise } : exercise
       )
     )
   }
@@ -92,7 +95,79 @@ const CreateClassForm = () => {
     </button>
   )
 
-  const handleSubmit = () => {
+  const validateFormData = () => {
+    const validations: { [key: string]: { check: (value: string) => boolean; message: string } } = {
+      title: { check: (value) => value.trim() !== '', message: 'Title is required.' },
+      category: { check: (value) => value.trim() !== '', message: 'Category is required.' },
+      description: { check: (value) => value.trim() !== '', message: 'Description is required.' },
+      intensity: { check: (value) => value.trim() !== '', message: 'Intensity is required.' },
+      level: { check: (value) => value.trim() !== '', message: 'Level is required.' },
+      price: {
+        check: (value) => value.trim() !== '' && !isNaN(Number(value)) && Number(value) >= 0,
+        message: 'Price must be a non-negative number.'
+      }
+    }
+
+    for (const field in validations) {
+      if (!validations[field].check(formData[field as keyof typeof formData])) {
+        setValidationError(validations[field].message)
+        return false
+      }
+    }
+
+    setValidationError('')
+    return true
+  }
+
+
+  const handleSubmit = async () => {
+    setLoading(true)
+
+    if (validateFormData()) {
+      const averageDurationPerSession = sessions.length
+        ? sessions.reduce((sum, session) => sum + session.duration, 0) / sessions.length
+        : 0
+      const averageCaloriePerSession = sessions.length
+        ? sessions.reduce((sum, session) => sum + session.calorie, 0) / sessions.length
+        : 0
+  
+      const uniqueEquipments = Array.from(new Set(sessions.flatMap(session => session.equipments || [])))
+  
+      const payload: CreateClassRequestDTO = {
+        title: formData.title,
+        category: formData.category,
+        description: formData.description,
+        intensity: formData.intensity,
+        level: formData.level,
+        price: Number(formData.price),
+        sessionCount: sessions.length,
+        durationPerSession: averageDurationPerSession,
+        caloriePerSession: averageCaloriePerSession,
+        benefits: benefits,
+        equipments: uniqueEquipments,
+        bannerImage: banner,
+        exercises: exercises,
+        sessions: sessions
+      }
+
+      try {
+        const response = await classService.createClass(payload)
+        if (response.status === 200) {
+          alert(response.message)
+        } else {
+          alert('Error occured while creating class')
+          console.log('Error when creating class: ', response.message)
+        }
+      } catch (error) {
+        alert('Error occured while creating class')
+        console.log('Error when creating class: ', error)
+      } finally {
+        setLoading(false)
+      }
+
+    } else {
+      setLoading(false)
+    }
 
   }
 
@@ -140,7 +215,7 @@ const CreateClassForm = () => {
               type='text'
               name='category'
               placeholder='Class Category'
-              value={formData.title}
+              value={formData.category}
               onChange={handleInputChange}
               className='w-full p-2 border rounded-md'
             />
@@ -148,7 +223,7 @@ const CreateClassForm = () => {
               type='text'
               name='description'
               placeholder='Class Description'
-              value={formData.title}
+              value={formData.description}
               onChange={handleInputChange}
               className='w-full p-2 border rounded-md'
             />
@@ -156,7 +231,7 @@ const CreateClassForm = () => {
               type='text'
               name='intensity'
               placeholder='Class Intensity'
-              value={formData.title}
+              value={formData.intensity}
               onChange={handleInputChange}
               className='w-full p-2 border rounded-md'
             />
@@ -164,7 +239,7 @@ const CreateClassForm = () => {
               type='text'
               name='level'
               placeholder='Class Level'
-              value={formData.title}
+              value={formData.level}
               onChange={handleInputChange}
               className='w-full p-2 border rounded-md'
             />
@@ -172,7 +247,7 @@ const CreateClassForm = () => {
               type='text'
               name='price'
               placeholder='Class Price'
-              value={formData.title}
+              value={formData.price}
               onChange={handleInputChange}
               className='w-full p-2 border rounded-md'
             />
@@ -204,7 +279,7 @@ const CreateClassForm = () => {
                     <EditSvg width="25" height="25" color="#333333" />
                   </button>
 
-                  <button onClick={() => {handleRemoveExercise(index)}}>
+                  <button onClick={() => { handleRemoveExercise(index) }}>
                     <TrashSvg width="25" height="25" color="#333333" />
                   </button>
                 </div>
@@ -236,7 +311,7 @@ const CreateClassForm = () => {
                     <EditSvg width="25" height="25" color="#333333" />
                   </button>
 
-                  <button onClick={() => {handleRemoveSession(index)}}>
+                  <button onClick={() => { handleRemoveSession(index) }}>
                     <TrashSvg width="25" height="25" color="#333333" />
                   </button>
                 </div>
@@ -252,6 +327,8 @@ const CreateClassForm = () => {
           >
             {loading ? 'Creating...' : 'Create Class'}
           </button>
+
+          {validationError && <p className='text-red-500'>{validationError}</p>}
         </div>
       </div>
 
