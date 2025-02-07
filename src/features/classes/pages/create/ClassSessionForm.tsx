@@ -36,7 +36,7 @@ const ClassSessionForm: React.FC<IClassSessionFormProps> = ({
       setFormData({
         title: originalClassSession.title,
         startDate: originalClassSession.startDate,
-        duration: originalClassSession.duration,
+        duration: originalClassSession.duration.toString(),
         description: originalClassSession.description,
         totalParticipantNumber: originalClassSession.totalParticipantNumber.toString(),
         calorie: originalClassSession.calorie.toString(),
@@ -82,7 +82,7 @@ const ClassSessionForm: React.FC<IClassSessionFormProps> = ({
       const newSession: IClassSession = {
         title: formData.title,
         startDate: startDateISO,
-        duration: formData.duration,
+        duration: Number(formData.duration),
         description: formData.description,
         totalParticipantNumber: Number(formData.totalParticipantNumber),
         calorie: Number(formData.calorie),
