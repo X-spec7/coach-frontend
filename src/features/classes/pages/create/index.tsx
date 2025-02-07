@@ -12,6 +12,8 @@ import ClassExerciseForm from './ClassExerciseForm'
 import { CreateClassRequestDTO } from '../../types/class.dto'
 import { classService } from '../../services'
 
+const benefit = 'Build and tone muscles across entire body. Gain better balance, stability, and core strength.'
+
 const CreateClassForm = () => {
   const [formData, setFormData] = useState({
     title: '',
@@ -20,13 +22,13 @@ const CreateClassForm = () => {
     intensity: '',
     level: '',
     price: '',
+    benefits: '',
   })
 
   const [exercises, setExercises] = useState<IClassExercise[]>([])
   const [sessions, setSessions] = useState<IClassSession[]>([])
 
   const [banner, setBanner] = useState<string | ArrayBuffer | null>()
-  const [benefits, setBenefits] = useState<string[]>([])
 
   const [exerciseModalOpen, setExerciseModalOpen] = useState<boolean>(false)
   const [sessionModalOpen, setSessionModalOpen] = useState<boolean>(false)
@@ -88,10 +90,10 @@ const CreateClassForm = () => {
 
   const AddButton = ({ onClick }: { onClick: () => void }) => (
     <button
-      className='flex justify-center items-center px-2 py-1.5 bg-green rounded-full'
+      className='flex justify-center items-center bg-green rounded-full'
       onClick={onClick}
     >
-      <PlusSvg width='14' height='18' color='#4D5260' />
+      <PlusSvg width='24' height='24' color='#4D5260' />
     </button>
   )
 
@@ -130,9 +132,11 @@ const CreateClassForm = () => {
       const averageCaloriePerSession = sessions.length
         ? sessions.reduce((sum, session) => sum + session.calorie, 0) / sessions.length
         : 0
-  
+
       const uniqueEquipments = Array.from(new Set(sessions.flatMap(session => session.equipments || [])))
-  
+
+      const benefits = formData.benefits.split('.').filter(sentence => sentence.trim() !== '')
+
       const payload: CreateClassRequestDTO = {
         title: formData.title,
         category: formData.category,
@@ -251,14 +255,32 @@ const CreateClassForm = () => {
               onChange={handleInputChange}
               className='w-full p-2 border rounded-md'
             />
+            <textarea
+              name='benefits'
+              placeholder='You can write benefits in several sentence.'
+              value={formData.benefits}
+              onChange={handleInputChange}
+              className='w-full p-2 border rounded-md'
+            />
           </div>
+
+          {/* Submit Button */}
+          <button
+            onClick={handleSubmit}
+            className='mt-6 bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-xl'
+            disabled={loading}
+          >
+            {loading ? 'Creating...' : 'Create Class'}
+          </button>
+
+          {validationError && <p className='text-red-500'>{validationError}</p>}
         </div>
 
         {/* Right side - Exercises and Sessions */}
         <div className='flex flex-col gap-4 w-1/2 max-w-125'>
           <div className='flex flex-col gap-4 min-h-80'>
             <div className='flex justify-between items-center border-b border-stroke pb-2'>
-              <p className='text-gray-30 font-medium'>Add Exercise</p>
+              <p className='text-black font-bold'>Add Exercise</p>
               <AddButton onClick={() => {
                 setExerciseEditingIndex(null)
                 setExerciseModalOpen(true)
@@ -290,7 +312,7 @@ const CreateClassForm = () => {
           {/* Handle Class Sessions */}
           <div className='flex flex-col gap-4 min-h-80 mt-4'>
             <div className='flex justify-between items-center border-b border-stroke pb-2'>
-              <p className='text-gray-30 font-medium'>Add Session</p>
+              <p className='text-black font-bold'>Add Session</p>
               <AddButton onClick={() => {
                 setSessionEditingIndex(null)
                 setSessionModalOpen(true)
@@ -318,17 +340,6 @@ const CreateClassForm = () => {
               </div>
             ))}
           </div>
-
-          {/* Submit Button */}
-          <button
-            onClick={handleSubmit}
-            className='mt-6 bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-md'
-            disabled={loading}
-          >
-            {loading ? 'Creating...' : 'Create Class'}
-          </button>
-
-          {validationError && <p className='text-red-500'>{validationError}</p>}
         </div>
       </div>
 
