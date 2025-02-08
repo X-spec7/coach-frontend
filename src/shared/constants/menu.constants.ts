@@ -75,10 +75,10 @@ export const ADMIN_MENU_ITEMS = [
   },
   {
     label: 'Trainers',
-    route: '/admin/trainers',
+    route: '/trainers',
   },
   {
-    label: 'Messages',
-    route: '/messages',
-  },
+    label: 'Exercises',
+    route: '/exercises'
+  }
 ]

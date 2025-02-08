@@ -2,6 +2,8 @@ import authorizedHttpServer from '@/shared/services/authorizedHttp'
 import {
   CreateExerciseRequestDTO,
   CreateExerciseResponseDTO,
+  EditExerciseRequestDTO,
+  EditExerciseResponseDTO,
   GetExercisesRequestDTO,
   GetExercisesResponseDTO,
 } from '../types'
@@ -32,6 +34,19 @@ class ExerciseService {
   ): Promise<CreateExerciseResponseDTO> {
     return authorizedHttpServer
       .post('/exercises/create/', payload)
+      .then((response) => {
+        return {
+          status: response.status,
+          ...response.data
+        }
+      })
+  }
+
+  async editExercise(
+    payload: EditExerciseRequestDTO
+  ): Promise<EditExerciseResponseDTO> {
+    return authorizedHttpServer
+      .post('/exercises/update/', payload)
       .then((response) => {
         return {
           status: response.status,

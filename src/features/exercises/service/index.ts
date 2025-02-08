@@ -1,1 +1,1 @@
-export * from './exercise.service'
+export { default as exerciseService } from './exercise.service'

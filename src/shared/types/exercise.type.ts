@@ -7,6 +7,14 @@ export interface IExercise {
   caloriePerRound: number
 }
 
+export interface IFormExercise {
+  title: string
+  description: string
+  exerciseIcon: any
+  exerciseGif: any
+  caloriePerRound: number
+}
+
 export interface IClassExercise extends IExercise {
   setCount: number
   repsCount: number
