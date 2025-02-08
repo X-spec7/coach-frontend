@@ -78,7 +78,7 @@ export const ADMIN_MENU_ITEMS = [
     route: '/admin/trainers',
   },
   {
-    label: 'Messages',
-    route: '/messages',
-  },
+    label: 'Exercises',
+    route: '/admin/exercises'
+  }
 ]

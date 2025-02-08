@@ -1,34 +1,10 @@
-export type {
-  IClass,
-} from './class.type'
-
-export type {
-  Meal,
-  Nutrition,
-  MealDifficulty,
-  MealTime,
-} from './meal.type'
-
-export type {
-  ISvgProps,
-  ILayoutProps,
-  IContact,
-  IPrimaryButtonProps,
-} from './common.type'
-
-export type {
-  IUser,
-  IUserRoleGuard,
-  ICoachProfile,
-  ICoachDetail,
-  ICoachReview,
-  ICoachDetailClass,
-} from './user.type'
-
-export type { IClassSession, ISession } from './session.type'
-export type { IClassExercise, IExercise } from './exercise.type'
-
-export type { Progress } from './progress.type'
-export type { Trainer } from './trainer.type'
-export type { ICallInfo } from './call.type'
-export type { BaseRestApiResponseType } from './api.type'
+export type * from './class.type'
+export type * from './meal.type'
+export type * from './common.type'
+export type * from './user.type'
+export type * from './session.type'
+export type * from './exercise.type'
+export type * from './progress.type'
+export type * from './trainer.type'
+export type * from './call.type'
+export type * from './api.type'

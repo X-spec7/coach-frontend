@@ -11,3 +11,26 @@ export interface CreateExerciseRequestDTO {
 export interface CreateExerciseResponseDTO extends BaseRestApiResponseType {
   exercise: IExercise
 }
+
+export interface EditExerciseRequestDTO extends CreateExerciseRequestDTO {
+  exerciseId: number
+}
+
+export interface EditExerciseResponseDTO extends BaseRestApiResponseType {}
+
+export interface DeleteExerciseRequestDTO {
+  exerciseId: number
+}
+
+export interface DeleteExerciseResponseDTO extends BaseRestApiResponseType {}
+
+export interface GetExercisesRequestDTO {
+  limit: number
+  offset: number
+  query?: string
+}
+
+export interface GetExercisesResponseDTO extends BaseRestApiResponseType {
+  exercises: IExercise[]
+  totalExercisesCount: number
+}

@@ -12,8 +12,6 @@ import ClassExerciseForm from './ClassExerciseForm'
 import { CreateClassRequestDTO } from '../../types/class.dto'
 import { classService } from '../../services'
 
-const benefit = 'Build and tone muscles across entire body. Gain better balance, stability, and core strength.'
-
 const CreateClassForm = () => {
   const [formData, setFormData] = useState({
     title: '',
