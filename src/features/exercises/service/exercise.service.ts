@@ -2,6 +2,8 @@ import authorizedHttpServer from '@/shared/services/authorizedHttp'
 import {
   CreateExerciseRequestDTO,
   CreateExerciseResponseDTO,
+  DeleteExerciseRequestDTO,
+  DeleteExerciseResponseDTO,
   EditExerciseRequestDTO,
   EditExerciseResponseDTO,
   GetExercisesRequestDTO,
@@ -47,6 +49,19 @@ class ExerciseService {
   ): Promise<EditExerciseResponseDTO> {
     return authorizedHttpServer
       .post('/exercises/update/', payload)
+      .then((response) => {
+        return {
+          status: response.status,
+          ...response.data
+        }
+      })
+  }
+
+  async deleteExercise(
+    payload: DeleteExerciseRequestDTO
+  ): Promise<DeleteExerciseResponseDTO> {
+    return authorizedHttpServer
+      .delete(`exercises/delete/${payload.exerciseId}`)
       .then((response) => {
         return {
           status: response.status,

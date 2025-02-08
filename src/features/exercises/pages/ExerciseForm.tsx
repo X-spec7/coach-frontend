@@ -1,5 +1,6 @@
 'use client'
 
+import { BACKEND_HOST_URL } from '@/shared/constants'
 import { IExercise, IFormExercise } from '@/shared/types'
 import { useEffect, useState } from 'react'
 
@@ -33,8 +34,8 @@ const ExerciseForm: React.FC<IExerciseFormProps> = ({
       setTitle(editingExercise.title || '')
       setDescription(editingExercise.description || '')
       setCaloriePerRound(editingExercise.caloriePerRound.toString() || '')
-      setExerciseIcon(editingExercise.exerciseIconUrl || null)
-      setExerciseGif(editingExercise.exerciseGifUrl || null)
+      setExerciseIcon(editingExercise.exerciseIconUrl ? BACKEND_HOST_URL + editingExercise.exerciseIconUrl : null)
+      setExerciseGif(editingExercise.exerciseGifUrl ? BACKEND_HOST_URL + editingExercise.exerciseGifUrl : null)
     }
   }, [editingExercise])
 
@@ -57,6 +58,7 @@ const ExerciseForm: React.FC<IExerciseFormProps> = ({
 
     if (!title.trim() || !description.trim() || !caloriePerRound.trim()) {
       alert('Please fill in all required fields.')
+      setValidationError('Please fill in all required fields.')
       return
     }
 
@@ -78,13 +80,15 @@ const ExerciseForm: React.FC<IExerciseFormProps> = ({
       isSucceed = await onEdit(newExercise)
     }
 
+    setLoading(false)
+
     if (isSucceed) {
       onClose()
     }
   }
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md">
+    <div className="p-6 rounded-lg">
       <h2 className="text-xl font-bold mb-4">{isAdd ? 'Add New Exercise' : 'Edit Exercise'}</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Title Input */}

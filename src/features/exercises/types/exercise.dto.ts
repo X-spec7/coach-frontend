@@ -18,6 +18,12 @@ export interface EditExerciseRequestDTO extends CreateExerciseRequestDTO {
 
 export interface EditExerciseResponseDTO extends BaseRestApiResponseType {}
 
+export interface DeleteExerciseRequestDTO {
+  exerciseId: number
+}
+
+export interface DeleteExerciseResponseDTO extends BaseRestApiResponseType {}
+
 export interface GetExercisesRequestDTO {
   limit: number
   offset: number

@@ -45,6 +45,14 @@ export const NavbarSvg = ({ route, isItemActive }: NavbarSvgProps) => {
           color={isItemActive ? '#212738' : '#757D83'}
         />
       )
+    case '/admin/exercises':
+      return (
+        <BarbellSvg
+          width='20'
+          height='20'
+          color={isItemActive ? '#212738' : '#757D83'}
+        />
+      )
     case '/schedule':
       return (
         <CalendarSvg
