@@ -18,6 +18,7 @@ export interface IPrimaryButtonProps {
   width?: string
   height?: string
   fontSize?: string
+  disabled?: boolean
   title: string
   onClick?: () => void
 }

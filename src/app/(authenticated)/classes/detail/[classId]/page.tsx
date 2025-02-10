@@ -1,9 +1,8 @@
-import React from 'react'
 import ClassDetail from '@/features/classes/pages/detail'
 
-const Page = () => {
+const Page = ({ params }: { params: { classId: string } }) => {
   return (
-    <ClassDetail />
+    <ClassDetail classId={Number(params.classId)} />
   )
 }
 

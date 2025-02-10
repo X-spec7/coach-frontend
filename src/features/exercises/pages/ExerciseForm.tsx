@@ -56,20 +56,27 @@ const ExerciseForm: React.FC<IExerciseFormProps> = ({
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
 
+    setLoading(true)
+
     if (!title.trim() || !description.trim() || !caloriePerRound.trim()) {
       alert('Please fill in all required fields.')
       setValidationError('Please fill in all required fields.')
       return
     }
 
-    setLoading(true)
 
     const newExercise: IFormExercise = {
       title,
       description,
       caloriePerRound: parseFloat(caloriePerRound),
-      exerciseIcon: exerciseIcon,
-      exerciseGif: exerciseGif,
+    }
+
+    if (typeof exerciseIcon === 'string' && exerciseIcon.startsWith('data:image/')) {
+      newExercise.exerciseIcon = exerciseIcon
+    }
+
+    if (typeof exerciseGif === 'string' && exerciseGif.startsWith('data:image/gif')) {
+      newExercise.exerciseGif = exerciseGif
     }
 
     let isSucceed = false

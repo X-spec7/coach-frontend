@@ -23,6 +23,7 @@ export interface ISession {
 }
 
 export interface IClassSession {
+  id?: number
   title: string
   startDate: string
   duration: number

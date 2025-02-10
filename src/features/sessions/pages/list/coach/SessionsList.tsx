@@ -30,7 +30,7 @@ const SessionsList: React.FC<ISessionsListProps> = ({
       const response = await sharedSessionService.joinSession({sessionId: selectedSession.id.toString()})
       const zoom_url = response.zoom_url
       if (zoom_url) {
-        window.open(zoom_url, '_blank', 'noopener,noreferrer');
+        window.open(zoom_url, '_blank', 'noopener,noreferrer')
       }
     }
     setIsModalOpen(false)

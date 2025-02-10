@@ -1,10 +1,10 @@
 'use client'
 
 import Image from 'next/image'
+import { useCallback, useState } from 'react'
 
-import { PrimaryButton } from '@/shared/components'
 import { IClass } from '@/shared/types'
-
+import { PrimaryButton } from '@/shared/components'
 import { DEFAULT_CLASS_BANNER_URL } from '@/shared/constants'
 import {
   ChartBarSvg,
@@ -15,6 +15,7 @@ import {
   CheckSvg
 } from '@/shared/components/Svg'
 
+import { classService } from '../../services'
 interface IClassOverviewItemProps {
   keyName: string
   value: string | number
@@ -38,9 +39,15 @@ const ClassOverviewItem: React.FC<IClassOverviewItemProps> = ({ keyName, value }
 
 interface IClassSpecProps {
   classDetailData: IClass
+  bookClassCallback: (updatedClass: IClass | null) => void
 }
 
-const ClassSpec: React.FC<IClassSpecProps> = ({ classDetailData }) => {
+const ClassSpec: React.FC<IClassSpecProps> = ({
+  classDetailData,
+  bookClassCallback
+}) => {
+  const [loading, setLoading] = useState<boolean>(false)
+
   const EquipmentItem = ({itemTitle}: {itemTitle: string}) => (
       <div className='flex items-center justify-start gap-2'>
         <div className='flex justify-center items-center w-4.5 h-4.5 rounded-full bg-blue'>
@@ -60,9 +67,26 @@ const ClassSpec: React.FC<IClassSpecProps> = ({ classDetailData }) => {
     </div>
   )
 
-  const onTakeClassButtonClicked = () => {
-    // 
-  }
+  const onTakeClassButtonClicked = useCallback(async () => {
+    try {
+      setLoading(true)
+      const response = await classService.bookClass({classId: classDetailData.id})
+
+      if (response.status === 200) {
+        bookClassCallback(response.class)
+        alert('Successfully booked in class')
+      } else {
+        alert('An error occured while booking in a class')
+        console.log('Error while booking in class: ', response.message)
+      }
+    } catch (error) {
+      alert('An error occured while booking in a class')
+      console.log('Error while booking in class: ', error)
+    } finally {
+      setLoading(false)
+    }
+  }, [bookClassCallback, classDetailData.id])
+
   return (
     <div className='flex flex-1 flex-col gap-4 p-4 bg-white rounded-4xl'>
       {/* Header */}
@@ -77,7 +101,21 @@ const ClassSpec: React.FC<IClassSpecProps> = ({ classDetailData }) => {
             <p className='text-black text-lg font-medium'>&euro; {classDetailData.price}</p>
             <p className='text-gray-20 text-xs'>for the full course</p>
           </div>
-          <PrimaryButton title='Take Class' width='w-24' height='h-9' fontSize='text-sm' onClick={onTakeClassButtonClicked} />
+          {!classDetailData.booked && (
+            <PrimaryButton
+              title='Take Class'
+              width='w-24'
+              height='h-9'
+              fontSize='text-sm'
+              disabled={loading}
+              onClick={onTakeClassButtonClicked}
+            />
+          )}
+          {classDetailData.booked && (
+            <span className='px-3 py-1 bg-blue rounded-20 text-sm text-gray-30 font-medium'>
+              Booked
+            </span>
+          )}
         </div>
       </div>
 

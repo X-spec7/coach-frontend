@@ -10,8 +10,8 @@ export interface IExercise {
 export interface IFormExercise {
   title: string
   description: string
-  exerciseIcon: any
-  exerciseGif: any
+  exerciseIcon?: any
+  exerciseGif?: any
   caloriePerRound: number
 }
 

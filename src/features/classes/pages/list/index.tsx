@@ -65,7 +65,7 @@ const ClassesList: React.FC<IClassesListProps> = ({
     }
 
     getClasses()
-  }, [])
+  }, [currentPage, query, category, level])
 
   return (
     <div className='flex flex-col gap-4'>
