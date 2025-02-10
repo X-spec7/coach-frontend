@@ -18,6 +18,14 @@ export interface GetClassesResposneDTO extends BaseRestApiResponseType {
   totalClassesCount: number
 }
 
+export interface GetClassByIdRequestDTO {
+  classId: number
+}
+
+export interface GetClassByIdResponseDTO extends BaseRestApiResponseType {
+  class: IClass
+}
+
 export interface CreateClassRequestDTO {
   title: string
   category: string
@@ -37,3 +45,27 @@ export interface CreateClassRequestDTO {
 }
 
 export interface CreateClassResponseDTO extends BaseRestApiResponseType {}
+
+export interface BookClassRequestDTO {
+  classId: number
+}
+
+export interface BookClassResponseDTO extends BaseRestApiResponseType {
+  class: IClass
+}
+
+export interface JoinClassSessionRequestDTO {
+  classSessionId: number
+}
+
+export interface JoinClassSessionResponseDTO extends BaseRestApiResponseType {
+  joinUrl: string
+}
+
+export interface StartClassSessionRequestDTO {
+  classSessionId: number
+}
+
+export interface StartClassSessionResponseDTO extends BaseRestApiResponseType {
+  startUrl: string
+}

@@ -1,4 +1,5 @@
 import { IClassExercise } from "./exercise.type"
+import { IClassSession } from "./session.type"
 
 export interface IClass {
   id: number
@@ -17,4 +18,6 @@ export interface IClass {
   benefits?: string[]
   equipments?: string[]
   exercises?: IClassExercise[]
+  sessions?: IClassSession[]
+  booked?: boolean
 }

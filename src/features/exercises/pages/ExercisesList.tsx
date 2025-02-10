@@ -20,7 +20,7 @@ const ExercisesList: React.FC<IExercisesListProps> = ({
   handleExerciseItemEditButtonClicked,
 }) => {
   return (
-    <div className='flex flex-col gap-4 min-h-115'>
+    <div className='flex flex-col gap-4 min-h-150 pt-4'>
       {exercises.map((exercise, index) => (
         <div className='flex items-center justify-between px-4 pb-4 border-b border-stroke' key={index}>
           <div className='flex items-center justify-start gap-4'>

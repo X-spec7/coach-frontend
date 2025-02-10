@@ -1,11 +1,15 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Image from 'next/image'
 
 import { IClassExercise, IExercise } from '@/shared/types'
 import { exercisesDummyData } from '@/dev/dummy-data'
 import { CaretUpSvg, CaretDownSvg } from '@/shared/components/Svg'
+import { exerciseService } from '@/features/exercises/service'
+import { GetExercisesRequestDTO } from '@/features/exercises/types'
+
+import { BACKEND_HOST_URL, DEFAULT_EXERCISE_ICON_URL } from '@/shared/constants'
 
 export interface IClassExerciseFormProps {
   isAdd: boolean
@@ -22,6 +26,34 @@ const ClassExerciseForm: React.FC<IClassExerciseFormProps> = ({
   originalClassExercise,
   onClose,
 }) => {
+  const [exercises, setExercises] = useState<IExercise[]>([])
+
+  const fetchExercises = useCallback(async () => {
+    const getExercisesPayload: GetExercisesRequestDTO = {
+      offset: 0,
+      limit: 15,
+    }
+
+    try {
+      const response = await exerciseService.getExercises(getExercisesPayload)
+
+      if (response.status === 200) {
+        setExercises(response.exercises)
+      } else {
+        alert('An error occured while fetching exercises.')
+        console.log('An error occured while fetching exercises: ', response.message)
+      }
+    } catch (error) {
+      alert('An error occured while fetching exercises.')
+      console.log('An error occured while fetching exercises: ', error)
+    }
+
+  }, [exerciseService])
+
+  useEffect(() => {
+    fetchExercises()
+  }, [])
+
   const [formData, setFormData] = useState({
     setCount: '',
     repsCount: '',
@@ -132,7 +164,7 @@ const ClassExerciseForm: React.FC<IClassExerciseFormProps> = ({
           {exercise ? (
             <div className="flex items-center gap-2">
               <Image
-                src={exercise.exerciseIconUrl}
+                src={exercise.exerciseIconUrl ? BACKEND_HOST_URL + exercise.exerciseIconUrl : DEFAULT_EXERCISE_ICON_URL}
                 alt={`${exercise.title} image`}
                 width={24}
                 height={24}
@@ -153,14 +185,14 @@ const ClassExerciseForm: React.FC<IClassExerciseFormProps> = ({
         {/* Dropdown Items */}
         {isDropdownOpen && (
           <ul className="absolute z-10 w-full bg-white border rounded-lg shadow-lg mt-2 max-h-60 overflow-auto">
-            {exercisesDummyData.map((exercise) => (
+            {exercises.map((exercise) => (
               <li
                 key={exercise.id}
                 onClick={() => handleSelectExercise(exercise)}
                 className="flex items-center gap-2 p-2 hover:bg-gray-100 cursor-pointer"
               >
                 <Image
-                  src={exercise.exerciseIconUrl}
+                  src={exercise.exerciseIconUrl ? BACKEND_HOST_URL + exercise.exerciseIconUrl : DEFAULT_EXERCISE_ICON_URL}
                   alt={`${exercise.title} image`}
                   width={24}
                   height={24}

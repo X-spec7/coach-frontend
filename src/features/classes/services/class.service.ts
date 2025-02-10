@@ -3,7 +3,18 @@ import {
   GetClassesRequestDTO,
   GetClassesResposneDTO,
 } from '../types'
-import { CreateClassRequestDTO, CreateClassResponseDTO } from '../types/class.dto'
+import {
+  BookClassRequestDTO,
+  BookClassResponseDTO,
+  CreateClassRequestDTO,
+  CreateClassResponseDTO,
+  GetClassByIdRequestDTO,
+  GetClassByIdResponseDTO,
+  JoinClassSessionRequestDTO,
+  JoinClassSessionResponseDTO,
+  StartClassSessionRequestDTO,
+  StartClassSessionResponseDTO
+} from '../types/class.dto'
 
 class ClassService {
   async createClass(
@@ -15,6 +26,19 @@ class ClassService {
         return {
           status: response.status,
           ...response.data
+        }
+      })
+  }
+
+  async getClassById(
+    payload: GetClassByIdRequestDTO
+  ): Promise<GetClassByIdResponseDTO> {
+    return authorizedHttpServer
+      .get(`/classes/get/${payload.classId}/`)
+      .then((response) => {
+        return {
+          status: response.status,
+          ...response.data,
         }
       })
   }
@@ -42,6 +66,45 @@ class ClassService {
 
     return authorizedHttpServer
       .get(`/classes/get/?${params.toString()}`)
+      .then((response) => {
+        return {
+          status: response.status,
+          ...response.data
+        }
+      })
+  }
+
+  async bookClass(
+    payload: BookClassRequestDTO
+  ): Promise<BookClassResponseDTO> {
+    return authorizedHttpServer
+      .post(`/classes/book/${payload.classId}/`)
+      .then((response) => {
+        return {
+          status: response.status,
+          ...response.data,
+        }
+      })
+  }
+
+  async getClassSessionStartUrl(
+    payload: StartClassSessionRequestDTO
+  ): Promise<StartClassSessionResponseDTO> {
+    return authorizedHttpServer
+      .get(`/classes/session/start/${payload.classSessionId}/`)
+      .then((response) => {
+        return {
+          status: response.status,
+          ...response.data
+        }
+      })
+  }
+
+  async getClassSessionJoinUrl(
+    payload: JoinClassSessionRequestDTO
+  ): Promise<JoinClassSessionResponseDTO> {
+    return authorizedHttpServer
+      .get(`/classes/session/join/${payload.classSessionId}/`)
       .then((response) => {
         return {
           status: response.status,

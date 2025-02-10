@@ -56,7 +56,7 @@ const ClassListItem: React.FC<IClassListItemProps> = ( {classData }) => {
 
   return (
     <div className='flex items-center justify-between gap-14 p-4 border border-gray-bg rounded-20'>
-      <div className='flex items-center justify-start gap-4 w-80'>
+      <div className='flex items-center justify-start gap-4 w-60'>
         <div className='flex justify-center items-center w-10 h-10 bg-green rounded-full'>
           <BarbellSvg width='20' height='20' color='#4D5260' />
         </div>
