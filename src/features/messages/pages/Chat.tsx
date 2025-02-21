@@ -1,31 +1,45 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
+import {
+  useEffect,
+  useRef,
+  useState
+} from 'react'
 
 import ChatItem from './ChatItem'
 import MessageTypeBox from './MessageTypeBox'
 
 import { IMessage } from '../types'
-import { ICallInfo, ILayoutProps } from '@/shared/types'
 import { EllipsisMenu } from '@/shared/components'
-import { PhoneSvg, VideoCameraSvg, SidebarSimpleSvg } from '@/shared/components/Svg'
-import { meetingService, messageService } from '../service'
 import { BACKEND_HOST_URL } from '@/shared/constants'
+import { ICallInfo, ILayoutProps } from '@/shared/types'
+import { meetingService, messageService } from '../service'
 import { useCall, useWebSocket, useAuth } from '@/shared/provider'
+import { useMessagesContext } from '../providers/messages.provider'
+import {
+  PhoneSvg,
+  VideoCameraSvg,
+  SidebarSimpleSvg
+} from '@/shared/components/Svg'
 
 const defaultAvatarUrl = '/images/user/user-09.png'
 
 interface IChat {
   isShow: boolean
-  currentChatUserId?: number
 }
 
-const Chat: React.FC<IChat> = ({ isShow, currentChatUserId }) => {
+const Chat: React.FC<IChat> = ({ isShow }) => {
 
   const websocketService = useWebSocket()
   const { user } = useAuth()
   const { setOutgoingCallInfo } = useCall()
+
+  const {
+    fetchContacts,
+    currentChatUserId,
+    contactUsers
+  } = useMessagesContext()
   
   const chatRef = useRef<HTMLDivElement | null>(null)
   const hasMoreRef = useRef<boolean>(false)
@@ -54,6 +68,20 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId }) => {
       setOtherPersonAvatarUrl(response.data.otherPersonAvatarUrl)
       hasMoreRef.current = (response.data.messages.length < response.data.totalMessageCount)
       offsetRef.current = response.data.messages.length
+
+      const currentChatUser = contactUsers.find(user => user.id === currentChatUserId)
+      console.log('current chat user ----------->', currentChatUser)
+
+      // if (response.data.hasUnreadMessages) {
+      if (currentChatUser?.unreadCount) {
+        const response = await messageService.markMessagesAsRead({
+          otherPersonId: currentChatUserId!,
+        })
+        
+        if (response.status === 200) {
+          fetchContacts()
+        }
+      }
     }
 
     const container = chatRef.current

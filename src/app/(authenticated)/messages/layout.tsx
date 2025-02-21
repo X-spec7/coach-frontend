@@ -1,5 +1,6 @@
 import { ILayoutProps } from '@/shared/types'
 import SharedLayout from '@/shared/Layouts/SharedLayout'
+import { MessagesContextProvider } from '@/features/messages/providers/messages.provider'
 
 const Layout: React.FC<ILayoutProps> = ({ children }) => {
   return (
@@ -7,7 +8,9 @@ const Layout: React.FC<ILayoutProps> = ({ children }) => {
       headerTitle='Messages'
       headerDescription='Welcome and Let&apos;s do some workout today!'
     >
-      {children}
+      <MessagesContextProvider>
+        {children}
+      </MessagesContextProvider>
     </SharedLayout>
   )
 }

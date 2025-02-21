@@ -1,121 +1,42 @@
 'use client'
 
 import { useSearchParams } from 'next/navigation'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect } from 'react'
 import Image from 'next/image'
 
-import { contactService } from '../service'
-import { useAuth, useCall } from '@/shared/provider'
 import { SearchField } from '@/shared/components'
 import { BACKEND_HOST_URL } from '@/shared/constants'
 import { useWebSocket } from '@/shared/provider'
+import { IContactUser } from '../types'
+import { useMessagesContext } from '../providers/messages.provider'
 import { get12HourTimeFromDateObject, getDateFromDateObject } from '@/shared/utils'
-import {
-  IContactUser,
-  SearchUserRequestDTO,
-  ISearchedUser
-} from '../types'
 
 interface IUsers {
   isShow: boolean
-  currentChatUserId?: number
-  setCurrentChatUserId: (userId: number) => void
 }
 
-const USERS_PER_PAGE = 25
-
-const Users: React.FC<IUsers> = ({ isShow, setCurrentChatUserId, currentChatUserId }) => {
+const Users: React.FC<IUsers> = ({ isShow }) => {
   const searchParams = useSearchParams()
   const query: string | null = searchParams.get('query')
-  const page: string | null = searchParams.get('page')
 
-  const { user } = useAuth()
   const websocketService = useWebSocket()
 
-  const [contactUsers, setContactUsers] = useState<IContactUser[]>([])
-  const [searchedUsers, setSearchedUsers] = useState<ISearchedUser[]>([])
-
-  const onChatUserItemClicked = (userId: number) => {
-    setCurrentChatUserId(userId)
-  }
-
-  const fetchContacts = useCallback(async () => {
-    const response = await contactService.getContacts()
-    setContactUsers(response.contacts)
-    setSearchedUsers([])
-  }, [contactService, setContactUsers, setSearchedUsers])
-
-  const handleSearch = useCallback(async () => {
-    const currentPage = page ? parseInt(page, 10) : 1
-    const offset = (currentPage - 1) * USERS_PER_PAGE
-    const limit = USERS_PER_PAGE
-
-    const payload: SearchUserRequestDTO = {
-      query: query as string,
-      limit: limit,
-      offset: offset
-    }
-
-    const response = await contactService.searchUsers(payload)
-
-    if (user && user.id) {
-      const filteredUsers = response.users.filter(filterUser => filterUser.id !== user.id!)
-      setSearchedUsers(filteredUsers)
-      setContactUsers([])
-    }
-  }, [page, query, contactService, setSearchedUsers, setContactUsers])
-
-  useEffect(() => {
-    if (query && query.trim() !== '') {
-      handleSearch()
-    } else {
-      fetchContacts()
-    }
-  }, [query, page])
-
-  const groupUsersByDate = (users: IContactUser[]) => {
-    const today = new Date()
-    const yesterday = new Date()
-    yesterday.setDate(today.getDate() - 1)
-
-    const formatDate = (date: Date) => date.toISOString().split('T')[0]
-
-    const todayKey = formatDate(today)
-    const yesterdayKey = formatDate(yesterday)
-
-    const todayUsers: IContactUser[] = []
-    const yesterdayUsers: IContactUser[] = []
-    const restUsers: IContactUser[] = []
-
-    users.forEach((user) => {
-      if (user.lastMessage) {
-        const sentDateKey = formatDate(new Date(user.lastMessage.sentDate))
-        if (sentDateKey === todayKey) {
-          todayUsers.push(user)
-        } else if (sentDateKey === yesterdayKey) {
-          yesterdayUsers.push(user)
-        } else {
-          restUsers.push(user)
-        }
-      } else {
-        restUsers.push(user)
-      }
-    })
-
-    return { todayUsers, yesterdayUsers, restUsers }
-  }
+  const {
+    contactUsers,
+    searchedUsers,
+    currentChatUserId,
+    setCurrentChatUserId,
+    fetchContacts
+  } = useMessagesContext()
 
   const { todayUsers, yesterdayUsers, restUsers } = groupUsersByDate(contactUsers)
 
   // <------------- HANDLE SOCKET ------------->
   const handleMessageReceivedFromNewChatUser = useCallback((data: any) => {
-    console.log('searched users length: ', searchedUsers.length)
     if (searchedUsers.length > 0) return
 
     const senderId = data?.message?.senderId
-    console.log('sender id: ', senderId)
     if (senderId && !contactUsers.some(user => user.id === senderId)) {
-      console.log('fetching contacts')
       fetchContacts()
     }
   }, [searchedUsers, fetchContacts])
@@ -151,7 +72,7 @@ const Users: React.FC<IUsers> = ({ isShow, setCurrentChatUserId, currentChatUser
                       user={user}
                       isSelected={user.id === currentChatUserId}
                       isTodayOrYesterday
-                      onClick={() => onChatUserItemClicked(user.id)}
+                      onClick={() => setCurrentChatUserId(user.id)}
                     />
                     {index < todayUsers.length - 1 && (
                       <div className='w-full h-[1px] bg-stroke' />
@@ -172,7 +93,7 @@ const Users: React.FC<IUsers> = ({ isShow, setCurrentChatUserId, currentChatUser
                       user={user}
                       isSelected={user.id === currentChatUserId}
                       isTodayOrYesterday
-                      onClick={() => onChatUserItemClicked(user.id)}
+                      onClick={() => setCurrentChatUserId(user.id)}
                     />
                     {index < yesterdayUsers.length - 1 && (
                       <div className='w-full h-[1px] bg-stroke' />
@@ -192,7 +113,7 @@ const Users: React.FC<IUsers> = ({ isShow, setCurrentChatUserId, currentChatUser
                       key={index}
                       user={user}
                       isSelected={user.id === currentChatUserId}
-                      onClick={() => onChatUserItemClicked(user.id)}
+                      onClick={() => setCurrentChatUserId(user.id)}
                     />
                     {index < restUsers.length - 1 && (
                       <div className='w-full h-[1px] bg-stroke' />
@@ -218,7 +139,7 @@ const Users: React.FC<IUsers> = ({ isShow, setCurrentChatUserId, currentChatUser
                         ...user
                       }}
                       isSelected={user.id === currentChatUserId}
-                      onClick={() => onChatUserItemClicked(user.id)}
+                      onClick={() => setCurrentChatUserId(user.id)}
                     />
                     {index < searchedUsers.length - 1 && (
                       <div className='w-full h-[1px] bg-stroke' />
@@ -313,7 +234,35 @@ const UserItem: React.FC<IUserItemProps> = ({
   )
 }
 
-interface ISearchedUserItemProps {
-  user: ISearchedUser
-  onClick: (userId: string) => void
+const groupUsersByDate = (users: IContactUser[]) => {
+  const today = new Date()
+  const yesterday = new Date()
+  yesterday.setDate(today.getDate() - 1)
+
+  const formatDate = (date: Date) => date.toISOString().split('T')[0]
+
+  const todayKey = formatDate(today)
+  const yesterdayKey = formatDate(yesterday)
+
+  const todayUsers: IContactUser[] = []
+  const yesterdayUsers: IContactUser[] = []
+  const restUsers: IContactUser[] = []
+
+  users.forEach((user) => {
+    if (user.lastMessage) {
+      const sentDateKey = formatDate(new Date(user.lastMessage.sentDate))
+      if (sentDateKey === todayKey) {
+        todayUsers.push(user)
+      } else if (sentDateKey === yesterdayKey) {
+        yesterdayUsers.push(user)
+      } else {
+        restUsers.push(user)
+      }
+    } else {
+      restUsers.push(user)
+    }
+  })
+
+  return { todayUsers, yesterdayUsers, restUsers }
 }
+

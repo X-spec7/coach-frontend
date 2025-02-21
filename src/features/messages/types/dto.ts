@@ -1,13 +1,14 @@
+import { BaseRestApiResponseType } from '@/shared/types'
 import { IContactUser, ISearchedUser } from './contact'
 import { IMessage } from './message'
 
-export interface GetMessagesByUserIdResponseDTO {
-  message: string
+export interface GetMessagesByUserIdResponseDTO extends BaseRestApiResponseType {
   data: {
     otherPersonFullname: string
     otherPersonAvatarUrl: string
     totalMessageCount: number
     messages: IMessage[]
+    hasUnreadMessages: boolean
   }
 }
 
@@ -23,13 +24,11 @@ export interface SearchUserRequestDTO {
   query?: string
 }
 
-export interface GetContactsResponseDTO {
-  message: string
+export interface GetContactsResponseDTO extends BaseRestApiResponseType {
   contacts: IContactUser[]
 }
 
-export interface SearchUserResponseDTO {
-  message: string
+export interface SearchUserResponseDTO extends BaseRestApiResponseType {
   users: ISearchedUser[]
   totalUsersCount: number
 }
@@ -41,9 +40,15 @@ export interface SendMessageRequestDTO {
   message: string
 }
 
-export interface CreateMeetingResponseDTO {
-  message: string
+export interface CreateMeetingResponseDTO extends BaseRestApiResponseType {
   joinUrl: string
   startUrl: string
-  status: number
+}
+
+export interface MarkMessagesAsReadRequestDTO {
+  otherPersonId: number
+}
+
+export interface MarkMessagesAsReadResponseDTO extends BaseRestApiResponseType {
+  updatedCount: number
 }
