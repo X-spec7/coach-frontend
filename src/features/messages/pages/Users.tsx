@@ -1,13 +1,14 @@
 'use client'
 
 import { useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Image from 'next/image'
 
 import { contactService } from '../service'
-import { useAuth } from '@/shared/provider'
+import { useAuth, useCall } from '@/shared/provider'
 import { SearchField } from '@/shared/components'
 import { BACKEND_HOST_URL } from '@/shared/constants'
+import { useWebSocket } from '@/shared/provider'
 import { get12HourTimeFromDateObject, getDateFromDateObject } from '@/shared/utils'
 import {
   IContactUser,
@@ -29,7 +30,7 @@ const Users: React.FC<IUsers> = ({ isShow, setCurrentChatUserId, currentChatUser
   const page: string | null = searchParams.get('page')
 
   const { user } = useAuth()
-
+  const websocketService = useWebSocket()
 
   const [contactUsers, setContactUsers] = useState<IContactUser[]>([])
   const [searchedUsers, setSearchedUsers] = useState<ISearchedUser[]>([])
@@ -38,12 +39,13 @@ const Users: React.FC<IUsers> = ({ isShow, setCurrentChatUserId, currentChatUser
     setCurrentChatUserId(userId)
   }
 
-  const onSearchedUserItemClicked = (userId: string) => {
-    console.log('user id: ', userId)
-  }
+  const fetchContacts = useCallback(async () => {
+    const response = await contactService.getContacts()
+    setContactUsers(response.contacts)
+    setSearchedUsers([])
+  }, [contactService, setContactUsers, setSearchedUsers])
 
-  useEffect(() => {
-    const handleSearch = async () => {
+  const handleSearch = useCallback(async () => {
     const currentPage = page ? parseInt(page, 10) : 1
     const offset = (currentPage - 1) * USERS_PER_PAGE
     const limit = USERS_PER_PAGE
@@ -59,14 +61,11 @@ const Users: React.FC<IUsers> = ({ isShow, setCurrentChatUserId, currentChatUser
     if (user && user.id) {
       const filteredUsers = response.users.filter(filterUser => filterUser.id !== user.id!)
       setSearchedUsers(filteredUsers)
+      setContactUsers([])
     }
-  }
+  }, [page, query, contactService, setSearchedUsers, setContactUsers])
 
-    const fetchContacts = async () => {
-      const response = await contactService.getContacts()
-      setContactUsers(response.contacts)
-    }
-
+  useEffect(() => {
     if (query && query.trim() !== '') {
       handleSearch()
     } else {
@@ -107,6 +106,28 @@ const Users: React.FC<IUsers> = ({ isShow, setCurrentChatUserId, currentChatUser
   }
 
   const { todayUsers, yesterdayUsers, restUsers } = groupUsersByDate(contactUsers)
+
+  // <------------- HANDLE SOCKET ------------->
+  const handleMessageReceivedFromNewChatUser = useCallback((data: any) => {
+    console.log('searched users length: ', searchedUsers.length)
+    if (searchedUsers.length > 0) return
+
+    const senderId = data?.message?.senderId
+    console.log('sender id: ', senderId)
+    if (senderId && !contactUsers.some(user => user.id === senderId)) {
+      console.log('fetching contacts')
+      fetchContacts()
+    }
+  }, [searchedUsers, fetchContacts])
+
+  useEffect(() => {
+    websocketService.unRegisterOnMessageHandler('chat', handleMessageReceivedFromNewChatUser)
+    websocketService.registerOnMessageHandler('chat', handleMessageReceivedFromNewChatUser)
+
+    return () => {
+      websocketService.unRegisterOnMessageHandler('chat', handleMessageReceivedFromNewChatUser)
+    }
+  }, [handleMessageReceivedFromNewChatUser])
 
   return (
     <div className='flex flex-col gap-4'>
