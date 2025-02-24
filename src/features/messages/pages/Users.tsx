@@ -213,10 +213,10 @@ const UserItem: React.FC<IUserItemProps> = ({
       </div>
 
       <div className='flex flex-1 flex-col'>
-        <div className='flex justify-between items-center'>
+        <div className='flex justify-between items-center w-full'>
           {/* Name and Label */}
           <div className='flex justify-start items-center gap-0.5'>
-            <p className='text-black font-medium'>{user.fullName}</p>
+            <p className='text-black font-medium max-w-22 truncate'>{user.fullName}</p>
             {user.userType === 'Trainer' && (
               <div className='flex justify-center items-center bg-blue w-12 h-5 text-black text-xxs'>Trainer</div>
             )}
@@ -232,7 +232,7 @@ const UserItem: React.FC<IUserItemProps> = ({
 
         {/* Chat content and unread message */}
         <div className='flex justify-start items-center gap-4'>
-          <article className='flex-1 text-xxs text-gray-30 text-medium'>{user.lastMessage?.content}</article>
+          <article className='flex-1 text-xxs max-w-32 max-h-10 overflow-hidden text-gray-30 text-medium truncate'>{user.lastMessage?.content}</article>
           {user?.unreadCount > 0 && (
             <div className='flex justify-center items-center w-5 h-5 rounded-full bg-yellow text-black text-xxs font-medium'>
               {user.unreadCount}
