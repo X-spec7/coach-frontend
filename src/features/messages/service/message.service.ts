@@ -21,7 +21,10 @@ class MessageService {
     return authorizedHttpServer
       .get(`/chat/messages/${otherPersonId}/?${params.toString()}`)
       .then((response) => {
-        return response.data as GetMessagesByUserIdResponseDTO
+        return {
+          status: response.status,
+          ...response.data
+        }
       })
   }
 

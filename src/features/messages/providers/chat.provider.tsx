@@ -11,6 +11,7 @@ interface IChatContext {
   setMessages: React.Dispatch<React.SetStateAction<IMessage[]>>
   getInitialData: () => Promise<void>
   getMoreData: () => Promise<void>
+  fetchMessages: (isFirstFetching: boolean) => Promise<void>
   otherPersonName: string
   otherPersonAvatarUrl: string
   sendMessage: (message: string) => void
@@ -35,6 +36,42 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const hasMoreRef = useRef<boolean>(false)
   const isLoadingMoreRef = useRef<boolean>(false)
   const limit = 25
+
+  const fetchMessages = useCallback(async (
+    isFirstFetching: boolean
+  ) => {
+    if (!currentChatUserId || isLoadingMoreRef.current) return
+    
+    isLoadingMoreRef.current = true
+    if (isFirstFetching) offsetRef.current = 0
+
+    try {
+      const response = await messageService.getMessagesByUserId({
+        otherPersonId: currentChatUserId,
+        offset: offsetRef.current,
+        limit,
+      })
+
+      if (response.status === 200) {
+        if (isFirstFetching) {
+          setMessages(response.data.messages)
+        } else {
+          setMessages((prev) => [...prev, ...response.data.messages])
+        }
+        setOtherPersonAvatarUrl(response.data.otherPersonAvatarUrl)
+        setOtherPersonName(response.data.otherPersonFullname)
+
+        hasMoreRef.current = (offsetRef.current + response.data.messages.length < response.data.totalMessageCount)
+        offsetRef.current = offsetRef.current + response.data.messages.length
+      } else {
+        alert(`Sth went wrong while fetching messages: ${response.message}`)
+      }
+    } catch (error) {
+      alert(`Sth went wrong while fetching messages: ${error}`)
+    } finally {
+      isLoadingMoreRef.current = false
+    }
+  }, [currentChatUserId])
 
   const getInitialData = useCallback(async () => {
     if (!currentChatUserId) return
@@ -89,7 +126,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } finally {
       isLoadingMoreRef.current = false
     }
-  }, [])
+  }, [currentChatUserId])
 
   const sendMessage = (message: string) => {
     if (websocketService.connectionStatus === 'OPEN') {
@@ -129,6 +166,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setMessages,
       getInitialData,
       getMoreData,
+      fetchMessages,
       otherPersonName,
       otherPersonAvatarUrl,
       sendMessage,
