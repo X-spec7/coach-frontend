@@ -9,9 +9,8 @@ import { useChatUsersContext } from './chatusers.provider'
 interface IChatContext {
   messages: IMessage[]
   setMessages: React.Dispatch<React.SetStateAction<IMessage[]>>
-  getInitialData: () => Promise<void>
-  getMoreData: () => Promise<void>
   fetchMessages: (isFirstFetching: boolean) => Promise<void>
+  markMessagesAsRead: () => Promise<void>
   otherPersonName: string
   otherPersonAvatarUrl: string
   sendMessage: (message: string) => void
@@ -73,61 +72,6 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [currentChatUserId])
 
-  const getInitialData = useCallback(async () => {
-    if (!currentChatUserId) return
-
-    const response = await messageService.getMessagesByUserId({
-      otherPersonId: currentChatUserId,
-      offset: offsetRef.current,
-      limit,
-    })
-
-    setMessages(response.data.messages)
-    setOtherPersonName(response.data.otherPersonFullname)
-    setOtherPersonAvatarUrl(response.data.otherPersonAvatarUrl)
-    hasMoreRef.current = response.data.messages.length < response.data.totalMessageCount
-    offsetRef.current = response.data.messages.length
-
-    const currentChatUser = contactUsers.find(user => user.id === currentChatUserId)
-    if (currentChatUser?.unreadCount) {
-      const res = await messageService.markMessagesAsRead({
-        otherPersonId: currentChatUserId,
-      })
-      if (res.status === 200) {
-        fetchContacts()
-      }
-    }
-  }, [currentChatUserId])
-
-  const getMoreData = useCallback(async () => {
-    if (!currentChatUserId || isLoadingMoreRef.current) return
-
-    isLoadingMoreRef.current = true
-
-    try {
-      const response = await messageService.getMessagesByUserId({
-        otherPersonId: currentChatUserId,
-        offset: offsetRef.current,
-        limit,
-      })
-
-      if (response.status === 200) {
-        setMessages((prev) => [...prev, ...response.data.messages])
-        setOtherPersonAvatarUrl(response.data.otherPersonAvatarUrl)
-        setOtherPersonName(response.data.otherPersonFullname)
-
-        hasMoreRef.current = (offsetRef.current + response.data.messages.length < response.data.totalMessageCount)
-        offsetRef.current = offsetRef.current + response.data.messages.length
-      } else {
-        alert(`Sth went wrong while fetching messages: ${response.message}`)
-      }
-    } catch (error) {
-      alert(`Sth went wrong while fetching messages: ${error}`)
-    } finally {
-      isLoadingMoreRef.current = false
-    }
-  }, [currentChatUserId])
-
   const sendMessage = (message: string) => {
     if (websocketService.connectionStatus === 'OPEN') {
       websocketService.sendMessage('send_message', {
@@ -150,7 +94,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
       setOutgoingCallInfo(outgoingCallInfo)
       websocketService.sendMessage('initiate_call', {
-        otherPersonId: currentChatUserId!,
+        otherPersonId: currentChatUserId,
         meetingLink: response.joinUrl,
         otherPersonAvatarUrl: user!.avatarImageUrl ?? '',
         otherPersonName: `${user!.firstName} ${user!.lastName}`,
@@ -160,13 +104,40 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }
 
+  const markMessagesAsRead = useCallback(async () => {
+    if (!currentChatUserId) return
+
+    const currentChatUser = contactUsers.find(user => user.id === currentChatUserId)
+    if (currentChatUser?.unreadCount) {
+      const res = await messageService.markMessagesAsRead({
+        // NOTE: assertion is safe because it is checked before the function is used
+        otherPersonId: currentChatUserId,
+      })
+      if (res.status === 200) {
+        fetchContacts()
+      }
+    }
+
+    if (websocketService.connectionStatus === 'OPEN') {
+      websocketService.sendMessage('checked_unread_messages', {
+        reader_id: user?.id,
+        message_sender_id: currentChatUserId
+      })
+    }
+  }, [
+    user,
+    currentChatUserId,
+    messageService,
+    websocketService,
+    contactUsers
+  ])
+
   return (
     <ChatContext.Provider value={{
       messages,
       setMessages,
-      getInitialData,
-      getMoreData,
       fetchMessages,
+      markMessagesAsRead,
       otherPersonName,
       otherPersonAvatarUrl,
       sendMessage,

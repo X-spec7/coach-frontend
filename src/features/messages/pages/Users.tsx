@@ -42,14 +42,15 @@ const Users: React.FC<IUsers> = ({ isShow }) => {
   const { todayUsers, yesterdayUsers, restUsers } = groupUsersByDate(contactUsers)
 
   // <------------- HANDLE SOCKET ------------->
+  // TODO: Stay up to date with unread count, and last messages using socket instead of fetching data
   const handleMessageReceivedFromNewChatUser = useCallback((data: any) => {
     if (searchedUsers.length > 0) return
 
     const senderId = data?.message?.senderId
-    if (senderId && !contactUsers.some(user => user.id === senderId)) {
+    if (senderId && !contactUsers.some(user => user.id === Number(senderId))) {
       fetchContacts()
     }
-  }, [searchedUsers, fetchContacts])
+  }, [searchedUsers, fetchContacts, contactUsers])
 
   useEffect(() => {
     websocketService.unRegisterOnMessageHandler('chat', handleMessageReceivedFromNewChatUser)

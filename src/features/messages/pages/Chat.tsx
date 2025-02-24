@@ -8,21 +8,19 @@ import {
   useState
 } from 'react'
 
-import ChatItem from './ChatItem'
-import MessageTypeBox from './MessageTypeBox'
-
 import { EllipsisMenu } from '@/shared/components'
-import { BACKEND_HOST_URL, DEFAULT_AVATAR_URL } from '@/shared/constants'
 import { ILayoutProps } from '@/shared/types'
-import { useWebSocket } from '@/shared/provider'
-import { useChatUsersContext } from '../providers/chatusers.provider'
+import { useAuth, useWebSocket } from '@/shared/provider'
+import { BACKEND_HOST_URL, DEFAULT_AVATAR_URL } from '@/shared/constants'
 import {
   PhoneSvg,
   VideoCameraSvg,
   SidebarSimpleSvg
 } from '@/shared/components/Svg'
-import { useChat } from '../providers/chat.provider'
-import { messageService } from '../service'
+
+import ChatItem from './ChatItem'
+import MessageTypeBox from './MessageTypeBox'
+import { useChat, useChatUsersContext } from '../providers'
 
 interface IChat {
   isShow: boolean
@@ -32,17 +30,15 @@ const Chat: React.FC<IChat> = ({ isShow }) => {
 
   const websocketService = useWebSocket()
 
-  const {
-    currentChatUserId,
-    contactUsers,
-    fetchContacts,
-  } = useChatUsersContext()
+  const { currentChatUserId } = useChatUsersContext()
+
+  const { user } = useAuth()
 
   const {
     messages,
     setMessages,
-    // getInitialData,
     fetchMessages,
+    markMessagesAsRead,
     otherPersonAvatarUrl,
     otherPersonName,
     sendMessage,
@@ -63,31 +59,17 @@ const Chat: React.FC<IChat> = ({ isShow }) => {
     await fetchMessages(true)
 
     // mark unread messages as read
-    const currentChatUser = contactUsers.find(user => user.id === currentChatUserId)
-    if (currentChatUser?.unreadCount) {
-      const res = await messageService.markMessagesAsRead({
-        // NOTE: assertion is safe because it is checked before the function is used
-        otherPersonId: currentChatUserId!,
-      })
-      if (res.status === 200) {
-        fetchContacts()
-      }
-    }
-
-    // handle scroll position
-    const container = chatRef.current
-    if (!container) return
-    const { scrollTop, scrollHeight, clientHeight } = container
-    if (scrollHeight > clientHeight) {
-      container.scrollTop = scrollHeight - clientHeight
-    }
+    await markMessagesAsRead()
   }, [
     fetchMessages,
-    chatRef.current,
-    contactUsers,
-    messageService,
+    markMessagesAsRead,
     messagesUpdateReasonRef
   ])
+
+  const fetchMoreData = useCallback(async () => {
+    messagesUpdateReasonRef.current = 'load-more'
+    await fetchMessages(false)
+  }, [fetchMessages, messagesUpdateReasonRef])
 
   useEffect(() => {
     const container = chatRef.current
@@ -97,11 +79,6 @@ const Chat: React.FC<IChat> = ({ isShow }) => {
       fetchInitialData()
     }
   }, [currentChatUserId])
-
-  const fetchMoreData = useCallback(async () => {
-    messagesUpdateReasonRef.current = 'load-more'
-    await fetchMessages(false)
-  }, [fetchMessages, messagesUpdateReasonRef])
 
   // <-------------- HANDLE SCROLL ----------------->
   const handleScrollPosition = useCallback(() => {
@@ -176,18 +153,47 @@ const Chat: React.FC<IChat> = ({ isShow }) => {
   }, [chatRef.current, scrollListenerAttached, handleScroll])
 
   // <------------- HANDLE SOCKET ------------->
-  useEffect(() => {
-    const handleMessageReceived = (data: any) => {
-      if (data.message) {
-        setMessages((prev) => [data.message, ...prev])
-      }
+  const handleMessageReceived = useCallback((data: any) => {
+    if (data.message && (Number(data.message.senderId) === currentChatUserId || Number(data.message.senderId) === user?.id)) {
+      setMessages((prev) => [data.message, ...prev])
+      websocketService.sendMessage('checked_received_message', {
+        message_sender_id: data.message.senderId
+      })
     }
+  }, [setMessages, currentChatUserId, user])
+
+  const handleUnreadMessagesChecked = useCallback((data: any) => {
+    if (data.message && Number(data.message.reader_id) === currentChatUserId) {
+      setMessages((prevMessages) => {
+        const lastUnreadIndex = prevMessages.findLastIndex((msg) => !msg.isRead)
+        
+        // If all messages are already read, return early
+        if (lastUnreadIndex === -1) return prevMessages;
+  
+        return prevMessages.map((msg, index) =>
+          index <= lastUnreadIndex ? { ...msg, isRead: true } : msg
+        )
+      })
+    }
+  }, [setMessages, currentChatUserId])
+
+  useEffect(() => {
+    websocketService.unRegisterOnMessageHandler('chat', handleMessageReceived)
     websocketService.registerOnMessageHandler('chat', handleMessageReceived)
 
     return () => {
       websocketService.unRegisterOnMessageHandler('chat', handleMessageReceived)
     }
-  }, [])
+  }, [handleMessageReceived])
+
+  useEffect(() => {
+    websocketService.unRegisterOnMessageHandler('unread_messages_checked', handleUnreadMessagesChecked)
+    websocketService.registerOnMessageHandler('unread_messages_checked', handleUnreadMessagesChecked)
+
+    return () => {
+      websocketService.unRegisterOnMessageHandler('unread_messages_checked', handleUnreadMessagesChecked)
+    }
+  }, [handleUnreadMessagesChecked])
 
   // <------------ FALLBACK SHOW ------------->
   if (currentChatUserId === null || currentChatUserId === undefined) {
