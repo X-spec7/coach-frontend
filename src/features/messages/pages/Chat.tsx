@@ -279,7 +279,7 @@ interface ISvgWrapperProps extends ILayoutProps {
 const SvgWrapper: React.FC<ISvgWrapperProps> = ({ children, onClick }) => {
   return (
     <div
-      className='flex justify-center items-center w-9 h-9 bg-gray-bg-subtle rounded-full'
+      className='flex justify-center items-center w-9 h-9 bg-gray-bg-subtle rounded-full cursor-pointer'
       onClick={onClick}
     >
       {children}
