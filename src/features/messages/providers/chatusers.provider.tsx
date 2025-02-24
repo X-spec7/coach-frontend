@@ -19,7 +19,7 @@ import {
 
 const USERS_PER_PAGE = 25
 
-interface MessagesContextType {
+interface ChatUsersContextType {
   contactUsers: IContactUser[]
   searchedUsers: ISearchedUser[]
   currentChatUserId?: number
@@ -28,15 +28,14 @@ interface MessagesContextType {
   handleSearch: () => Promise<void>
 }
 
-const MessagesContext = createContext<MessagesContextType | undefined>(undefined)
+const ChatUsersContext = createContext<ChatUsersContextType | undefined>(undefined)
 
-export const MessagesContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const ChatUsersContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const searchParams = useSearchParams()
   const query: string | null = searchParams.get('query')
   const page: string | null = searchParams.get('page')
 
   const { user } = useAuth()
-  const websocketService = useWebSocket()
 
   const [contactUsers, setContactUsers] = useState<IContactUser[]>([])
   const [searchedUsers, setSearchedUsers] = useState<ISearchedUser[]>([])
@@ -69,36 +68,8 @@ export const MessagesContextProvider: React.FC<{ children: React.ReactNode }> = 
     }
   }, [page, query, user])
 
-  // Fetch contacts or search based on query
-  useEffect(() => {
-    if (query && query.trim() !== '') {
-      handleSearch()
-    } else {
-      fetchContacts()
-    }
-  }, [query, page])
-
-  // Handle WebSocket messages
-  const handleMessageReceivedFromNewChatUser = useCallback((data: any) => {
-    if (searchedUsers.length > 0) return
-
-    const senderId = data?.message?.senderId
-    if (senderId && !contactUsers.some(user => user.id === senderId)) {
-      fetchContacts()
-    }
-  }, [searchedUsers, fetchContacts])
-
-  useEffect(() => {
-    websocketService.unRegisterOnMessageHandler('chat', handleMessageReceivedFromNewChatUser)
-    websocketService.registerOnMessageHandler('chat', handleMessageReceivedFromNewChatUser)
-
-    return () => {
-      websocketService.unRegisterOnMessageHandler('chat', handleMessageReceivedFromNewChatUser)
-    }
-  }, [handleMessageReceivedFromNewChatUser])
-
   return (
-    <MessagesContext.Provider
+    <ChatUsersContext.Provider
       value={{
         contactUsers,
         searchedUsers,
@@ -109,15 +80,15 @@ export const MessagesContextProvider: React.FC<{ children: React.ReactNode }> = 
       }}
     >
       {children}
-    </MessagesContext.Provider>
+    </ChatUsersContext.Provider>
   )
 }
 
 // Custom hook for using the context
-export const useMessagesContext = () => {
-  const context = useContext(MessagesContext)
+export const useChatUsersContext = () => {
+  const context = useContext(ChatUsersContext)
   if (!context) {
-    throw new Error('useMessagesContext must be used within a UsersProvider')
+    throw new Error('useChatUsersContext must be used within a UsersProvider')
   }
   return context
 }

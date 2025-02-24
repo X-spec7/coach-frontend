@@ -8,7 +8,7 @@ import { SearchField } from '@/shared/components'
 import { BACKEND_HOST_URL } from '@/shared/constants'
 import { useWebSocket } from '@/shared/provider'
 import { IContactUser } from '../types'
-import { useMessagesContext } from '../providers/messages.provider'
+import { useChatUsersContext } from '../providers/chatusers.provider'
 import { get12HourTimeFromDateObject, getDateFromDateObject } from '@/shared/utils'
 
 interface IUsers {
@@ -18,6 +18,7 @@ interface IUsers {
 const Users: React.FC<IUsers> = ({ isShow }) => {
   const searchParams = useSearchParams()
   const query: string | null = searchParams.get('query')
+  const page: string | null = searchParams.get('page')
 
   const websocketService = useWebSocket()
 
@@ -26,8 +27,17 @@ const Users: React.FC<IUsers> = ({ isShow }) => {
     searchedUsers,
     currentChatUserId,
     setCurrentChatUserId,
-    fetchContacts
-  } = useMessagesContext()
+    fetchContacts,
+    handleSearch,
+  } = useChatUsersContext()
+
+  useEffect(() => {
+    if (query && query.trim() !== '') {
+      handleSearch()
+    } else {
+      fetchContacts()
+    }
+  }, [query, page])
 
   const { todayUsers, yesterdayUsers, restUsers } = groupUsersByDate(contactUsers)
 
@@ -265,4 +275,3 @@ const groupUsersByDate = (users: IContactUser[]) => {
 
   return { todayUsers, yesterdayUsers, restUsers }
 }
-

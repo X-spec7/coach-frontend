@@ -10,18 +10,17 @@ import {
 import ChatItem from './ChatItem'
 import MessageTypeBox from './MessageTypeBox'
 
-import { IMessage } from '../types'
 import { EllipsisMenu } from '@/shared/components'
 import { BACKEND_HOST_URL } from '@/shared/constants'
-import { ICallInfo, ILayoutProps } from '@/shared/types'
-import { meetingService, messageService } from '../service'
+import { ILayoutProps } from '@/shared/types'
 import { useCall, useWebSocket, useAuth } from '@/shared/provider'
-import { useMessagesContext } from '../providers/messages.provider'
+import { useChatUsersContext } from '../providers/chatusers.provider'
 import {
   PhoneSvg,
   VideoCameraSvg,
   SidebarSimpleSvg
 } from '@/shared/components/Svg'
+import { useChat } from '../providers/chat.provider'
 
 const defaultAvatarUrl = '/images/user/user-09.png'
 
@@ -32,58 +31,29 @@ interface IChat {
 const Chat: React.FC<IChat> = ({ isShow }) => {
 
   const websocketService = useWebSocket()
-  const { user } = useAuth()
-  const { setOutgoingCallInfo } = useCall()
 
-  const {
-    fetchContacts,
-    currentChatUserId,
-    contactUsers
-  } = useMessagesContext()
+  const { currentChatUserId } = useChatUsersContext()
   
+  const {
+    messages,
+    setMessages,
+    getInitialData,
+    getMoreData,
+    otherPersonAvatarUrl,
+    otherPersonName,
+    sendMessage,
+    startCall,
+    isLoadingMoreRef,
+    hasMoreRef,
+  } = useChat()
+
   const chatRef = useRef<HTMLDivElement | null>(null)
-  const hasMoreRef = useRef<boolean>(false)
 
   const [showScrollDown, setShowScrollDown] = useState(false)
-  const [otherPersonName, setOtherPersonName] = useState('')
-  const [otherPersonAvatarUrl, setOtherPersonAvatarUrl] = useState('')
-  const [messages, setMessages] = useState<IMessage[]>([])
-
-  const offsetRef = useRef<number>(0)
   const previousScrollHeightRef = useRef(0)
-  const isLoadingMoreRef = useRef(false)
-  const limit = 25
 
   // <------------- HANDLE DATA -------------->
   useEffect(() => {
-    const getInitialData = async () => {
-      const response = await messageService.getMessagesByUserId({
-        otherPersonId: currentChatUserId!,
-        offset: offsetRef.current,
-        limit,
-      })
-
-      setMessages(response.data.messages)
-      setOtherPersonName(response.data.otherPersonFullname)
-      setOtherPersonAvatarUrl(response.data.otherPersonAvatarUrl)
-      hasMoreRef.current = (response.data.messages.length < response.data.totalMessageCount)
-      offsetRef.current = response.data.messages.length
-
-      const currentChatUser = contactUsers.find(user => user.id === currentChatUserId)
-      console.log('current chat user ----------->', currentChatUser)
-
-      // if (response.data.hasUnreadMessages) {
-      if (currentChatUser?.unreadCount) {
-        const response = await messageService.markMessagesAsRead({
-          otherPersonId: currentChatUserId!,
-        })
-        
-        if (response.status === 200) {
-          fetchContacts()
-        }
-      }
-    }
-
     const container = chatRef.current
     if (!container) return
 
@@ -123,31 +93,6 @@ const Chat: React.FC<IChat> = ({ isShow }) => {
       }
     }
 
-    const getMoreData = async () => {
-      if (!currentChatUserId || isLoadingMoreRef.current) return
-      
-      isLoadingMoreRef.current = true
-      
-      try {
-        const response = await messageService.getMessagesByUserId({
-          otherPersonId: currentChatUserId,
-          offset: offsetRef.current,
-          limit,
-        })
-        
-        setMessages((prev) => [...prev, ...response.data.messages])
-        setOtherPersonAvatarUrl(response.data.otherPersonAvatarUrl)
-        setOtherPersonName(response.data.otherPersonFullname)
-        hasMoreRef.current = (offsetRef.current + response.data.messages.length < response.data.totalMessageCount)
-        offsetRef.current = offsetRef.current + response.data.messages.length
-  
-      } catch (error) {
-        console.log('fetching more messages failed: ', error)
-      }
-  
-      isLoadingMoreRef.current = false
-    }
-
     const container = chatRef.current
     if (container && !scrollListenerAttached.current) {
       container.addEventListener('scroll', handleScroll)
@@ -172,7 +117,6 @@ const Chat: React.FC<IChat> = ({ isShow }) => {
   }
 
   // <------------- HANDLE SOCKET ------------->
-
   useEffect(() => {
     const handleMessageReceived = (data: any) => {
       if (data.message) {
@@ -186,44 +130,8 @@ const Chat: React.FC<IChat> = ({ isShow }) => {
       websocketService.unRegisterOnMessageHandler('chat', handleMessageReceived)
     }
   }, [])
-
-  const sendMessage = (message: string) => {
-    if (websocketService.connectionStatus === 'OPEN') {
-      const messagePayload = {
-        recipient_id: currentChatUserId,
-        message: message,
-      }
-
-      websocketService.sendMessage('send_message', messagePayload)
-    } else {
-      alert('WebSocket is disconnected. Please check your connection.')
-    }
-  }
-
-  const startCall = async  () => {
-    const response = await meetingService.createMeeting()
-    
-    if (response.status === 201) {
-      const outgoingCallInfo: ICallInfo = {
-        otherPersonId: currentChatUserId!,
-        meetingLink: response.startUrl,
-        otherPersonName: otherPersonName,
-        otherPersonAvatarUrl: otherPersonAvatarUrl,
-      }
-      setOutgoingCallInfo(outgoingCallInfo)
-
-      const initiateCallInfo: ICallInfo = {
-        otherPersonId: currentChatUserId!,
-        meetingLink: response.joinUrl,
-        otherPersonAvatarUrl: user!.avatarImageUrl ?? '',
-        otherPersonName: user!.firstName + user!.lastName,
-      }
-      websocketService.sendMessage('initiate_call', initiateCallInfo)
-    } else {
-      alert('Failed to create meeting, please try again')
-    }
-  }
   
+  // <------------ FALLBACK SHOW ------------->
   if (currentChatUserId === null || currentChatUserId === undefined) {
     return (
       <div className='relative flex flex-[2] flex-col justify-center items-center h-full bg-gray-bg-subtle rounded-20'>
