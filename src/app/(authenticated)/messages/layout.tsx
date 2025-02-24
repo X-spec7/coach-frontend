@@ -1,5 +1,6 @@
 import { ILayoutProps } from '@/shared/types'
 import SharedLayout from '@/shared/Layouts/SharedLayout'
+import { ChatUsersContextProvider, ChatProvider } from '@/features/messages/providers'
 
 const Layout: React.FC<ILayoutProps> = ({ children }) => {
   return (
@@ -7,7 +8,11 @@ const Layout: React.FC<ILayoutProps> = ({ children }) => {
       headerTitle='Messages'
       headerDescription='Welcome and Let&apos;s do some workout today!'
     >
-      {children}
+      <ChatUsersContextProvider>
+        <ChatProvider>
+          {children}
+        </ChatProvider>
+      </ChatUsersContextProvider>
     </SharedLayout>
   )
 }

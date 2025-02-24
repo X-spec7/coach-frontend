@@ -1,201 +1,201 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState
+} from 'react'
+
+import { EllipsisMenu } from '@/shared/components'
+import { ILayoutProps } from '@/shared/types'
+import { useAuth, useWebSocket } from '@/shared/provider'
+import { BACKEND_HOST_URL, DEFAULT_AVATAR_URL } from '@/shared/constants'
+import {
+  PhoneSvg,
+  VideoCameraSvg,
+  SidebarSimpleSvg
+} from '@/shared/components/Svg'
 
 import ChatItem from './ChatItem'
 import MessageTypeBox from './MessageTypeBox'
-
-import { IMessage } from '../types'
-import { ICallInfo, ILayoutProps } from '@/shared/types'
-import { EllipsisMenu } from '@/shared/components'
-import { PhoneSvg, VideoCameraSvg, SidebarSimpleSvg } from '@/shared/components/Svg'
-import { meetingService, messageService } from '../service'
-import { BACKEND_HOST_URL } from '@/shared/constants'
-import { useCall, useWebSocket, useAuth } from '@/shared/provider'
-
-const defaultAvatarUrl = '/images/user/user-09.png'
+import { useChat, useChatUsersContext } from '../providers'
 
 interface IChat {
   isShow: boolean
-  currentChatUserId?: number
 }
 
-const Chat: React.FC<IChat> = ({ isShow, currentChatUserId }) => {
+const Chat: React.FC<IChat> = ({ isShow }) => {
 
   const websocketService = useWebSocket()
+
+  const { currentChatUserId } = useChatUsersContext()
+
   const { user } = useAuth()
-  const { setOutgoingCallInfo } = useCall()
-  
+
+  const {
+    messages,
+    setMessages,
+    fetchMessages,
+    markMessagesAsRead,
+    otherPersonAvatarUrl,
+    otherPersonName,
+    sendMessage,
+    startCall,
+    isLoadingMoreRef,
+    hasMoreRef,
+  } = useChat()
+
   const chatRef = useRef<HTMLDivElement | null>(null)
-  const hasMoreRef = useRef<boolean>(false)
+  const messagesUpdateReasonRef = useRef<string>('initial-loading')
 
   const [showScrollDown, setShowScrollDown] = useState(false)
-  const [otherPersonName, setOtherPersonName] = useState('')
-  const [otherPersonAvatarUrl, setOtherPersonAvatarUrl] = useState('')
-  const [messages, setMessages] = useState<IMessage[]>([])
-
-  const offsetRef = useRef<number>(0)
   const previousScrollHeightRef = useRef(0)
-  const isLoadingMoreRef = useRef(false)
-  const limit = 25
 
-  // <------------- HANDLE DATA -------------->
+  // <------------- FETCHING DATA -------------->
+  const fetchInitialData = useCallback(async () => {
+    messagesUpdateReasonRef.current = 'initial-loading'
+    await fetchMessages(true)
+
+    // mark unread messages as read
+    await markMessagesAsRead()
+  }, [
+    fetchMessages,
+    markMessagesAsRead,
+    messagesUpdateReasonRef
+  ])
+
+  const fetchMoreData = useCallback(async () => {
+    messagesUpdateReasonRef.current = 'load-more'
+    await fetchMessages(false)
+  }, [fetchMessages, messagesUpdateReasonRef])
+
   useEffect(() => {
-    const getInitialData = async () => {
-      const response = await messageService.getMessagesByUserId({
-        otherPersonId: currentChatUserId!,
-        offset: offsetRef.current,
-        limit,
-      })
-
-      setMessages(response.data.messages)
-      setOtherPersonName(response.data.otherPersonFullname)
-      setOtherPersonAvatarUrl(response.data.otherPersonAvatarUrl)
-      hasMoreRef.current = (response.data.messages.length < response.data.totalMessageCount)
-      offsetRef.current = response.data.messages.length
-    }
-
     const container = chatRef.current
     if (!container) return
 
     if (currentChatUserId) {
-      getInitialData()
+      fetchInitialData()
     }
-
-    previousScrollHeightRef.current = container.scrollHeight
   }, [currentChatUserId])
 
   // <-------------- HANDLE SCROLL ----------------->
-  
-  useEffect(() => {
+  const handleScrollPosition = useCallback(() => {
     const container = chatRef.current
     if (!container) return
 
-    if (messages.length > 0 && hasMoreRef.current) {
-      container.scrollTop = container.scrollHeight - previousScrollHeightRef.current
-    } else if (messages.length <= 10) {
-      container.scrollTop = container.scrollHeight
+    const { scrollTop, scrollHeight, clientHeight } = container
+
+    if (messagesUpdateReasonRef.current === 'initial-loading') {
+      container.scrollTop = scrollHeight - clientHeight
+      messagesUpdateReasonRef.current = 'websocket'
+    } else if (messagesUpdateReasonRef.current === 'load-more') {
+      container.scrollTop = scrollHeight - previousScrollHeightRef.current - 10
+      messagesUpdateReasonRef.current = 'websocket'
+    } else {
+      if (scrollTop > scrollHeight - clientHeight - 100) {
+        container.scrollTop = scrollHeight - clientHeight
+      }
     }
-  }, [messages, hasMoreRef])
+  }, [
+    chatRef.current,
+    messagesUpdateReasonRef.current,
+    previousScrollHeightRef.current
+  ])
+
+  useEffect(() => {
+    handleScrollPosition()
+  }, [messages, handleScrollPosition])
 
   const scrollListenerAttached = useRef<boolean>(false)
 
-  useEffect(() => {  
-    const handleScroll = async () => {
-      const container = chatRef.current
-      if (!container) return
-  
-      const { scrollTop, scrollHeight, clientHeight } = container
-      setShowScrollDown(scrollTop < scrollHeight - clientHeight - 100)
-  
-      if (scrollTop === 0 && hasMoreRef.current && !isLoadingMoreRef.current) {
-        previousScrollHeightRef.current = scrollHeight
-        await getMoreData()
-      }
-    }
-
-    const getMoreData = async () => {
-      if (!currentChatUserId || isLoadingMoreRef.current) return
-      
-      isLoadingMoreRef.current = true
-      
-      try {
-        const response = await messageService.getMessagesByUserId({
-          otherPersonId: currentChatUserId,
-          offset: offsetRef.current,
-          limit,
-        })
-        
-        setMessages((prev) => [...prev, ...response.data.messages])
-        setOtherPersonAvatarUrl(response.data.otherPersonAvatarUrl)
-        setOtherPersonName(response.data.otherPersonFullname)
-        hasMoreRef.current = (offsetRef.current + response.data.messages.length < response.data.totalMessageCount)
-        offsetRef.current = offsetRef.current + response.data.messages.length
-  
-      } catch (error) {
-        console.log('fetching more messages failed: ', error)
-      }
-  
-      isLoadingMoreRef.current = false
-    }
-
+  const handleScroll = useCallback(async () => {
     const container = chatRef.current
+    if (!container) return
+
+    const { scrollTop, scrollHeight, clientHeight } = container
+
+    // TODO: set only when its value needs to be changed
+    
+    const newShowScrollDown: boolean = scrollTop < scrollHeight - clientHeight - 100
+    if (showScrollDown !== newShowScrollDown) {
+      setShowScrollDown(newShowScrollDown)
+    }
+
+    if (scrollTop === 0 && hasMoreRef.current && !isLoadingMoreRef.current) {
+      previousScrollHeightRef.current = scrollHeight
+      await fetchMoreData()
+    }
+  }, [
+    chatRef.current,
+    hasMoreRef.current,
+    previousScrollHeightRef.current,
+    isLoadingMoreRef.current,
+    fetchMoreData
+  ])
+
+  // Attach scroll listener
+  useEffect(() => {
+    const container = chatRef.current
+
     if (container && !scrollListenerAttached.current) {
       container.addEventListener('scroll', handleScroll)
       scrollListenerAttached.current = true
     }
+
     return () => {
       if (container && scrollListenerAttached.current) {
         container.removeEventListener('scroll', handleScroll)
         scrollListenerAttached.current = false
       }
     }
-  }, [hasMoreRef, currentChatUserId, messages.length, scrollListenerAttached])
-
-  const handleScrollOnMessageReceived = () => {
-    const container = chatRef.current
-    if (container) {
-      const isAtBottom = container.scrollTop < container.clientHeight + 10
-      if (isAtBottom) {
-        container.scrollTop = container.scrollHeight
-      }
-    }
-  }
+  }, [chatRef.current, scrollListenerAttached, handleScroll])
 
   // <------------- HANDLE SOCKET ------------->
+  const handleMessageReceived = useCallback((data: any) => {
+    if (data.message && (Number(data.message.senderId) === currentChatUserId || Number(data.message.senderId) === user?.id)) {
+      setMessages((prev) => [data.message, ...prev])
+      websocketService.sendMessage('checked_received_message', {
+        message_sender_id: data.message.senderId
+      })
+    }
+  }, [setMessages, currentChatUserId, user])
+
+  const handleUnreadMessagesChecked = useCallback((data: any) => {
+    if (data.message && Number(data.message.reader_id) === currentChatUserId) {
+      setMessages((prevMessages) => {
+        const lastUnreadIndex = prevMessages.findLastIndex((msg) => !msg.isRead)
+        
+        // If all messages are already read, return early
+        if (lastUnreadIndex === -1) return prevMessages;
+  
+        return prevMessages.map((msg, index) =>
+          index <= lastUnreadIndex ? { ...msg, isRead: true } : msg
+        )
+      })
+    }
+  }, [setMessages, currentChatUserId])
 
   useEffect(() => {
-    const handleMessageReceived = (data: any) => {
-      if (data.message) {
-        setMessages((prev) => [data.message, ...prev])
-      }
-      handleScrollOnMessageReceived()
-    }
+    websocketService.unRegisterOnMessageHandler('chat', handleMessageReceived)
     websocketService.registerOnMessageHandler('chat', handleMessageReceived)
 
     return () => {
       websocketService.unRegisterOnMessageHandler('chat', handleMessageReceived)
     }
-  }, [])
+  }, [handleMessageReceived])
 
-  const sendMessage = (message: string) => {
-    if (websocketService.connectionStatus === 'OPEN') {
-      const messagePayload = {
-        recipient_id: currentChatUserId,
-        message: message,
-      }
+  useEffect(() => {
+    websocketService.unRegisterOnMessageHandler('unread_messages_checked', handleUnreadMessagesChecked)
+    websocketService.registerOnMessageHandler('unread_messages_checked', handleUnreadMessagesChecked)
 
-      websocketService.sendMessage('send_message', messagePayload)
-    } else {
-      alert('WebSocket is disconnected. Please check your connection.')
+    return () => {
+      websocketService.unRegisterOnMessageHandler('unread_messages_checked', handleUnreadMessagesChecked)
     }
-  }
+  }, [handleUnreadMessagesChecked])
 
-  const startCall = async  () => {
-    const response = await meetingService.createMeeting()
-    
-    if (response.status === 201) {
-      const outgoingCallInfo: ICallInfo = {
-        otherPersonId: currentChatUserId!,
-        meetingLink: response.startUrl,
-        otherPersonName: otherPersonName,
-        otherPersonAvatarUrl: otherPersonAvatarUrl,
-      }
-      setOutgoingCallInfo(outgoingCallInfo)
-
-      const initiateCallInfo: ICallInfo = {
-        otherPersonId: currentChatUserId!,
-        meetingLink: response.joinUrl,
-        otherPersonAvatarUrl: user!.avatarImageUrl ?? '',
-        otherPersonName: user!.firstName + user!.lastName,
-      }
-      websocketService.sendMessage('initiate_call', initiateCallInfo)
-    } else {
-      alert('Failed to create meeting, please try again')
-    }
-  }
-  
+  // <------------ FALLBACK SHOW ------------->
   if (currentChatUserId === null || currentChatUserId === undefined) {
     return (
       <div className='relative flex flex-[2] flex-col justify-center items-center h-full bg-gray-bg-subtle rounded-20'>
@@ -215,30 +215,30 @@ const Chat: React.FC<IChat> = ({ isShow, currentChatUserId }) => {
               currentChatUserId === null || currentChatUserId === undefined ? (
                 <div className='w-12 h-12 bg-white rounded-full border-2 border-stroke'></div>
               ) : (
-                  (otherPersonAvatarUrl && otherPersonAvatarUrl.trim() !== '') ? (
-                    <Image
-                      src={BACKEND_HOST_URL + otherPersonAvatarUrl}
-                      alt={`${otherPersonName} avatar`}
-                      width={46}
-                      height={46}
-                      className='w-full h-full rounded-full'
-                    />
-                  ) : (
-                    <Image
-                      src={defaultAvatarUrl}
-                      alt={`${otherPersonName} avatar`}
-                      width={46}
-                      height={46}
-                      className='w-full h-full rounded-full'
-                    />
-                  )
+                (otherPersonAvatarUrl && otherPersonAvatarUrl.trim() !== '') ? (
+                  <Image
+                    src={BACKEND_HOST_URL + otherPersonAvatarUrl}
+                    alt={`${otherPersonName} avatar`}
+                    width={46}
+                    height={46}
+                    className='w-full h-full rounded-full'
+                  />
+                ) : (
+                  <Image
+                    src={DEFAULT_AVATAR_URL}
+                    alt={`${otherPersonName} avatar`}
+                    width={46}
+                    height={46}
+                    className='w-full h-full rounded-full'
+                  />
+                )
               )
             }
           </div>
           <div className='flex flex-col items-start'>
             <p className='text-black font-medium'>{otherPersonName}</p>
             {
-              ( currentChatUserId !== null && currentChatUserId !== undefined ) ? (
+              (currentChatUserId !== null && currentChatUserId !== undefined) ? (
                 <p className='text-gray-20 text-sm'>last seen recently</p>
               ) : (
                 <p className='text-gray-20 text-sm'>Select or Search a user to chat with</p>
@@ -285,7 +285,7 @@ interface ISvgWrapperProps extends ILayoutProps {
 const SvgWrapper: React.FC<ISvgWrapperProps> = ({ children, onClick }) => {
   return (
     <div
-      className='flex justify-center items-center w-9 h-9 bg-gray-bg-subtle rounded-full'
+      className='flex justify-center items-center w-9 h-9 bg-gray-bg-subtle rounded-full cursor-pointer'
       onClick={onClick}
     >
       {children}

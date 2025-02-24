@@ -89,7 +89,7 @@ const CoachesList: React.FC<ICoachesListProps> = ({
     <div className='relative grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-y-4 justify-content-between justify-items-center align-items-center w-full min-h-150'>
       {
         coaches.map((coach, index) => (
-          <div className='cursor-pointer' onClick={() => handleCoachCardClicked(coach)}>
+          <div className='cursor-pointer h-75' onClick={() => handleCoachCardClicked(coach)}>
             <CoachCard key={index} coach={coach} />
           </div>
         ))
