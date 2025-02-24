@@ -1,7 +1,7 @@
 'use client'
 
 import { useSearchParams } from 'next/navigation'
-import {
+import React, {
   createContext,
   useContext,
   useEffect,
@@ -21,6 +21,7 @@ const USERS_PER_PAGE = 25
 
 interface ChatUsersContextType {
   contactUsers: IContactUser[]
+  setContactUsers: React.Dispatch<React.SetStateAction<IContactUser[]>>
   searchedUsers: ISearchedUser[]
   currentChatUserId?: number
   setCurrentChatUserId: (userId: number) => void
@@ -72,6 +73,7 @@ export const ChatUsersContextProvider: React.FC<{ children: React.ReactNode }> =
     <ChatUsersContext.Provider
       value={{
         contactUsers,
+        setContactUsers,
         searchedUsers,
         currentChatUserId,
         setCurrentChatUserId,

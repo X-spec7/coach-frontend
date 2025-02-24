@@ -7,7 +7,7 @@ import Image from 'next/image'
 import { SearchField } from '@/shared/components'
 import { BACKEND_HOST_URL } from '@/shared/constants'
 import { useWebSocket } from '@/shared/provider'
-import { IContactUser } from '../types'
+import { IContactUser, IMessage } from '../types'
 import { useChatUsersContext } from '../providers/chatusers.provider'
 import { get12HourTimeFromDateObject, getDateFromDateObject } from '@/shared/utils'
 
@@ -24,6 +24,7 @@ const Users: React.FC<IUsers> = ({ isShow }) => {
 
   const {
     contactUsers,
+    setContactUsers,
     searchedUsers,
     currentChatUserId,
     setCurrentChatUserId,
@@ -43,23 +44,47 @@ const Users: React.FC<IUsers> = ({ isShow }) => {
 
   // <------------- HANDLE SOCKET ------------->
   // TODO: Stay up to date with unread count, and last messages using socket instead of fetching data
-  const handleMessageReceivedFromNewChatUser = useCallback((data: any) => {
+  const handleMessageReceivedInUsersTab = useCallback((data: any) => {
     if (searchedUsers.length > 0) return
-
+  
     const senderId = data?.message?.senderId
-    if (senderId && !contactUsers.some(user => user.id === Number(senderId))) {
+    if (!senderId) return
+  
+    if (!contactUsers.some(user => user.id === Number(senderId))) {
       fetchContacts()
+    } else if (Number(senderId) === currentChatUserId) {
+      const lastMessage: IMessage = {
+        ...data.message,
+        isRead: true,
+      }
+
+      setContactUsers((prevContacts) =>
+        prevContacts.map((user) =>
+          user.id === Number(senderId)
+            ? { ...user, lastMessage }
+            : user
+        )
+      )
+    } else {
+      console.log('last message check: ', data.message)
+      setContactUsers((prevContacts) =>
+        prevContacts.map((user) =>
+          user.id === Number(senderId)
+            ? { ...user, lastMessage: data.message, unreadCount: user.unreadCount + 1 }
+            : user
+        )
+      )
     }
-  }, [searchedUsers, fetchContacts, contactUsers])
+  }, [searchedUsers, fetchContacts, contactUsers, currentChatUserId, setContactUsers]);
 
   useEffect(() => {
-    websocketService.unRegisterOnMessageHandler('chat', handleMessageReceivedFromNewChatUser)
-    websocketService.registerOnMessageHandler('chat', handleMessageReceivedFromNewChatUser)
+    websocketService.unRegisterOnMessageHandler('chat', handleMessageReceivedInUsersTab)
+    websocketService.registerOnMessageHandler('chat', handleMessageReceivedInUsersTab)
 
     return () => {
-      websocketService.unRegisterOnMessageHandler('chat', handleMessageReceivedFromNewChatUser)
+      websocketService.unRegisterOnMessageHandler('chat', handleMessageReceivedInUsersTab)
     }
-  }, [handleMessageReceivedFromNewChatUser])
+  }, [handleMessageReceivedInUsersTab])
 
   return (
     <div className='flex flex-col gap-4'>
