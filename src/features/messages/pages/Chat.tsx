@@ -140,7 +140,11 @@ const Chat: React.FC<IChat> = ({ isShow }) => {
     const { scrollTop, scrollHeight, clientHeight } = container
 
     // TODO: set only when its value needs to be changed
-    setShowScrollDown(scrollTop < scrollHeight - clientHeight - 100)
+    
+    const newShowScrollDown: boolean = scrollTop < scrollHeight - clientHeight - 100
+    if (showScrollDown !== newShowScrollDown) {
+      setShowScrollDown(newShowScrollDown)
+    }
 
     if (scrollTop === 0 && hasMoreRef.current && !isLoadingMoreRef.current) {
       previousScrollHeightRef.current = scrollHeight
