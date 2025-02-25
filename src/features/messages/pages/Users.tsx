@@ -1,8 +1,8 @@
 'use client'
 
-import { useSearchParams } from 'next/navigation'
-import { useCallback, useEffect } from 'react'
 import Image from 'next/image'
+import { useCallback, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 
 import { SearchField } from '@/shared/components'
 import { BACKEND_HOST_URL } from '@/shared/constants'
@@ -75,7 +75,13 @@ const Users: React.FC<IUsers> = ({ isShow }) => {
         )
       )
     }
-  }, [searchedUsers, fetchContacts, contactUsers, currentChatUserId, setContactUsers]);
+  }, [
+    searchedUsers,
+    fetchContacts,
+    contactUsers,
+    currentChatUserId,
+    setContactUsers
+  ]);
 
   useEffect(() => {
     websocketService.unRegisterOnMessageHandler('chat', handleMessageReceivedInUsersTab)

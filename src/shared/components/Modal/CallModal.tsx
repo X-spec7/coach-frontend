@@ -4,11 +4,16 @@ import { useCall } from '@/shared/provider'
 import { useWebSocket } from '@/shared/provider'
 import { BACKEND_HOST_URL } from '@/shared/constants'
 
-const defaultAvatarUrl = '/images/user/user-09.png'
+import { DEFAULT_AVATAR_URL } from '@/shared/constants'
 
 const CallModal = () => {
-  const { callStatus, callInfo, endCall, acceptCall } = useCall()
   const websocketService = useWebSocket()
+  const {
+    callStatus,
+    callInfo,
+    endCall,
+    acceptCall
+  } = useCall()
 
   const handleCancelCall = () => {
     const payload = {
@@ -62,7 +67,7 @@ const CallModal = () => {
               />
             ) : (
               <Image
-                src={defaultAvatarUrl}
+                src={DEFAULT_AVATAR_URL}
                 alt={callInfo.otherPersonName}
                 width={96}
                 height={96}

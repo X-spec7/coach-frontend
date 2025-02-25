@@ -1,19 +1,23 @@
 'use client'
 
-import { useReducer, useMemo, createContext, useContext, useCallback } from 'react'
-import { ILayoutProps } from '../types'
 import { ICallInfo } from '../types'
+import { ILayoutProps } from '../types'
+import {
+  useReducer,
+  useMemo,
+  createContext,
+  useContext,
+  useCallback
+} from 'react'
 
 type CallStatus = 'Idle' | 'Incoming' | 'Outgoing' | 'Busy' | 'Accepted'
 
 interface State {
-  // unreadMessageCount: number
   callStatus: CallStatus
   callInfo: ICallInfo | null
 }
 
 const initialState: State = {
-  // unreadMessageCount: 0,
   callStatus: 'Idle',
   callInfo: null,
 }
@@ -57,14 +61,17 @@ export const CallProvider: React.FC<ILayoutProps> =({ children }) => {
     console.log('INCOMING CALL')
     dispatch({ type: 'INCOMING_CALL', payload: callInfo})
   }
+
   const setOutgoingCallInfo = (callInfo: ICallInfo) => {
     console.log('OUT GOING CALL')
     dispatch({ type: 'OUTGOING_CALL', payload: callInfo})
   }
+
   const endCall = () => {
     console.log('END CALL')
     dispatch({ type: 'RESET_CALL_INFO' })
   }
+  
   const acceptCall = useCallback(() => {
     if (state.callInfo?.meetingLink && state.callInfo?.meetingLink !== '') {
       console.log('open new zoom meeting', state.callInfo?.meetingLink)
@@ -90,22 +97,26 @@ export const CallProvider: React.FC<ILayoutProps> =({ children }) => {
   }, [state.callInfo])
 
   const value = useMemo(() => ({
+    endCall,
     ...state,
+    acceptCall,
     setIncomingCallInfo,
     setOutgoingCallInfo,
-    endCall,
-    acceptCall,
     handleCallAccepted,
   }), [state, acceptCall, handleCallAccepted])
 
-  return <CallContext.Provider value={value}>{children}</CallContext.Provider>
+  return (
+    <CallContext.Provider value={value}>
+      {children}
+    </CallContext.Provider>
+  )
 }
 
 export const useCall = (): CallContextType => {
   const context = useContext(CallContext)
 
   if(!context) {
-    throw new Error('useCall must be used within an CallProvider')
+    throw new Error('useCall must be used within a CallProvider')
   }
   return context
 }
