@@ -42,7 +42,6 @@ const SignInPage: React.FC = () => {
 
       // TODO: remove local storage token after replacing all services using proxy route
       if (response.token) {
-        console.log('access token', response.token)
         localStorage.setItem('access_token', response.token)
       }
 
