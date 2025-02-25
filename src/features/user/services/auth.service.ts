@@ -7,6 +7,7 @@ import {
   LoginResponseDTO,
   RegisterResponseDTO,
 } from '../types'
+import axios from 'axios'
 
 class AuthService {
   async register(payload: RegisterPayloadDTO): Promise<RegisterResponseDTO> {
@@ -21,17 +22,12 @@ class AuthService {
   }
   
   async login(payload: LoginPayloadDTO): Promise<LoginResponseDTO> {
-    return httpPublic
-      .post('/authentication/login/', payload)
-      .then((response) => {
-        if (response.data.token) {
-          tokenService.setLocalAccessToken(response.data.token)
-        }
-        return {
-          ...response.data,
-          status: response.status,
-        }
-      })
+    return axios
+      .post('/api/auth/login', payload, { withCredentials: true })
+      .then((response) => ({
+        ...response.data,
+        status: response.status
+      }))
   }
 
   logout() {

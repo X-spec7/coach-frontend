@@ -7,6 +7,8 @@ import { useRouter } from 'next/navigation'
 import { authService } from '../../services'
 import { useAuth } from '@/shared/provider/auth.provider'
 
+import { validateLoginPayload } from '../../utils'
+
 const SignInPage: React.FC = () => {
   const router = useRouter()
 
@@ -30,8 +32,18 @@ const SignInPage: React.FC = () => {
     setError('')
     setLoading(true)
 
+    if (!validateLoginPayload({ email, password })) {
+      setError('Invalid Email or Password')
+      return
+    }
+
     try {
       const response = await authService.login({ email, password })
+
+      // TODO: remove local storage token after replacing all services using proxy route
+      if (response.token) {
+        localStorage.setItem('access_token', response.token)
+      }
 
       if (response.status === 200) {
         login(response.user)
