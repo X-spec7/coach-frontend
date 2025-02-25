@@ -124,6 +124,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
         message_sender_id: currentChatUserId
       })
     }
+    
   }, [
     user,
     currentChatUserId,
