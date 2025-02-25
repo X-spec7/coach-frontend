@@ -1,14 +1,13 @@
-import { IUser } from '@/shared/types'
+import { BaseRestApiResponseType, IUser } from '@/shared/types'
 
 export interface LoginPayloadDTO {
   email: string
   password: string
 }
 
-export interface LoginResponseDTO {
-  message: string
+export interface LoginResponseDTO extends BaseRestApiResponseType {
+  token: string
   user: IUser
-  status: number
 }
 
 export interface RegisterPayloadDTO {
@@ -19,7 +18,4 @@ export interface RegisterPayloadDTO {
   userType: string
 }
 
-export interface RegisterResponseDTO {
-  message: string
-  status: number
-}
+export interface RegisterResponseDTO extends BaseRestApiResponseType {}
