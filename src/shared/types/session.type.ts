@@ -16,7 +16,7 @@ export interface ISession {
   totalParticipantNumber: number
   currentParticipantNumber: number
   price: number
-  // equip
+  // equipment
   equipments?: string[]
   // corresponding scheduled meeting
   meetingId: number
