@@ -1,9 +1,9 @@
-import authorizedHttpServer from '@/shared/services/authorizedHttp'
+import authorizedHttpClient from '@/shared/services/authorizedHttp'
 import { CreateMeetingResponseDTO } from '../types/dto'
 
 class MeetingService {
   createMeeting = async (): Promise<CreateMeetingResponseDTO> => {
-    return authorizedHttpServer
+    return authorizedHttpClient
       .post('/session/create/instant/')
       .then((response) => {
         return {

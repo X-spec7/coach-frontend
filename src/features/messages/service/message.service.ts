@@ -1,5 +1,5 @@
 import { GetMessagesByUserIdRequestDTO, GetMessagesByUserIdResponseDTO } from '../types'
-import authorizedHttpServer from '@/shared/services/authorizedHttp'
+import authorizedHttpClient from '@/shared/services/authorizedHttp'
 import { MarkMessagesAsReadRequestDTO, MarkMessagesAsReadResponseDTO } from '../types/dto'
 
 class MessageService {
@@ -18,7 +18,7 @@ class MessageService {
       params.append('offset', offset.toString())
     }
 
-    return authorizedHttpServer
+    return authorizedHttpClient
       .get(`/chat/messages/${otherPersonId}/?${params.toString()}`)
       .then((response) => {
         return {
@@ -33,7 +33,7 @@ class MessageService {
       otherPersonId
     }: MarkMessagesAsReadRequestDTO
   ): Promise<MarkMessagesAsReadResponseDTO> {
-    return authorizedHttpServer
+    return authorizedHttpClient
       .post(`/chat/messages/read/${otherPersonId}/`)
       .then((response) => {
         return {

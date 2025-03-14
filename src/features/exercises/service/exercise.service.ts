@@ -1,4 +1,4 @@
-import authorizedHttpServer from '@/shared/services/authorizedHttp'
+import authorizedHttpClient from '@/shared/services/authorizedHttp'
 import {
   CreateExerciseRequestDTO,
   CreateExerciseResponseDTO,
@@ -21,7 +21,7 @@ class ExerciseService {
     params.append('limit', payload.limit.toString())
     params.append('offset', payload.offset.toString())
 
-    return authorizedHttpServer
+    return authorizedHttpClient
       .get(`/exercises/get/?${params.toString()}`)
       .then((response) => {
         return {
@@ -34,7 +34,7 @@ class ExerciseService {
   async createExercise(
     payload: CreateExerciseRequestDTO
   ): Promise<CreateExerciseResponseDTO> {
-    return authorizedHttpServer
+    return authorizedHttpClient
       .post('/exercises/create/', payload)
       .then((response) => {
         return {
@@ -47,7 +47,7 @@ class ExerciseService {
   async editExercise(
     payload: EditExerciseRequestDTO
   ): Promise<EditExerciseResponseDTO> {
-    return authorizedHttpServer
+    return authorizedHttpClient
       .post('/exercises/update/', payload)
       .then((response) => {
         return {
@@ -60,7 +60,7 @@ class ExerciseService {
   async deleteExercise(
     payload: DeleteExerciseRequestDTO
   ): Promise<DeleteExerciseResponseDTO> {
-    return authorizedHttpServer
+    return authorizedHttpClient
       .delete(`exercises/delete/${payload.exerciseId}`)
       .then((response) => {
         return {

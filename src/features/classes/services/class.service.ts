@@ -1,4 +1,4 @@
-import authorizedHttpServer from '@/shared/services/authorizedHttp'
+import authorizedHttpClient from '@/shared/services/authorizedHttp'
 import {
   GetClassesRequestDTO,
   GetClassesResposneDTO,
@@ -20,7 +20,7 @@ class ClassService {
   async createClass(
     payload: CreateClassRequestDTO
   ): Promise<CreateClassResponseDTO> {
-    return authorizedHttpServer
+    return authorizedHttpClient
       .post('/classes/create/', payload)
       .then((response) => {
         return {
@@ -33,7 +33,7 @@ class ClassService {
   async getClassById(
     payload: GetClassByIdRequestDTO
   ): Promise<GetClassByIdResponseDTO> {
-    return authorizedHttpServer
+    return authorizedHttpClient
       .get(`/classes/get/${payload.classId}/`)
       .then((response) => {
         return {
@@ -64,7 +64,7 @@ class ClassService {
       params.append('level', payload.level.toString())
     }
 
-    return authorizedHttpServer
+    return authorizedHttpClient
       .get(`/classes/get/?${params.toString()}`)
       .then((response) => {
         return {
@@ -77,7 +77,7 @@ class ClassService {
   async bookClass(
     payload: BookClassRequestDTO
   ): Promise<BookClassResponseDTO> {
-    return authorizedHttpServer
+    return authorizedHttpClient
       .post(`/classes/book/${payload.classId}/`)
       .then((response) => {
         return {
@@ -90,7 +90,7 @@ class ClassService {
   async getClassSessionStartUrl(
     payload: StartClassSessionRequestDTO
   ): Promise<StartClassSessionResponseDTO> {
-    return authorizedHttpServer
+    return authorizedHttpClient
       .get(`/classes/session/start/${payload.classSessionId}/`)
       .then((response) => {
         return {
@@ -103,7 +103,7 @@ class ClassService {
   async getClassSessionJoinUrl(
     payload: JoinClassSessionRequestDTO
   ): Promise<JoinClassSessionResponseDTO> {
-    return authorizedHttpServer
+    return authorizedHttpClient
       .get(`/classes/session/join/${payload.classSessionId}/`)
       .then((response) => {
         return {

@@ -1,9 +1,9 @@
-import authorizedHttpServer from '@/shared/services/authorizedHttp'
+import authorizedHttpClient from '@/shared/services/authorizedHttp'
 import { GetContactsResponseDTO, SearchUserRequestDTO, SearchUserResponseDTO } from '../types'
 
 class ContactService {
   getContacts = async (): Promise<GetContactsResponseDTO> => {
-    return authorizedHttpServer
+    return authorizedHttpClient
       .get('/chat/contact/get/')
       .then((response) => {
         return response.data as GetContactsResponseDTO
@@ -29,7 +29,7 @@ class ContactService {
       params.append('query', request.query.toString())
     }
 
-    return authorizedHttpServer
+    return authorizedHttpClient
       .get(`/chat/users/search/?${params.toString()}`)
       .then((response) => {
         return response.data as SearchUserResponseDTO

@@ -6,13 +6,13 @@ import {
   BookSessionRequestDTO,
   BookSessionResponseDTO
 } from '../types'
-import authorizedHttpServer from '@/shared/services/authorizedHttp'
+import authorizedHttpClient from '@/shared/services/authorizedHttp'
 
 class ClientSessionService {
   bookSession = async (
     request: BookSessionRequestDTO
   ): Promise<BookSessionResponseDTO> => {
-    return authorizedHttpServer
+    return authorizedHttpClient
       .post('/session/book/', request)
       .then((response) => {
         return response.data as BookSessionResponseDTO
@@ -39,7 +39,7 @@ class ClientSessionService {
       params.append('booked', String(request.booked))
     }
 
-    return authorizedHttpServer
+    return authorizedHttpClient
       .get(`/session/get/?${params.toString()}`)
       .then((response) => {
         return response.data as GetSessionsResponseDTO
@@ -60,7 +60,7 @@ class ClientSessionService {
       params.append('booked', String(request.booked))
     }
 
-    return authorizedHttpServer
+    return authorizedHttpClient
       .get(`/session/get/count/?${params.toString()}`)
       .then((response) => {
         return response.data as GetTotalSessionCountResponseDTO

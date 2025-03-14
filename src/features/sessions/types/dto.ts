@@ -35,9 +35,8 @@ export interface GetTotalMySessionCountRequestDTO {
   query?: string
 }
 
-export interface GetTotalMySessionCountResponseDTO {
+export interface GetTotalMySessionCountResponseDTO extends BaseRestApiResponseType {
   totalSessionCount: number
-  message: string
 }
 
 // Client
@@ -49,8 +48,7 @@ export interface GetSessionsRequestDTO {
   query?: string
 }
 
-export interface GetSessionsResponseDTO {
-  message: string
+export interface GetSessionsResponseDTO extends BaseRestApiResponseType {
   sessions: ISessionWithBookedStatus[]
   totalSessionCount: number
 }
@@ -63,8 +61,7 @@ export interface GetSessionByIdRequestDTO {
   sessionID: string
 }
 
-export interface GetSessionByIdResponseDTO {
-  message: string
+export interface GetSessionByIdResponseDTO extends BaseRestApiResponseType {
   session: ISessionWithBookedStatus
 }
 
@@ -73,15 +70,13 @@ export interface BookSessionRequestDTO {
   sessionId: string
 }
 
-export interface BookSessionResponseDTO {
-  message: string
-}
+export interface BookSessionResponseDTO extends BaseRestApiResponseType {}
 
 export interface JoinSessionRequestDTO {
   sessionId: string
 }
 
-export interface JoinSessionResponseDTO {
+export interface JoinSessionResponseDTO extends BaseRestApiResponseType {
   zoom_url: string
 }
 
@@ -91,7 +86,7 @@ export interface CreateInstantMeetingRequestDTO {
   otherPersonId: string
 }
 
-export interface CreateInstantMeetingResponseDTO {
+export interface CreateInstantMeetingResponseDTO extends BaseRestApiResponseType {
   message: string
   join_url: string
   start_url: string
