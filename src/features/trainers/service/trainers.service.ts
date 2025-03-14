@@ -1,3 +1,5 @@
+import axios, { AxiosInstance } from 'axios'
+
 import {
   GetCoachesPayloadDTO,
   GetCoachesResponseDTO,
@@ -8,8 +10,6 @@ import {
   ToggleCoachListedStatePayloadDTO,
   ToggleCoachListedStateResponseDTO
 } from '../types/coach.dto'
-
-import axios, { AxiosInstance } from 'axios'
 
 class CoachesService {
   private httpClient: AxiosInstance
@@ -23,6 +23,7 @@ class CoachesService {
     payload: GetCoachesPayloadDTO
   ): Promise<GetCoachesResponseDTO> {
     const params = new URLSearchParams()
+
     if (payload.limit) params.append('limit', payload.limit.toString())
     if (payload.offset !== undefined) params.append('offset', String(payload.offset))
     if (payload.query) params.append('query', payload.query)
@@ -41,6 +42,7 @@ class CoachesService {
     payload: GetTotalCoachesCountPayloadDTO
   ): Promise<GetTotalCoachesCountResponseDTO> {
     const params = new URLSearchParams()
+    
     if (payload.query) params.append('query', payload.query)
     if (payload.specialization) params.append('specialization', payload.specialization)
     if (payload.listed) params.append('listed', payload.listed)

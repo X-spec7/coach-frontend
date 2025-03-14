@@ -3,7 +3,7 @@
 import SessionCard from './SessionCard'
 import sharedSessionService, { coachSessionService } from '@/features/sessions/service'
 import { useEffect, useState } from 'react'
-import { ISession } from '@/features/sessions/types'
+import { ISession } from '@/shared/types'
 import { formatTimeToDisplay } from '@/shared/utils/format'
 import { DefaultModal } from '@/shared/components'
 

@@ -48,7 +48,10 @@ class CoachSessionService {
       return authorizedHttpServer
         .get(`/session/get/mine/?${params.toString()}`)
         .then((response) => {
-          return response.data as GetMySessionsResponseDTO;
+          return {
+            status: response.status,
+            ...response.data
+          }
         })
     }
 

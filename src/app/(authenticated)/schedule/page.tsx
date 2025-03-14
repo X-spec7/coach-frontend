@@ -1,6 +1,6 @@
 import React from 'react';
 import { Metadata } from 'next';
-import SchedulePage from '@/features/schedule';
+import SchedulePage from '@/features/schedule/pages';
 
 export const metadata: Metadata = {
   title:

@@ -1,5 +1,5 @@
-import { BaseRestApiResponseType } from '@/shared/types'
-import { ISessionWithBookedStatus, ISession } from '.'
+import { BaseRestApiResponseType, ISession } from '@/shared/types'
+import { ISessionWithBookedStatus } from '.'
 
 // Coach
 export interface CreateSessionRequestDTO {
@@ -26,8 +26,7 @@ export interface GetMySessionsRequestDTO {
   query?: string
 }
 
-export interface GetMySessionsResponseDTO {
-  message: string
+export interface GetMySessionsResponseDTO extends BaseRestApiResponseType {
   sessions: ISession[]
   totalSessionCount: number
 }
