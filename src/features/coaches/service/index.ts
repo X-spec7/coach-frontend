@@ -1,1 +1,1 @@
-export { default as trainersService } from './trainers.service'
+export { default as trainersService } from './coaches.service'
