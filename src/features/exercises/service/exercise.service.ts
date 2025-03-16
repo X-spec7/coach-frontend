@@ -30,7 +30,7 @@ class ExerciseService {
     params.append('offset', payload.offset.toString())
 
     return this.httpClient
-      .get(`/exercises/get/?${params.toString()}`)
+      .get(`?${params.toString()}`)
       .then((response) => {
         return {
           status: response.status,
@@ -43,7 +43,7 @@ class ExerciseService {
     payload: CreateExerciseRequestDTO
   ): Promise<CreateExerciseResponseDTO> {
     return this.httpClient
-      .post('/exercises/create/', payload)
+      .post('/create', payload)
       .then((response) => {
         return {
           status: response.status,
@@ -56,7 +56,7 @@ class ExerciseService {
     payload: EditExerciseRequestDTO
   ): Promise<EditExerciseResponseDTO> {
     return this.httpClient
-      .post('/exercises/update/', payload)
+      .post('/update', payload)
       .then((response) => {
         return {
           status: response.status,
@@ -69,7 +69,7 @@ class ExerciseService {
     payload: DeleteExerciseRequestDTO
   ): Promise<DeleteExerciseResponseDTO> {
     return this.httpClient
-      .delete(`exercises/delete/${payload.exerciseId}`)
+      .delete(`/delete/${payload.exerciseId}`)
       .then((response) => {
         return {
           status: response.status,
