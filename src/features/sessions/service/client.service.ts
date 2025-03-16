@@ -1,4 +1,3 @@
-import { authorizedHttpClient } from '@/shared/services'
 import {
   GetSessionsRequestDTO,
   GetSessionsResponseDTO,
@@ -17,12 +16,15 @@ class ClientSessionService {
   }
 
   bookSession = async (
-    request: BookSessionRequestDTO
+    payload: BookSessionRequestDTO
   ): Promise<BookSessionResponseDTO> => {
-    return authorizedHttpClient
-      .post('/session/book/', request)
+    return this.httpClient
+      .post('/book', payload)
       .then((response) => {
-        return response.data as BookSessionResponseDTO
+        return {
+          status: response.status,
+          ...response.data
+        }
       })
   }
   
@@ -46,10 +48,13 @@ class ClientSessionService {
       params.append('booked', String(request.booked))
     }
 
-    return authorizedHttpClient
-      .get(`/session/get/?${params.toString()}`)
+    return this.httpClient
+      .get(`?${params.toString()}`)
       .then((response) => {
-        return response.data as GetSessionsResponseDTO
+        return {
+          status: response.status,
+          ...response.data
+        }
       })
   }
 
@@ -67,10 +72,13 @@ class ClientSessionService {
       params.append('booked', String(request.booked))
     }
 
-    return authorizedHttpClient
-      .get(`/session/get/count/?${params.toString()}`)
+    return this.httpClient
+      .get(`/count?${params.toString()}`)
       .then((response) => {
-        return response.data as GetTotalSessionCountResponseDTO
+        return {
+          status: response.status,
+          ...response.data
+        }
       })
   }
 }
