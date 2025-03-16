@@ -1,8 +1,14 @@
 import { authorizedHttpClient } from '@/shared/services'
 import { GetMessagesByUserIdRequestDTO, GetMessagesByUserIdResponseDTO } from '../types'
 import { MarkMessagesAsReadRequestDTO, MarkMessagesAsReadResponseDTO } from '../types/dto'
+import axios, { AxiosInstance } from 'axios'
 
 class MessageService {
+  private httpClient: AxiosInstance
+
+  constructor(httpClient?: AxiosInstance) {
+    this.httpClient = httpClient || axios.create({ baseURL: 'api/chat/message'})
+  }
   async getMessagesByUserId(
     {
       otherPersonId,
@@ -18,8 +24,8 @@ class MessageService {
       params.append('offset', offset.toString())
     }
 
-    return authorizedHttpClient
-      .get(`/chat/messages/${otherPersonId}/?${params.toString()}`)
+    return this.httpClient
+      .get(`/${otherPersonId}/?${params.toString()}`)
       .then((response) => {
         return {
           status: response.status,
@@ -33,8 +39,8 @@ class MessageService {
       otherPersonId
     }: MarkMessagesAsReadRequestDTO
   ): Promise<MarkMessagesAsReadResponseDTO> {
-    return authorizedHttpClient
-      .post(`/chat/messages/read/${otherPersonId}/`)
+    return this.httpClient
+      .post(`/read/${otherPersonId}/`)
       .then((response) => {
         return {
           status: response.status,

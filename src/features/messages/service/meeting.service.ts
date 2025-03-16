@@ -1,10 +1,16 @@
-import { authorizedHttpClient } from '@/shared/services'
 import { CreateMeetingResponseDTO } from '../types/dto'
+import axios, { AxiosInstance } from 'axios'
 
 class MeetingService {
+  private httpClient: AxiosInstance
+
+  constructor(httpClient?: AxiosInstance) {
+    this.httpClient = httpClient || axios.create({baseURL: 'api/chat/meeting'})
+  }
+
   createMeeting = async (): Promise<CreateMeetingResponseDTO> => {
-    return authorizedHttpClient
-      .post('/session/create/instant/')
+    return this.httpClient
+      .post('/create')
       .then((response) => {
         return {
           status: response.status,

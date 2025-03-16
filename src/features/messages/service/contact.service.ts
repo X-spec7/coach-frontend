@@ -4,13 +4,23 @@ import {
   SearchUserRequestDTO,
   SearchUserResponseDTO
 } from '../types'
+import axios, { AxiosInstance } from 'axios'
 
 class ContactService {
+  private httpClient: AxiosInstance
+  
+  constructor(httpClient?: AxiosInstance) {
+    this.httpClient = httpClient || axios.create({ baseURL: 'api/chat/contact'})
+  }
+
   getContacts = async (): Promise<GetContactsResponseDTO> => {
-    return authorizedHttpClient
-      .get('/chat/contact/get/')
+    return this.httpClient
+      .get('')
       .then((response) => {
-        return response.data as GetContactsResponseDTO
+        return {
+          status: response.status,
+          ...response.data
+        }
       })
   }
 
@@ -33,10 +43,13 @@ class ContactService {
       params.append('query', request.query.toString())
     }
 
-    return authorizedHttpClient
-      .get(`/chat/users/search/?${params.toString()}`)
+    return this.httpClient
+      .get(`/search/?${params.toString()}`)
       .then((response) => {
-        return response.data as SearchUserResponseDTO
+        return {
+          status: response.status,
+          ...response.data
+        }
       })
   }
 }
