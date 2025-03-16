@@ -1,5 +1,3 @@
-import { authorizedHttpClient } from '@/shared/services'
-
 import {
   GetClassesRequestDTO,
   GetClassesResposneDTO,
@@ -16,13 +14,20 @@ import {
   StartClassSessionRequestDTO,
   StartClassSessionResponseDTO
 } from '../types/class.dto'
+import axios, { AxiosInstance } from 'axios'
 
 class ClassService {
+  private httpClient: AxiosInstance
+
+  constructor(httpClient?: AxiosInstance) {
+    this.httpClient = httpClient || axios.create({ baseURL: 'api/classes' })
+  }
+
   async createClass(
     payload: CreateClassRequestDTO
   ): Promise<CreateClassResponseDTO> {
-    return authorizedHttpClient
-      .post('/classes/create/', payload)
+    return this.httpClient
+      .post('/create', payload)
       .then((response) => {
         return {
           status: response.status,
@@ -34,7 +39,7 @@ class ClassService {
   async getClassById(
     payload: GetClassByIdRequestDTO
   ): Promise<GetClassByIdResponseDTO> {
-    return authorizedHttpClient
+    return this.httpClient
       .get(`/classes/get/${payload.classId}/`)
       .then((response) => {
         return {
@@ -65,8 +70,8 @@ class ClassService {
       params.append('level', payload.level.toString())
     }
 
-    return authorizedHttpClient
-      .get(`/classes/get/?${params.toString()}`)
+    return this.httpClient
+      .get(`?${params.toString()}`)
       .then((response) => {
         return {
           status: response.status,
@@ -78,7 +83,7 @@ class ClassService {
   async bookClass(
     payload: BookClassRequestDTO
   ): Promise<BookClassResponseDTO> {
-    return authorizedHttpClient
+    return this.httpClient
       .post(`/classes/book/${payload.classId}/`)
       .then((response) => {
         return {
@@ -91,7 +96,7 @@ class ClassService {
   async getClassSessionStartUrl(
     payload: StartClassSessionRequestDTO
   ): Promise<StartClassSessionResponseDTO> {
-    return authorizedHttpClient
+    return this.httpClient
       .get(`/classes/session/start/${payload.classSessionId}/`)
       .then((response) => {
         return {
@@ -104,7 +109,7 @@ class ClassService {
   async getClassSessionJoinUrl(
     payload: JoinClassSessionRequestDTO
   ): Promise<JoinClassSessionResponseDTO> {
-    return authorizedHttpClient
+    return this.httpClient
       .get(`/classes/session/join/${payload.classSessionId}/`)
       .then((response) => {
         return {
