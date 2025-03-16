@@ -10,8 +10,15 @@ import {
   GetExercisesRequestDTO,
   GetExercisesResponseDTO,
 } from '../types'
+import axios, { AxiosInstance } from 'axios'
 
 class ExerciseService {
+  private httpClient: AxiosInstance
+
+  constructor(httpClient?: AxiosInstance) {
+    this.httpClient = httpClient || axios.create({ baseURL: 'api/exercises' })
+  }
+
   async getExercises(
     payload: GetExercisesRequestDTO
   ): Promise<GetExercisesResponseDTO> {
@@ -22,7 +29,7 @@ class ExerciseService {
     params.append('limit', payload.limit.toString())
     params.append('offset', payload.offset.toString())
 
-    return authorizedHttpClient
+    return this.httpClient
       .get(`/exercises/get/?${params.toString()}`)
       .then((response) => {
         return {
@@ -35,7 +42,7 @@ class ExerciseService {
   async createExercise(
     payload: CreateExerciseRequestDTO
   ): Promise<CreateExerciseResponseDTO> {
-    return authorizedHttpClient
+    return this.httpClient
       .post('/exercises/create/', payload)
       .then((response) => {
         return {
@@ -48,7 +55,7 @@ class ExerciseService {
   async editExercise(
     payload: EditExerciseRequestDTO
   ): Promise<EditExerciseResponseDTO> {
-    return authorizedHttpClient
+    return this.httpClient
       .post('/exercises/update/', payload)
       .then((response) => {
         return {
@@ -61,7 +68,7 @@ class ExerciseService {
   async deleteExercise(
     payload: DeleteExerciseRequestDTO
   ): Promise<DeleteExerciseResponseDTO> {
-    return authorizedHttpClient
+    return this.httpClient
       .delete(`exercises/delete/${payload.exerciseId}`)
       .then((response) => {
         return {
