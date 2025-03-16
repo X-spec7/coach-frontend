@@ -1,4 +1,3 @@
-import { authorizedHttpClient } from '@/shared/services/authorizedHttp'
 export { default as clientSessionService } from './client.service'
 export { default as coachSessionService } from './coach.service'
 
@@ -8,25 +7,37 @@ import {
   JoinSessionRequestDTO,
   JoinSessionResponseDTO
 } from '../types'
+import axios, { AxiosInstance } from 'axios'
 
 class SharedSessionService {
+  private httpClient: AxiosInstance
+
+  constructor(httpClient?: AxiosInstance) {
+    this.httpClient = httpClient || axios.create({ baseURL: 'api/sessions/shared'})
+  }
   createInstantMeeting = async (
-    request: CreateInstantMeetingRequestDTO
+    payload: CreateInstantMeetingRequestDTO
   ): Promise<CreateInstantMeetingResponseDTO> => {
-    return authorizedHttpClient
-      .post('/session/create/instant/', request)
+    return this.httpClient
+      .post('/create-meeting', payload)
       .then((response) => {
-        return response.data as CreateInstantMeetingResponseDTO
+        return {
+          status: response.status,
+          ...response.data
+        }
       })
   }
 
   joinSession = async (
-    request: JoinSessionRequestDTO
+    payload: JoinSessionRequestDTO
   ): Promise<JoinSessionResponseDTO> => {
-    return authorizedHttpClient
-      .post('/session/join/', request)
+    return this.httpClient
+      .post('/join-session', payload)
       .then((response) => {
-        return response.data as JoinSessionResponseDTO
+        return {
+          status: response.status,
+          ...response.data
+        }
       })
   }
 }
