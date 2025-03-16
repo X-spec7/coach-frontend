@@ -31,19 +31,20 @@ apiClient.interceptors.request.use(
   },
 )
 
-export async function POST(request: Request) {
+export async function GET(
+  request: Request,
+  { params }: { params: { otherPersonId: string } }
+) {
   try {
-    const body = await request.json()
-    const response = await apiClient.post(
-      '/session/create/',
-      body
-    )
+    const { searchParams } = new URL(request.url)
+  
+    const response = await apiClient.get(`/chat/messages/${params.otherPersonId}/?${searchParams.toString()}`)
 
     return NextResponse.json(
       response.data,
       { status: response.status }
     )
-  } catch (error: any) {
+  } catch (error) {
     handleApiError(error, request)
   }
 }

@@ -1,4 +1,3 @@
-import authorizedHttpClient from '@/shared/services/authorizedHttp'
 import {
   CreateExerciseRequestDTO,
   CreateExerciseResponseDTO,
@@ -9,8 +8,15 @@ import {
   GetExercisesRequestDTO,
   GetExercisesResponseDTO,
 } from '../types'
+import axios, { AxiosInstance } from 'axios'
 
 class ExerciseService {
+  private httpClient: AxiosInstance
+
+  constructor(httpClient?: AxiosInstance) {
+    this.httpClient = httpClient || axios.create({ baseURL: 'api/exercises' })
+  }
+
   async getExercises(
     payload: GetExercisesRequestDTO
   ): Promise<GetExercisesResponseDTO> {
@@ -21,8 +27,8 @@ class ExerciseService {
     params.append('limit', payload.limit.toString())
     params.append('offset', payload.offset.toString())
 
-    return authorizedHttpClient
-      .get(`/exercises/get/?${params.toString()}`)
+    return this.httpClient
+      .get(`?${params.toString()}`)
       .then((response) => {
         return {
           status: response.status,
@@ -34,8 +40,8 @@ class ExerciseService {
   async createExercise(
     payload: CreateExerciseRequestDTO
   ): Promise<CreateExerciseResponseDTO> {
-    return authorizedHttpClient
-      .post('/exercises/create/', payload)
+    return this.httpClient
+      .post('/create', payload)
       .then((response) => {
         return {
           status: response.status,
@@ -47,8 +53,8 @@ class ExerciseService {
   async editExercise(
     payload: EditExerciseRequestDTO
   ): Promise<EditExerciseResponseDTO> {
-    return authorizedHttpClient
-      .post('/exercises/update/', payload)
+    return this.httpClient
+      .post('/update', payload)
       .then((response) => {
         return {
           status: response.status,
@@ -60,8 +66,8 @@ class ExerciseService {
   async deleteExercise(
     payload: DeleteExerciseRequestDTO
   ): Promise<DeleteExerciseResponseDTO> {
-    return authorizedHttpClient
-      .delete(`exercises/delete/${payload.exerciseId}`)
+    return this.httpClient
+      .delete(`/delete/${payload.exerciseId}`)
       .then((response) => {
         return {
           status: response.status,

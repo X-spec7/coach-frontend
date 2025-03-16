@@ -6,16 +6,25 @@ import {
   BookSessionRequestDTO,
   BookSessionResponseDTO
 } from '../types'
-import authorizedHttpClient from '@/shared/services/authorizedHttp'
+import axios, { AxiosInstance } from 'axios'
 
 class ClientSessionService {
+  private httpClient: AxiosInstance
+
+  constructor(httpClient?: AxiosInstance) {
+    this.httpClient = httpClient || axios.create({ baseURL: 'api/sessions/client' })
+  }
+
   bookSession = async (
-    request: BookSessionRequestDTO
+    payload: BookSessionRequestDTO
   ): Promise<BookSessionResponseDTO> => {
-    return authorizedHttpClient
-      .post('/session/book/', request)
+    return this.httpClient
+      .post('/book', payload)
       .then((response) => {
-        return response.data as BookSessionResponseDTO
+        return {
+          status: response.status,
+          ...response.data
+        }
       })
   }
   
@@ -39,10 +48,13 @@ class ClientSessionService {
       params.append('booked', String(request.booked))
     }
 
-    return authorizedHttpClient
-      .get(`/session/get/?${params.toString()}`)
+    return this.httpClient
+      .get(`?${params.toString()}`)
       .then((response) => {
-        return response.data as GetSessionsResponseDTO
+        return {
+          status: response.status,
+          ...response.data
+        }
       })
   }
 
@@ -60,10 +72,13 @@ class ClientSessionService {
       params.append('booked', String(request.booked))
     }
 
-    return authorizedHttpClient
-      .get(`/session/get/count/?${params.toString()}`)
+    return this.httpClient
+      .get(`/count?${params.toString()}`)
       .then((response) => {
-        return response.data as GetTotalSessionCountResponseDTO
+        return {
+          status: response.status,
+          ...response.data
+        }
       })
   }
 }

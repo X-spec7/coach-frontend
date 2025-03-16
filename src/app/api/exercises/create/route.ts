@@ -1,14 +1,16 @@
-import { NextResponse } from 'next/server'
-import axios from 'axios'
-import { cookies } from 'next/headers'
+import axios from "axios"
+import { cookies } from "next/headers"
+import { NextResponse } from "next/server"
 
-import { REST_API_BASE_URL } from '@/shared/constants'
+import { REST_API_BASE_URL } from "@/shared/constants"
 import { handleApiError } from "../../auth-util"
 
-// Axios instance
+// Create an Axios instance for server-side API calls
 const apiClient = axios.create({
   baseURL: REST_API_BASE_URL,
-  headers: { 'Content-Type': 'application/json' }
+  headers: {
+    "Content-Type": "application/json",
+  },
 })
 
 // Add a request interceptor to automatically attach the auth token
@@ -29,12 +31,20 @@ apiClient.interceptors.request.use(
   },
 )
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function POST(request: Request) {
   try {
-    const response = await apiClient.get(`/users/coach/get/?coachId=${params.id}`)
+    const body = request.json()
 
-    return NextResponse.json(response.data, { status: response.status })
-  } catch (error: any) {
+    const response = await apiClient.post(
+      '/exercises/create/',
+      body
+    )
+
+    return NextResponse.json(
+      response.data,
+      { status: response.status }
+    )
+  } catch (error) {
     handleApiError(error, request)
   }
 }

@@ -31,19 +31,18 @@ apiClient.interceptors.request.use(
   },
 )
 
-export async function POST(request: Request) {
+export async function POST(
+  request: Request,
+  { params }: { params: { otherPersonId: string } }
+) {
   try {
-    const body = await request.json()
-    const response = await apiClient.post(
-      '/session/create/',
-      body
-    )
+    const response = await apiClient.post(`/chat/messages/read/${params.otherPersonId}`)
 
     return NextResponse.json(
       response.data,
       { status: response.status }
     )
-  } catch (error: any) {
+  } catch (error) {
     handleApiError(error, request)
   }
 }

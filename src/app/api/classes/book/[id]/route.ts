@@ -31,13 +31,12 @@ apiClient.interceptors.request.use(
   },
 )
 
-export async function POST(request: Request) {
+export async function POST(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
   try {
-    const body = await request.json()
-    const response = await apiClient.post(
-      '/session/create/',
-      body
-    )
+    const response = await apiClient.post(`/classes/book/${params.id}`)
 
     return NextResponse.json(
       response.data,

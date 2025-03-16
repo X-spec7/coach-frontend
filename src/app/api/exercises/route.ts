@@ -3,7 +3,7 @@ import { cookies } from "next/headers"
 import { NextResponse } from "next/server"
 
 import { REST_API_BASE_URL } from "@/shared/constants"
-import { handleApiError } from "../../../auth-util"
+import { handleApiError } from "../auth-util"
 
 // Create an Axios instance for server-side API calls
 const apiClient = axios.create({
@@ -31,19 +31,16 @@ apiClient.interceptors.request.use(
   },
 )
 
-export async function POST(request: Request) {
+export async function GET(request: Request) {
   try {
-    const body = await request.json()
-    const response = await apiClient.post(
-      '/session/create/',
-      body
-    )
+    const { searchParams } = new URL(request.url)
+    const response = await apiClient.get(`/exercises/get/?${searchParams.toString()}`)
 
     return NextResponse.json(
       response.data,
       { status: response.status }
     )
-  } catch (error: any) {
+  } catch (error) {
     handleApiError(error, request)
   }
 }

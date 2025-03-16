@@ -31,19 +31,19 @@ apiClient.interceptors.request.use(
   },
 )
 
-export async function POST(request: Request) {
+export async function GET(request: Request) {
   try {
-    const body = await request.json()
+    const payload = request.json()
     const response = await apiClient.post(
-      '/session/create/',
-      body
+      'session/book/',
+      payload
     )
 
     return NextResponse.json(
       response.data,
       { status: response.status }
     )
-  } catch (error: any) {
+  } catch (error) {
     handleApiError(error, request)
   }
 }

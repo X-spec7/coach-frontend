@@ -1,25 +1,36 @@
-import { NextResponse } from 'next/server'
 import axios from 'axios'
+import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
+
 import { REST_API_BASE_URL } from '@/shared/constants'
+import { handleApiError } from '../../auth-util'
 
 const apiClient = axios.create({
   baseURL: REST_API_BASE_URL,
   headers: { 'Content-Type': 'application/json' }
 })
 
-const attachAuthToken = () => {
-  const token = cookies().get('access_token')?.value
-  return token ? { Authorization: `Bearer ${token}` } : {}
-}
+apiClient.interceptors.request.use(
+  (config) => {
+    const token = cookies().get("access_token")?.value
 
-export async function GET() {
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
+    }
+
+    return config
+  },
+  (error) => {
+    return Promise.reject(error)
+  }
+)
+
+export async function GET(request: Request) {
   try {
-    const response = await apiClient.get('/users/coaches/get/count/', {
-      headers: attachAuthToken()
-    })
+    const response = await apiClient.get('/users/coaches/get/count/')
     return NextResponse.json(response.data, { status: response.status })
+
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: error.response?.status || 500 })
+    return handleApiError(error, request)
   }
 }

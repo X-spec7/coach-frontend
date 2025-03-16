@@ -1,19 +1,24 @@
-import authorizedHttpClient from '@/shared/services/authorizedHttp'
-
 import {
+  GetProfileResponseDTO,
   UpdateCoachProfilePayloadDTO,
   UpdateCoachProfileResponseDTO,
-  GetProfileResponseDTO,
   UpdateClientProfilePayloadDTO,
   UpdateClientProfileResponseDTO,
 } from '../types'
+import axios, { AxiosInstance } from 'axios'
 
 class ProfileService {
+  private httpClient: AxiosInstance
+
+  constructor(httpClient?: AxiosInstance) {
+    this.httpClient = httpClient || axios.create({ baseURL: 'api/profile' })
+  }
+
   async updateCoachProfile(
     payload: UpdateCoachProfilePayloadDTO
   ): Promise<UpdateCoachProfileResponseDTO> {
-    return authorizedHttpClient
-      .post('/users/profile/coach/update/', payload)
+    return this.httpClient
+      .post('/update-coach', payload)
       .then((response) => {
         return {
           status: response.status,
@@ -25,8 +30,8 @@ class ProfileService {
   async updateClientProfile(
     payload: UpdateClientProfilePayloadDTO
   ): Promise<UpdateClientProfileResponseDTO> {
-    return authorizedHttpClient
-      .post('/users/profile/client/update/', payload)
+    return this.httpClient
+      .post('/update-client', payload)
       .then((response) => {
         return {
           status: response.status,
@@ -36,8 +41,8 @@ class ProfileService {
   }
 
   async getProfile(): Promise<GetProfileResponseDTO> {
-    return authorizedHttpClient
-      .get('/users/profile/get/')
+    return this.httpClient
+      .get('')
       .then((response) => {
         return {
           status: response.status,
