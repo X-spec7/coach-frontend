@@ -1,4 +1,5 @@
-import authorizedHttpClient from '@/shared/services/authorizedHttp'
+import { authorizedHttpClient } from '@/shared/services'
+
 import {
   CreateExerciseRequestDTO,
   CreateExerciseResponseDTO,

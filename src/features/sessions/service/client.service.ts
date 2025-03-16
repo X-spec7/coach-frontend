@@ -1,3 +1,4 @@
+import { authorizedHttpClient } from '@/shared/services'
 import {
   GetSessionsRequestDTO,
   GetSessionsResponseDTO,
@@ -6,9 +7,15 @@ import {
   BookSessionRequestDTO,
   BookSessionResponseDTO
 } from '../types'
-import authorizedHttpClient from '@/shared/services/authorizedHttp'
+import axios, { AxiosInstance } from 'axios'
 
 class ClientSessionService {
+  private httpClient: AxiosInstance
+
+  constructor(httpClient?: AxiosInstance) {
+    this.httpClient = httpClient || axios.create({ baseURL: 'api/sessions/client' })
+  }
+
   bookSession = async (
     request: BookSessionRequestDTO
   ): Promise<BookSessionResponseDTO> => {

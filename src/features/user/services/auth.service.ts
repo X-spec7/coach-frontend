@@ -1,4 +1,4 @@
-import httpPublic from '@/shared/services/httpPublic'
+import { apiClient } from '@/shared/services'
 import tokenService from './token.service'
 
 import {
@@ -11,7 +11,7 @@ import axios from 'axios'
 
 class AuthService {
   async register(payload: RegisterPayloadDTO): Promise<RegisterResponseDTO> {
-    return httpPublic
+    return apiClient
       .post('/authentication/register/', payload)
       .then((response) => {
         return {

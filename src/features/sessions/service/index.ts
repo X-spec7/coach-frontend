@@ -1,6 +1,6 @@
+import { authorizedHttpClient } from '@/shared/services/authorizedHttp'
 export { default as clientSessionService } from './client.service'
 export { default as coachSessionService } from './coach.service'
-import { authorizedHttpClient } from '@/shared/services/authorizedHttp'
 
 import {
   CreateInstantMeetingRequestDTO,

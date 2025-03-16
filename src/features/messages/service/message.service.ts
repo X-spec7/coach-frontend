@@ -1,5 +1,5 @@
+import { authorizedHttpClient } from '@/shared/services'
 import { GetMessagesByUserIdRequestDTO, GetMessagesByUserIdResponseDTO } from '../types'
-import authorizedHttpClient from '@/shared/services/authorizedHttp'
 import { MarkMessagesAsReadRequestDTO, MarkMessagesAsReadResponseDTO } from '../types/dto'
 
 class MessageService {

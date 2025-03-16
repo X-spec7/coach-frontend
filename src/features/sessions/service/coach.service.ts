@@ -13,7 +13,7 @@ class CoachSessionService {
 
   constructor(httpClient?: AxiosInstance) {
     // Proxy API base URL
-    this.httpClient = httpClient || axios.create({ baseURL: 'api/sessions' })
+    this.httpClient = httpClient || axios.create({ baseURL: 'api/sessions/coaches' })
   }
 
   getTotalMySessionCount = async (

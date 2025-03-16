@@ -1,5 +1,9 @@
-import authorizedHttpClient from '@/shared/services/authorizedHttp'
-import { GetContactsResponseDTO, SearchUserRequestDTO, SearchUserResponseDTO } from '../types'
+import { authorizedHttpClient } from '@/shared/services'
+import {
+  GetContactsResponseDTO,
+  SearchUserRequestDTO,
+  SearchUserResponseDTO
+} from '../types'
 
 class ContactService {
   getContacts = async (): Promise<GetContactsResponseDTO> => {

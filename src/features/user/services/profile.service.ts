@@ -1,9 +1,9 @@
-import authorizedHttpClient from '@/shared/services/authorizedHttp'
+import { authorizedHttpClient } from '@/shared/services'
 
 import {
+  GetProfileResponseDTO,
   UpdateCoachProfilePayloadDTO,
   UpdateCoachProfileResponseDTO,
-  GetProfileResponseDTO,
   UpdateClientProfilePayloadDTO,
   UpdateClientProfileResponseDTO,
 } from '../types'

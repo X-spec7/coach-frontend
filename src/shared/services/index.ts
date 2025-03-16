@@ -1,4 +1,3 @@
-export * from './httpPublic'
+export * from './public-api'
 export * from './authorizedHttp'
-export * from './authorizedServerHttpClient'
 export * from './websocket.service'

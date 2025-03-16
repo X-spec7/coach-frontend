@@ -1,4 +1,4 @@
-import authorizedHttpClient from '@/shared/services/authorizedHttp'
+import { authorizedHttpClient } from '@/shared/services'
 import { CreateMeetingResponseDTO } from '../types/dto'
 
 class MeetingService {
