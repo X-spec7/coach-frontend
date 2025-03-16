@@ -1,6 +1,7 @@
-import { NextResponse } from 'next/server'
 import axios from 'axios'
 import { cookies } from 'next/headers'
+import { NextResponse } from 'next/server'
+
 import { REST_API_BASE_URL } from '@/shared/constants'
 
 // Create an Axios instance for server-side API calls

@@ -1,8 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { trainersService } from '@/features/trainers/service'
-import TrainerDetailPage from '@/features/trainers/pages/detail'
+import { trainersService } from '@/features/coaches/service'
+import TrainerDetailPage from '@/features/coaches/pages/detail'
 import { Loader } from '@/shared/components'
 import { ICoachDetail } from '@/shared/types'
 import { useParams } from 'next/navigation'

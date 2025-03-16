@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
-import trainersService from '../../service/trainers.service'
+import trainersService from '../../service/coaches.service'
 import CoachCard from './CoachCard'
 import { ICoachCard } from '../../types'
 import { useAuth } from '@/shared/provider'

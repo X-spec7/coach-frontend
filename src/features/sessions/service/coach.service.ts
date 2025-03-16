@@ -1,3 +1,4 @@
+import axios, { AxiosInstance } from "axios";
 import {
   CreateSessionRequestDTO,
   CreateSessionResponseDTO,
@@ -6,66 +7,69 @@ import {
   GetTotalSessionCountRequestDTO,
   GetTotalSessionCountResponseDTO,
 } from "../types"
-import authorizedHttpServer from "@/shared/services/authorizedHttp"
-
-class CoachSessionService {
-  getTotalMySessionCount = async (
-      request: GetTotalSessionCountRequestDTO
-    ): Promise<GetTotalSessionCountResponseDTO> => {
-      const params = new URLSearchParams();
-
-      if (request.goal) {
-        params.append('goal', request.goal);
-      }
-      if (request.booked !== undefined) {
-        params.append('booked', String(request.booked));
-      }
-      if (request.query) {
-        params.append('query', request.query);
-      }
-
-      return authorizedHttpServer
-        .get(`/session/get/mine/count/?${params.toString()}`)
-        .then((response) => {
-          return response.data as GetTotalSessionCountResponseDTO
-        })
-    }
-    
-    getMySessions = async (
-      request: GetMySessionsRequestDTO
-    ): Promise<GetMySessionsResponseDTO> => {
-      const params = new URLSearchParams();
-      if (request.limit) {
-        params.append('limit', request.limit.toString());
-      }
-      if (request.offset !== undefined) {
-        params.append('offset', String(request.offset));
-      }
-      if (request.query) {
-        params.append('query', request.query);
-      }
   
-      return authorizedHttpServer
-        .get(`/session/get/mine/?${params.toString()}`)
-        .then((response) => {
-          return {
-            status: response.status,
-            ...response.data
-          }
-        })
+class CoachSessionService {
+  private httpClient: AxiosInstance
+
+  constructor(httpClient?: AxiosInstance) {
+    // Proxy API base URL
+    this.httpClient = httpClient || axios.create({ baseURL: 'api/sessions' })
+  }
+
+  getTotalMySessionCount = async (
+    request: GetTotalSessionCountRequestDTO
+  ): Promise<GetTotalSessionCountResponseDTO> => {
+    const params = new URLSearchParams();
+
+    if (request.goal) {
+      params.append('goal', request.goal);
     }
+    if (request.booked !== undefined) {
+      params.append('booked', String(request.booked));
+    }
+    if (request.query) {
+      params.append('query', request.query);
+    }
+
+    return this.httpClient
+      .get(`/count?${params.toString()}`)
+      .then((response) => ({
+        status: response.status,
+        ...response.data
+      }))
+  }
+
+  getMySessions = async (
+    request: GetMySessionsRequestDTO
+  ): Promise<GetMySessionsResponseDTO> => {
+    const params = new URLSearchParams();
+    if (request.limit) {
+      params.append('limit', request.limit.toString());
+    }
+    if (request.offset !== undefined) {
+      params.append('offset', String(request.offset));
+    }
+    if (request.query) {
+      params.append('query', request.query);
+    }
+
+    return this.httpClient
+      .get(`/?${params.toString()}`)
+      .then((response) => ({
+        status: response.status,
+        ...response.data
+      }))
+  }
 
   createSession = async (
-    request: CreateSessionRequestDTO
+    payload: CreateSessionRequestDTO
   ): Promise<CreateSessionResponseDTO> => {
-    return authorizedHttpServer
-      .post('/session/create/', request)
-      .then((response) => {
-        return {
-          status: response.status,
-          ...response.data
-        }
-      })
+    return this.httpClient
+      .post('', payload)
+      .then((response) => ({
+        status: response.status,
+        ...response.data
+      }))
   }
 }
 

@@ -1,4 +1,4 @@
-import authorizedHttpServer from '@/shared/services/authorizedHttp'
+import authorizedHttpClient from '@/shared/services/authorizedHttp'
 
 import {
   UpdateCoachProfilePayloadDTO,
@@ -12,7 +12,7 @@ class ProfileService {
   async updateCoachProfile(
     payload: UpdateCoachProfilePayloadDTO
   ): Promise<UpdateCoachProfileResponseDTO> {
-    return authorizedHttpServer
+    return authorizedHttpClient
       .post('/users/profile/coach/update/', payload)
       .then((response) => {
         return {
@@ -25,7 +25,7 @@ class ProfileService {
   async updateClientProfile(
     payload: UpdateClientProfilePayloadDTO
   ): Promise<UpdateClientProfileResponseDTO> {
-    return authorizedHttpServer
+    return authorizedHttpClient
       .post('/users/profile/client/update/', payload)
       .then((response) => {
         return {
@@ -36,7 +36,7 @@ class ProfileService {
   }
 
   async getProfile(): Promise<GetProfileResponseDTO> {
-    return authorizedHttpServer
+    return authorizedHttpClient
       .get('/users/profile/get/')
       .then((response) => {
         return {
