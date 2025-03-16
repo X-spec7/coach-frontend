@@ -1,4 +1,3 @@
-import { authorizedHttpClient } from '@/shared/services'
 import { GetMessagesByUserIdRequestDTO, GetMessagesByUserIdResponseDTO } from '../types'
 import { MarkMessagesAsReadRequestDTO, MarkMessagesAsReadResponseDTO } from '../types/dto'
 import axios, { AxiosInstance } from 'axios'

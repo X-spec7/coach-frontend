@@ -1,4 +1,3 @@
-import { authorizedHttpClient } from '@/shared/services'
 import {
   GetContactsResponseDTO,
   SearchUserRequestDTO,
