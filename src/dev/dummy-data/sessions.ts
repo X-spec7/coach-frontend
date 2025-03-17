@@ -1,4 +1,6 @@
-import { ISessionWithBookedStatus, ISession } from "@/features/sessions/types";
+import { ISessionWithBookedStatus } from "@/features/sessions/types";
+
+import { ISession } from "@/shared/types";
 
 export const sessionsDummyData: ISessionWithBookedStatus[] = [
   {
@@ -16,7 +18,7 @@ export const sessionsDummyData: ISessionWithBookedStatus[] = [
     currentParticipantNumber: 5,
     price: 15.0,
     equipments: ["Yoga mat"],
-    meetingId: "meeting-101",
+    meetingId: 101,
     booked:true
   },
   {
@@ -34,7 +36,7 @@ export const sessionsDummyData: ISessionWithBookedStatus[] = [
     currentParticipantNumber: 10,
     price: 20.0,
     equipments: ["Towel", "Water bottle"],
-    meetingId: "meeting-102",
+    meetingId: 102,
     booked: false
   },
   {
@@ -52,7 +54,7 @@ export const sessionsDummyData: ISessionWithBookedStatus[] = [
     currentParticipantNumber: 8,
     price: 25.0,
     equipments: ["Dumbbells"],
-    meetingId: "meeting-103",
+    meetingId: 103,
     booked:true
   },
   {
@@ -70,7 +72,7 @@ export const sessionsDummyData: ISessionWithBookedStatus[] = [
     currentParticipantNumber: 12,
     price: 18.0,
     equipments: ["Yoga mat"],
-    meetingId: "meeting-104",
+    meetingId: 104,
     booked:true
   },
   {
@@ -88,7 +90,7 @@ export const sessionsDummyData: ISessionWithBookedStatus[] = [
     currentParticipantNumber: 3,
     price: 10.0,
     equipments: ["Cushion"],
-    meetingId: "meeting-105",
+    meetingId: 105,
     booked:true
   },
   {
@@ -106,7 +108,7 @@ export const sessionsDummyData: ISessionWithBookedStatus[] = [
     currentParticipantNumber: 15,
     price: 12.0,
     equipments: ["Towel", "Water bottle"],
-    meetingId: "meeting-106",
+    meetingId: 106,
     booked:true
   },
   {
@@ -124,7 +126,7 @@ export const sessionsDummyData: ISessionWithBookedStatus[] = [
     currentParticipantNumber: 6,
     price: 14.0,
     equipments: ["Resistance band"],
-    meetingId: "meeting-107",
+    meetingId: 107,
     booked:true
   },
   {
@@ -142,7 +144,7 @@ export const sessionsDummyData: ISessionWithBookedStatus[] = [
     currentParticipantNumber: 18,
     price: 22.0,
     equipments: ["Yoga mat"],
-    meetingId: "meeting-108",
+    meetingId: 108,
     booked:true
   },
   {
@@ -160,7 +162,7 @@ export const sessionsDummyData: ISessionWithBookedStatus[] = [
     currentParticipantNumber: 12,
     price: 20.0,
     equipments: ["Dumbbells", "Resistance band"],
-    meetingId: "meeting-109",
+    meetingId: 109,
     booked:true
   },
   {
@@ -178,7 +180,7 @@ export const sessionsDummyData: ISessionWithBookedStatus[] = [
     currentParticipantNumber: 25,
     price: 18.0,
     equipments: ["Comfortable shoes"],
-    meetingId: "meeting-110",
+    meetingId: 110,
     booked:true
   },
   {
@@ -196,7 +198,7 @@ export const sessionsDummyData: ISessionWithBookedStatus[] = [
     currentParticipantNumber: 15,
     price: 12.0,
     equipments: ["Towel", "Water bottle"],
-    meetingId: "meeting-106",
+    meetingId: 111,
     booked:true
   },
   {
@@ -214,7 +216,7 @@ export const sessionsDummyData: ISessionWithBookedStatus[] = [
     currentParticipantNumber: 6,
     price: 14.0,
     equipments: ["Resistance band"],
-    meetingId: "meeting-107",
+    meetingId: 112,
     booked:true
   },
   {
@@ -232,7 +234,7 @@ export const sessionsDummyData: ISessionWithBookedStatus[] = [
     currentParticipantNumber: 18,
     price: 22.0,
     equipments: ["Yoga mat"],
-    meetingId: "meeting-108",
+    meetingId: 113,
     booked:true
   },
   {
@@ -250,7 +252,7 @@ export const sessionsDummyData: ISessionWithBookedStatus[] = [
     currentParticipantNumber: 12,
     price: 20.0,
     equipments: ["Dumbbells", "Resistance band"],
-    meetingId: "meeting-109",
+    meetingId: 114,
     booked:true
   },
   {
@@ -268,7 +270,7 @@ export const sessionsDummyData: ISessionWithBookedStatus[] = [
     currentParticipantNumber: 25,
     price: 18.0,
     equipments: ["Comfortable shoes"],
-    meetingId: "meeting-110",
+    meetingId: 115,
     booked:true
   },
   // Additional 10 sessions omitted for brevity...
