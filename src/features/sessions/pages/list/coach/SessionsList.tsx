@@ -1,11 +1,12 @@
 'use client'
+import { useEffect, useState } from 'react'
 
 import SessionCard from './SessionCard'
-import sharedSessionService, { coachSessionService } from '@/features/sessions/service'
-import { useEffect, useState } from 'react'
 import { ISession } from '@/shared/types'
-import { formatTimeToDisplay } from '@/shared/utils/format'
 import { DefaultModal } from '@/shared/components'
+import { formatTimeToDisplay } from '@/shared/utils/format'
+import sharedSessionService, { coachSessionService } from '@/features/sessions/service'
+import { sessionsWithoutBookedDummyData } from '@/dev/dummy-data/sessions'
 
 interface ISessionsListProps {
   query: string
@@ -16,7 +17,7 @@ const SessionsList: React.FC<ISessionsListProps> = ({
   query,
   currentPage
 }) => {
-  const [sessions, setSessions] = useState<ISession[]>([])
+  const [sessions, setSessions] = useState<ISession[]>(sessionsWithoutBookedDummyData)
   const [selectedSession, setSelectedSession] = useState<ISession | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   
@@ -46,7 +47,7 @@ const SessionsList: React.FC<ISessionsListProps> = ({
       const sessions = response.sessions
       setSessions(sessions)
     }
-    getSessionsData()
+    // getSessionsData()
   }, [currentPage, query])
 
   return (

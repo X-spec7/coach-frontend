@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 
-import { Pagination } from '@/shared/components'
 import ContentHeader from './ContentHeader'
 import SessionsList from './SessionsList'
+
+import { Pagination } from '@/shared/components'
 import { coachSessionService } from '@/features/sessions/service'
 
 const countPerPage = 15
