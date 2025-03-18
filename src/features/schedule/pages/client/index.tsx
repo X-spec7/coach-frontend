@@ -1,9 +1,12 @@
 import React from 'react'
+import ContentHeader from './ContentHeader'
+import Calendar from './Calendar'
 
 const ClientSchedulePage = () => {
   return (
-    <div className='flex items-center justify-center w-full h-full'>
-      Client Schedule Page
+    <div className='flex flex-col items-center justify-center w-full h-full'>
+      <ContentHeader />
+      <Calendar />
     </div>
   )
 }
