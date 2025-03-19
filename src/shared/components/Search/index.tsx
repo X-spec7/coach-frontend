@@ -26,7 +26,7 @@ const SearchField: React.FC<SearchFieldProps> = ({ width, height, placeholder, v
     } else {
       params.delete('query')
     }
-    
+
     params.delete('page')
     replace(`${pathname}?${params.toString()}`)
   }, 300)
@@ -34,7 +34,7 @@ const SearchField: React.FC<SearchFieldProps> = ({ width, height, placeholder, v
   useEffect(() => {
     setInputValue(value || '')
   }, [value])
-  
+
   return (
     <div className={`relative ${width} ${height} bg-gray-bg rounded-4xl`}>
       <button className='absolute left-3 top-1/2 -translate-y-1/2'>

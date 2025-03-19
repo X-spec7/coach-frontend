@@ -4,7 +4,7 @@ import Image from 'next/image'
 import { Meal, MealTime } from '@/shared/types'
 import { mealDummyData } from '@/dev/dummy-data'
 
-interface MealPlanCardProps extends Omit<Meal, 'nutrition' | 'healthScore'>{}
+interface MealPlanCardProps extends Omit<Meal, 'nutrition' | 'healthScore'> { }
 
 const getImageUrlByMealTitle = (mealName: string): string => {
   switch (mealName) {
@@ -27,13 +27,15 @@ const getBgColorByMealTime = (mealTime: MealTime): string => {
       return 'bg-yellow'
     case 'Dinner':
       return 'bg-green'
+    case 'Snack':
+      return 'bg-red'
     default:
       return 'bg-blue'
   }
 }
 
-const MealPlanCard: React.FC<MealPlanCardProps> = ({mealTime, mealTitle, difficulty, calory, description}) => {
-  const bgColor = getBgColorByMealTime(mealTime)
+const MealPlanCard: React.FC<MealPlanCardProps> = ({ mealTime, mealTitle, difficulty, calory, description }) => {
+  const bgColor = getBgColorByMealTime(mealTime as MealTime)
   const mealImageUrl = getImageUrlByMealTitle(mealTitle)
 
   return (
@@ -77,9 +79,10 @@ const MealPlan = () => {
       </div>
 
       {
-        mealPlanDummyData.map((mealData, index) => (
+        mealPlanDummyData.map((mealData) => (
           <MealPlanCard
-            key={index}
+            key={mealData.id}
+            id={mealData.id}
             mealTime={mealData.mealTime}
             mealTitle={mealData.mealTitle}
             difficulty={mealData.difficulty}
