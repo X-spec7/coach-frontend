@@ -48,3 +48,4 @@ export { default as PersonSimpleRunSvg } from "./PersonSimpleRun";
 export { default as FlexibilitySvg } from "./Flexibility";
 export { default as PersonArmsSpreadSvg } from "./PersonArmsSpread";
 export { default as MindBodySvg } from "./MindBody";
+export { default as FilterSvg } from "./Filter";
