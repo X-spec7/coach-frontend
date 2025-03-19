@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { CategoryChip } from "./CategoryChip"
-import type { ClassCategory } from "../../../types/class.dto"
+import type { ClassCategory } from "../types/class.dto"
 
 interface CategoryListProps {
     categories: ClassCategory[]

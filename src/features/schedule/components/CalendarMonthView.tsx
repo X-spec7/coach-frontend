@@ -3,7 +3,7 @@
 import type React from "react"
 import cn from "classnames"
 import { format, isSameDay, isWithinInterval, startOfMonth, endOfMonth } from "date-fns"
-import type { ClassData, ClassCategory } from "../../../types/class.dto"
+import type { ClassData, ClassCategory } from "../types/class.dto"
 
 interface CalendarMonthViewProps {
     days: Date[]

@@ -14,7 +14,7 @@ import {
   subWeeks,
   subMonths,
 } from "date-fns";
-import type { CalendarView } from "../../../types/class.dto";
+import type { CalendarView } from "../types/class.dto";
 
 export const useCalendarDays = (
   currentDate: Date,

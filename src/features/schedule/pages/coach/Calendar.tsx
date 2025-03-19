@@ -4,7 +4,6 @@ import { useEffect, useState } from "react"
 import type { ClassData, CalendarView } from "../../types/class.dto"
 import { categories, classes, timeSlots } from "../dummy"
 import CalendarHeader from "../../components/CalendarHeader"
-import CategoryList from "../../components/CategoryList"
 import CalendarGrid from "../../components/CalendarGrid"
 import ScheduleDetail from "../../components/schedule-detail"
 import { useCalendarDays } from "../../hooks/useCalendarDays"
@@ -59,7 +58,7 @@ export default function Calendar() {
     const { getClassesForTimeAndDay, getAllClassesForDay } = useCalendarClasses(filteredClasses)
 
     return (
-        <div className="p-6 relative rounded-4xl bg-white shadow-sm w-full">
+        <div className="relative rounded-4xl bg-white shadow-sm w-full">
             {/* Header */}
             <CalendarHeader
                 currentDate={currentDate}
@@ -74,8 +73,7 @@ export default function Calendar() {
                 toggleCategory={toggleCategory}
             />
 
-            {/* Category Chips */}
-            <CategoryList categories={categories} selectedCategories={selectedCategories} toggleCategory={toggleCategory} />
+            <hr className='border-stroke w-full my-5' />
 
             {/* Calendar Grid */}
             <CalendarGrid

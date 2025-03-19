@@ -1,6 +1,6 @@
 import type { FC } from "react"
 import { ClockSvg, FireSvg, MonitorSvg } from "@/shared/components/Svg"
-import Card from "./components/Card"
+import Card from "../../components/Card"
 
 const ContentHeader: FC = () => {
     const handleOptionClick = (option: string) => {

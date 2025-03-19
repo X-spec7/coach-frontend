@@ -1,49 +1,39 @@
 import React from 'react'
 import { SearchField } from '@/shared/components'
-import { TimePeriodSelectButton } from '@/shared/components/Button'
+import { AddButton, TimePeriodSelectButton } from '@/shared/components/Button'
+import { FadersHorizontalSvg } from '@/shared/components/Svg'
 
 const dropdownOptions = [
-  'This Week',
-  'This Month'
+  'Activity',
+  'Time',
+  'Trainer',
+  'Location',
+  'Category',
 ]
+
+const FadeButton = () => {
+  return (
+    <div className='flex justify-center items-center w-7.5 h-7.5 rounded-20 bg-gray-bg'>
+      <FadersHorizontalSvg width='18' height='18' color='#212738' />
+    </div>
+  )
+}
 
 const ContentHeader = () => {
   return (
-    <div className='flex justify-between items-center w-full p-4'>
-      <div className='flex justify-start items-center gap-12'>
-        <div className='flex justify-start items-center gap-4'>
-          <div className='flex flex-col items-start justify-center text-gray-20 text-xxs'>
-            <p>Booked</p>
-            <p>Hours</p>
-          </div>
-          <div className='flex justify-start items-baseline gap-1 py-1 px-3 bg-gray-bg rounded-20'>
-            <p className='text-black font-medium text-xl'>120</p>
-            <p className='text-gray-20 text-xs'>Hours</p>
-            <p className='text-black font-medium text-xl'>30</p>
-            <p className='text-gray-20 text-xs'>Minutes</p>
-          </div>
-        </div>
-
-        <div className='flex justify-start items-center gap-4 text-xs text-gray-20'>
-          <div className='flex flex-col items-start justify-center'>
-            <p>Booked</p>
-            <p>Programs</p>
-          </div>
-          <div className='flex justify-start items-baseline gap-1 py-1 px-3 bg-gray-bg rounded-20'>
-            <p className='text-black font-medium text-xl'>14</p>
-            <p className=''>Schedules</p>
-          </div>
-        </div>
-      </div>
-
-      <div className='flex items-center justify-end gap-4'>
+    <div className='flex justify-between items-center w-full'>
+      <div className='flex items-center justify-start gap-4'>
         <SearchField
           width='w-65'
           height='h-9'
           placeholder='Search Anything'
         />
 
-        <TimePeriodSelectButton options={dropdownOptions} />
+        <TimePeriodSelectButton options={dropdownOptions} className="!bg-gray-bg" />
+      </div>
+      <div className='flex items-center justify-end gap-4'>
+        <FadeButton />
+        <AddButton title="Add Appointment" />
       </div>
     </div>
   )

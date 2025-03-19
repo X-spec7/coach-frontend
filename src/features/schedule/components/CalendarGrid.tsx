@@ -1,6 +1,6 @@
 import type React from "react"
 import cn from "classnames"
-import type { CalendarView, ClassData, ClassCategory } from "../../../types/class.dto"
+import type { CalendarView, ClassData, ClassCategory } from "../types/class.dto"
 import { format, isSameDay } from "date-fns"
 import CalendarMonthView from "./CalendarMonthView"
 import CalendarDayWeekView from "./CalendarDayWeekView"
@@ -12,6 +12,7 @@ interface CalendarGridProps {
     timeSlots: string[]
     currentDate: Date
     getClassesForTimeAndDay: (time: string, day: Date) => ClassData[]
+    getAllClassesForDay: (day: Date) => ClassData[]
     getCategoryById: (categoryId: string) => ClassCategory
     handleClassClick: (classData: ClassData) => void
     filteredClasses: ClassData[]
@@ -23,6 +24,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
     timeSlots,
     currentDate,
     getClassesForTimeAndDay,
+    getAllClassesForDay,
     getCategoryById,
     handleClassClick,
     filteredClasses,
@@ -30,7 +32,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
     return (
         <div
             className={cn(
-                "grid gap-px bg-gray-200 border border-gray-200 rounded-lg overflow-hidden",
+                "grid gap-px bg-gray-200 border border-gray-200 rounded-4xl overflow-hidden",
                 view === "day"
                     ? "grid-cols-[100px_1fr]"
                     : view === "week"
@@ -73,7 +75,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
                 <CalendarDayWeekView
                     days={days}
                     timeSlots={timeSlots}
-                    getClassesForTimeAndDay={getClassesForTimeAndDay}
+                    getAllClassesForDay={getAllClassesForDay}
                     getCategoryById={getCategoryById}
                     handleClassClick={handleClassClick}
                 />

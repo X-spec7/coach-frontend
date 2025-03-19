@@ -9,6 +9,7 @@ import { ISession } from '@/shared/types'
 import { GetMySessionsRequestDTO } from '@/features/sessions/types'
 
 import { sessionsWithoutBookedDummyData } from '@/dev/dummy-data/sessions'
+import Calendar from './Calendar'
 
 const CoachSchedulePage = () => {
   const [sessions, setSessions] = useState<ISession[]>([])
@@ -37,12 +38,13 @@ const CoachSchedulePage = () => {
   useEffect(() => {
     fetchSessionData()
   }, [])
-  
+
   return (
     <div className='flex flex-col gap-4 items-center justify-center w-full h-full bg-white rounded-20 px-4 pt-4 pb-28'>
       <ContentHeader />
+      <hr className='border-stroke w-full' />
       {/* TODO: Replace with action sessions data after checking UI */}
-      <Content sessions={sessionsWithoutBookedDummyData} />
+      <Calendar />
     </div>
   )
 }
