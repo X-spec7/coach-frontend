@@ -1,4 +1,4 @@
-import { ClassCategory, ClassData } from "../../types/class.dto"
+import { ClassCategory, ClassData } from "../types/class.dto"
 
 import {
   BarbellSvg,
@@ -52,22 +52,22 @@ export const categories: ClassCategory[] = [
 
 // Sample time slots
 export const timeSlots = [
-  "6:00 AM",
-  "7:00 AM",
-  "8:00 AM",
-  "9:00 AM",
+  "06:00 AM",
+  "07:00 AM",
+  "08:00 AM",
+  "09:00 AM",
   "10:00 AM",
   "11:00 AM",
   "12:00 PM",
-  "1:00 PM",
-  "2:00 PM",
-  "3:00 PM",
-  "4:00 PM",
-  "5:00 PM",
-  "6:00 PM",
-  "7:00 PM",
-  "8:00 PM",
-  "9:00 PM",
+  "01:00 PM",
+  "02:00 PM",
+  "03:00 PM",
+  "04:00 PM",
+  "05:00 PM",
+  "06:00 PM",
+  "07:00 PM",
+  "08:00 PM",
+  "09:00 PM",
   "10:00 PM",
   "11:00 PM",
   "12:00 AM",
@@ -212,7 +212,7 @@ export const classes: ClassData[] = [
   {
     id: 12,
     name: "Mindfulness Meditation",
-    time: "7:00 PM",
+    time: "7:15 PM",
     day: "Wednesday",
     trainer: "Emily Thompson",
     categoryId: "mind",
@@ -261,7 +261,7 @@ export const classes: ClassData[] = [
     id: 16,
     name: "Recovery Yoga",
     time: "6:00 PM",
-    day: "Friday",
+    day: "Sunday",
     trainer: "Sarah Lee",
     categoryId: "recovery",
     duration: "45 minutes",

@@ -1,7 +1,7 @@
 "use client"
 
 import cn from "classnames"
-import type { ClassCategory } from "../../../types/class.dto"
+import type { ClassCategory } from "../types/class.dto"
 
 interface CategoryChipProps {
     category: ClassCategory

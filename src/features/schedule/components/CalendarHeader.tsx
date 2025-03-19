@@ -4,7 +4,7 @@ import React, { useState } from "react"
 import { format } from "date-fns"
 import { CaretDownSvg, CaretLeftSvg, CaretRightSvg } from "@/shared/components/Svg"
 import { ClickOutside } from "@/shared/components"
-import type { CalendarView, ClassCategory } from "../../../types/class.dto"
+import type { CalendarView, ClassCategory } from "../types/class.dto"
 
 interface CalendarHeaderProps {
     currentDate: Date
@@ -44,13 +44,13 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
                 <h2 className="font-semibold">{format(currentDate, "MMMM yyyy")}</h2>
                 <CaretDownSvg height="20" width="20" color="#000" />
                 <div className="flex items-center gap-2">
-                    <button className="p-1 rounded-full border border-gray-bg" title="Previous" onClick={navigatePrevious}>
+                    <button className="p-1 rounded-full border border-gray-bg hover:bg-gray-bg" title="Previous" onClick={navigatePrevious}>
                         <CaretLeftSvg height="20" width="20" color="#000" />
                     </button>
                     <span className="px-3 py-1 bg-gray-100 rounded-full text-sm">
                         {view === "day" ? "Today" : view === "week" ? "This Week" : "This Month"}
                     </span>
-                    <button className="p-1 rounded-full bg-gray-bg" title="Next" onClick={navigateNext}>
+                    <button className="p-1 rounded-full border border-gray-bg hover:bg-gray-bg" title="Next" onClick={navigateNext}>
                         <CaretRightSvg height="20" width="20" color="#000" />
                     </button>
                 </div>
