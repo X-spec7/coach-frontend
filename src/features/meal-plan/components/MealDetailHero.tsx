@@ -1,7 +1,7 @@
 import type React from "react"
 import Image from "next/image"
 import type { Meal } from "../types/class.dto"
-import { ChartBarSvg, ClockSvg, StarSvg, UserCircleSvg } from "@/shared/components/Svg"
+import { ChartBarSvg, StarSvg } from "@/shared/components/Svg"
 import { CiForkAndKnife } from "react-icons/ci";
 import { PiKnife, PiCookingPot, PiListNumbers, PiHeartbeat } from "react-icons/pi";
 import { getBgColorClass } from "../hooks/getBgColorClass";

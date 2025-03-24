@@ -73,7 +73,7 @@ const MealDetailPlanPage: React.FC = () => {
     }
 
     return (
-        <section className="grid grid-cols-1 gap-8 md:grid-cols-3 mx-auto">
+        <section className="grid grid-cols-1 md:gap-x-8 gap-y-8 md:grid-cols-3 mx-auto">
             <div className="col-span-2">
                 <MealDetailHero meal={meal} />
                 <div className="flex md:flex-row flex-col justify-center mt-4 bg-white p-4 rounded-4xl shadow-md gap-4">
@@ -86,7 +86,7 @@ const MealDetailPlanPage: React.FC = () => {
                 {meal.reviews && <MealReviews reviews={meal.reviews} />}
             </div>
             <div className="col-span-1 space-y-8">
-                <MealValue nutritionFacts={meal.nutritionFacts} />
+                {meal.nutritionFacts && <MealValue nutritionFacts={meal.nutritionFacts} />}
 
                 {meal.ingredients && meal.servings && <MealIngredients ingredients={meal.ingredients} servings={meal.servings} />}
 
