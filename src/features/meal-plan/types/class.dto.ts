@@ -70,3 +70,45 @@ export interface Meal {
   reviews?: MealReview[];
   image?: string;
 }
+
+export type VisibilityType = "private" | "public" | "clients" | "coaches";
+
+export interface FoodItem {
+  id: string;
+  name: string;
+  amount: number;
+  unit: string;
+  calories: number;
+  nutrition: Nutrition;
+}
+
+export interface MealTimeData {
+  id: string;
+  name: string;
+  time: string;
+  foods: FoodItem[];
+}
+
+export interface MealPlan {
+  id: string;
+  name: string;
+  image?: string;
+  visibility: VisibilityType;
+  description: string;
+  nutrition: Nutrition;
+  mealTimes: MealTimeData[];
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
+  isAIGenerated: boolean;
+}
+
+export interface MealPlanFormData {
+  name: string;
+  image?: File;
+  imageUrl?: string;
+  visibility: VisibilityType;
+  description: string;
+  nutrition: Nutrition;
+  mealTimes: MealTimeData[];
+}
