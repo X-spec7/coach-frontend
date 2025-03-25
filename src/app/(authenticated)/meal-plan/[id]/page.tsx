@@ -2,7 +2,6 @@ import React from 'react';
 import { Metadata } from 'next';
 import MealDetailPlanPage from '@/features/meal-plan/pages/meal-detail';
 import SharedLayout from '@/shared/Layouts/SharedLayout';
-import BackLink from './BackLink';
 
 export const metadata: Metadata = {
     title:
@@ -13,7 +12,6 @@ export const metadata: Metadata = {
 const MealPlan: React.FC = () => {
     return (
         <>
-            <BackLink />
             <SharedLayout
                 headerTitle='Detail Menu'
                 headerDescription=''
