@@ -14,7 +14,7 @@ import PopularMealCard from "../../components/PopularMealCard"
 import RecommendedMealCard from "../../components/RecommendedMealCard"
 import SidebarSection from "../../components/SidebarSection"
 import { mealDummyData } from "@/dev/dummy-data"
-import { useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 const MealPlanPage: React.FC = () => {
     const [meals, setMeals] = useState<Meal[]>(mealDummyData)
@@ -50,14 +50,10 @@ const MealPlanPage: React.FC = () => {
         setFilteredMeals(result)
     }, [meals, selectedCategory, sortBy, searchParams])
 
-    const handleAddMeal = (meal: Meal) => {
-        console.log("Adding meal to plan:", meal)
-        // Implement your add meal logic here
-    }
+    const router = useRouter()
 
-
-    const handleAddMenu = () => {
-        console.log("Add new menu clicked")
+    const handleAddMeal = () => {
+        router.push("/meal-plan/add")
     }
 
     const handleCategoryChange = (category: string) => {
@@ -126,7 +122,7 @@ const MealPlanPage: React.FC = () => {
         <div className="grid md:grid-cols-3 grid-cols-1 gap-4">
             <div className="h-full flex flex-col items-start justify-start bg-white rounded-4xl p-4 col-span-2">
                 {/* Header with search and filters */}
-                <MealHeader onAddMenu={handleAddMenu} />
+                <MealHeader onAddMenu={handleAddMeal} />
                 <hr className="border-gray-bg w-full mt-4" />
 
                 {/* Category filters and sort dropdown */}
