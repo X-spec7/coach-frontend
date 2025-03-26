@@ -1,10 +1,10 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { v4 as uuidv4 } from "uuid"
-import type { MealPlanFormData, MealTimeData, VisibilityType, Nutrition } from "../../types/class.dto"
+import type { MealPlanFormData, MealTimeData, VisibilityType, Nutrition, DayOfWeek } from "../../types/class.dto"
 
 // Components
 import FormSection from "../../components/ui/FormSection"
@@ -15,42 +15,50 @@ import VisibilitySelector from "../../components/VisibilitySelector"
 import NutritionDistribution from "../../components/NutritionDistribution"
 import MealTimeSection from "../../components/MealTimeSection"
 import ClientSelector from "../../components/ClientSelector"
+import PlanTypeSelector from "../../components/PlanTypeSelector"
+import DaySelector from "../../components/DaySelector"
 
-const defaultMealTimes: MealTimeData[] = [
+const defaultMealTimes = (day: DayOfWeek = "all"): MealTimeData[] => [
     {
         id: uuidv4(),
         name: "Breakfast",
         time: "7:00 AM",
+        day,
         foods: [],
     },
     {
         id: uuidv4(),
         name: "Snacks",
         time: "10:00 AM",
+        day,
         foods: [],
     },
     {
         id: uuidv4(),
         name: "Lunch",
         time: "12:30 PM",
+        day,
         foods: [],
     },
     {
         id: uuidv4(),
         name: "Snacks",
         time: "3:30 PM",
+        day,
         foods: [],
     },
     {
         id: uuidv4(),
         name: "Dinner",
         time: "7:00 PM",
+        day,
         foods: [],
     },
     {
         id: uuidv4(),
         name: "Snacks",
         time: "9:00 PM",
+        day,
         foods: [],
     },
 ]
@@ -58,6 +66,8 @@ const defaultMealTimes: MealTimeData[] = [
 const CoachMealPlanPage: React.FC = () => {
     const router = useRouter()
     const [selectedClient, setSelectedClient] = useState<string>("")
+    const [planType, setPlanType] = useState<"daily" | "weekly">("daily")
+    const [selectedDay, setSelectedDay] = useState<DayOfWeek>("all")
     const [formData, setFormData] = useState<MealPlanFormData>({
         name: "",
         visibility: "clients",
@@ -67,9 +77,35 @@ const CoachMealPlanPage: React.FC = () => {
             protein: 0,
             fat: 0,
         },
-        mealTimes: defaultMealTimes,
+        mealTimes: defaultMealTimes(),
+        planType: "daily",
     })
     const [isSubmitting, setIsSubmitting] = useState(false)
+
+    // Update meal times when plan type changes
+    useEffect(() => {
+        if (planType === "daily") {
+            setFormData({
+                ...formData,
+                planType,
+                mealTimes: defaultMealTimes(),
+            })
+        } else {
+            // For weekly plan, create meal times for each day
+            const weeklyMealTimes: MealTimeData[] = []
+            const days: DayOfWeek[] = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+
+            days.forEach((day) => {
+                weeklyMealTimes.push(...defaultMealTimes(day))
+            })
+
+            setFormData({
+                ...formData,
+                planType,
+                mealTimes: weeklyMealTimes,
+            })
+        }
+    }, [planType])
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target
@@ -126,13 +162,19 @@ const CoachMealPlanPage: React.FC = () => {
             await new Promise((resolve) => setTimeout(resolve, 1000))
 
             // Redirect to meal plans page
-            router.push("/meal-plan")
+            router.push("/meal-plans")
         } catch (error) {
             console.error("Error saving meal plan:", error)
         } finally {
             setIsSubmitting(false)
         }
     }
+
+    // Filter meal times based on selected day (for weekly plan)
+    const filteredMealTimes =
+        planType === "weekly" && selectedDay !== "all"
+            ? formData.mealTimes.filter((mealTime) => mealTime.day === selectedDay)
+            : formData.mealTimes
 
     return (
         <div className="bg-white rounded-4xl p-6">
@@ -144,6 +186,17 @@ const CoachMealPlanPage: React.FC = () => {
             <form onSubmit={handleSubmit}>
                 <FormSection title="Client Selection">
                     <ClientSelector selectedClient={selectedClient} onChange={handleClientChange} />
+                </FormSection>
+
+                <FormSection title="Plan Type">
+                    <PlanTypeSelector planType={planType} onChange={setPlanType} className="mb-4" />
+
+                    {planType === "weekly" && (
+                        <div className="mt-4">
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Select Day to View/Edit</label>
+                            <DaySelector selectedDay={selectedDay} onChange={setSelectedDay} />
+                        </div>
+                    )}
                 </FormSection>
 
                 <FormSection title="Meal Plan Information">
@@ -179,8 +232,13 @@ const CoachMealPlanPage: React.FC = () => {
                     <NutritionDistribution nutrition={formData.nutrition} onChange={handleNutritionChange} />
                 </FormSection>
 
-                {formData.mealTimes.map((mealTime) => (
-                    <MealTimeSection key={mealTime.id} mealTime={mealTime} onUpdate={handleMealTimeUpdate} />
+                {filteredMealTimes.map((mealTime) => (
+                    <MealTimeSection
+                        key={mealTime.id}
+                        mealTime={mealTime}
+                        onUpdate={handleMealTimeUpdate}
+                        showDay={planType === "weekly"}
+                    />
                 ))}
 
                 <div className="flex justify-end gap-4 mt-8">

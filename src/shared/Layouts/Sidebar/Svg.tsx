@@ -2,7 +2,7 @@ import React from 'react'
 import { usePathname } from 'next/navigation'
 
 import { BarbellSvg, BoulFoodSvg, CalendarSvg, ChartBarSvg, ChatTeardropDotsSvg, IdentificationBadgeSvg, MonitorSvg, SquaresFourSvg } from '@/shared/components/Svg'
-import { PiMedal } from 'react-icons/pi'
+import { PiMedal, PiUsers } from 'react-icons/pi'
 
 export const LogoutSvg = () => {
   return (
@@ -121,6 +121,10 @@ export const NavbarSvg = ({ route, isItemActive }: NavbarSvgProps) => {
     case '/challenges':
       return (
         <PiMedal color={isItemActive ? '#212738' : '#757D83'} size={20} />
+      )
+    case '/clients':
+      return (
+        <PiUsers color={isItemActive ? '#212738' : '#757D83'} size={20} />
       )
   }
 }
