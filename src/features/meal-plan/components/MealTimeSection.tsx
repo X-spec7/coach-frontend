@@ -2,17 +2,18 @@
 
 import type React from "react"
 import { useState } from "react"
-import { FiPlus } from "react-icons/fi"
-import type { MealTimeData, FoodItem } from "../types/class.dto"
+import { FiPlus, FiCalendar } from "react-icons/fi"
+import type { MealTimeData, FoodItem, DayOfWeek } from "../types/class.dto"
 import FoodItemRow from "./FoodItemRow"
 import AddFoodModal from "./AddFoodModal"
 
 interface MealTimeSectionProps {
     mealTime: MealTimeData
     onUpdate: (updatedMealTime: MealTimeData) => void
+    showDay?: boolean
 }
 
-const MealTimeSection: React.FC<MealTimeSectionProps> = ({ mealTime, onUpdate }) => {
+const MealTimeSection: React.FC<MealTimeSectionProps> = ({ mealTime, onUpdate, showDay = false }) => {
     const [isAddModalOpen, setIsAddModalOpen] = useState(false)
     const [editingFood, setEditingFood] = useState<FoodItem | null>(null)
 
@@ -54,11 +55,24 @@ const MealTimeSection: React.FC<MealTimeSectionProps> = ({ mealTime, onUpdate })
     const totalProteins = mealTime.foods.reduce((sum, food) => sum + food.nutrition.protein, 0)
     const totalFats = mealTime.foods.reduce((sum, food) => sum + food.nutrition.fat, 0)
 
+    const formatDayName = (day: DayOfWeek) => {
+        if (day === "all") return "All Days"
+        return day.charAt(0).toUpperCase() + day.slice(1)
+    }
+
     return (
         <div className="mb-6">
             <div className="flex justify-between items-center mb-2">
-                <h3 className="text-lg font-medium">{mealTime.name}</h3>
-                <span className="text-sm text-gray-500">{mealTime.time}</span>
+                <div className="flex items-center gap-2">
+                    <h3 className="text-lg font-medium">{mealTime.name}</h3>
+                    <span className="text-sm text-gray-500">{mealTime.time}</span>
+                </div>
+                {showDay && (
+                    <div className="flex items-center gap-1 bg-gray-100 px-3 py-1 rounded-full">
+                        <FiCalendar size={14} className="text-gray-500" />
+                        <span className="text-sm text-gray-700">{formatDayName(mealTime.day)}</span>
+                    </div>
+                )}
             </div>
 
             <div className="bg-gray-bg rounded-xl p-4">

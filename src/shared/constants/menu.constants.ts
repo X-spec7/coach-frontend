@@ -70,6 +70,10 @@ export const COACH_MENU_ITEMS = [
     label: "Challenges",
     route: "/challenges",
   },
+  {
+    label: "Clients",
+    route: "/clients",
+  },
 ];
 
 export const ADMIN_MENU_ITEMS = [

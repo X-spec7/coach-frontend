@@ -22,6 +22,16 @@ export interface NutritionFacts {
   iron: number;
 }
 
+export type DayOfWeek =
+  | "monday"
+  | "tuesday"
+  | "wednesday"
+  | "thursday"
+  | "friday"
+  | "saturday"
+  | "sunday"
+  | "all";
+
 export interface MealIngredient {
   name: string;
   amount: string;
@@ -87,6 +97,7 @@ export interface MealTimeData {
   name: string;
   time: string;
   foods: FoodItem[];
+  day: DayOfWeek;
 }
 
 export interface MealPlan {
@@ -101,6 +112,7 @@ export interface MealPlan {
   createdAt: string;
   updatedAt: string;
   isAIGenerated: boolean;
+  planType: "daily" | "weekly";
 }
 
 export interface MealPlanFormData {
@@ -111,4 +123,5 @@ export interface MealPlanFormData {
   description: string;
   nutrition: Nutrition;
   mealTimes: MealTimeData[];
+  planType: "daily" | "weekly";
 }

@@ -1,10 +1,10 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { v4 as uuidv4 } from "uuid"
-import type { MealPlanFormData, MealTimeData, VisibilityType, Nutrition } from "../../types/class.dto"
+import type { MealPlanFormData, MealTimeData, VisibilityType, DayOfWeek, Nutrition } from "../../types/class.dto"
 
 // Components
 import FormSection from "../../components/ui/FormSection"
@@ -15,48 +15,58 @@ import VisibilitySelector from "../../components/VisibilitySelector"
 import NutritionDistribution from "../../components/NutritionDistribution"
 import MealTimeSection from "../../components/MealTimeSection"
 import AIAssistant from "../../components/AIAssistant"
+import PlanTypeSelector from "../../components/PlanTypeSelector"
+import DaySelector from "../../components/DaySelector"
 
-const defaultMealTimes: MealTimeData[] = [
+const defaultMealTimes = (day: DayOfWeek = "all"): MealTimeData[] => [
     {
         id: uuidv4(),
         name: "Breakfast",
         time: "7:00 AM",
+        day,
         foods: [],
     },
     {
         id: uuidv4(),
         name: "Snacks",
         time: "10:00 AM",
+        day,
         foods: [],
     },
     {
         id: uuidv4(),
         name: "Lunch",
         time: "12:30 PM",
+        day,
         foods: [],
     },
     {
         id: uuidv4(),
         name: "Snacks",
         time: "3:30 PM",
+        day,
         foods: [],
     },
     {
         id: uuidv4(),
         name: "Dinner",
         time: "7:00 PM",
+        day,
         foods: [],
     },
     {
         id: uuidv4(),
         name: "Snacks",
         time: "9:00 PM",
+        day,
         foods: [],
     },
 ]
 
 const ClientMealPlanPage: React.FC = () => {
     const router = useRouter()
+    const [planType, setPlanType] = useState<"daily" | "weekly">("daily")
+    const [selectedDay, setSelectedDay] = useState<DayOfWeek>("all")
     const [formData, setFormData] = useState<MealPlanFormData>({
         name: "",
         visibility: "private",
@@ -66,10 +76,36 @@ const ClientMealPlanPage: React.FC = () => {
             protein: 0,
             fat: 0,
         },
-        mealTimes: defaultMealTimes,
+        mealTimes: defaultMealTimes(),
+        planType: "daily",
     })
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [isGenerating, setIsGenerating] = useState(false)
+
+    // Update meal times when plan type changes
+    useEffect(() => {
+        if (planType === "daily") {
+            setFormData({
+                ...formData,
+                planType,
+                mealTimes: defaultMealTimes(),
+            })
+        } else {
+            // For weekly plan, create meal times for each day
+            const weeklyMealTimes: MealTimeData[] = []
+            const days: DayOfWeek[] = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+
+            days.forEach((day) => {
+                weeklyMealTimes.push(...defaultMealTimes(day))
+            })
+
+            setFormData({
+                ...formData,
+                planType,
+                mealTimes: weeklyMealTimes,
+            })
+        }
+    }, [planType])
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target
@@ -115,43 +151,83 @@ const ClientMealPlanPage: React.FC = () => {
         setIsGenerating(true)
 
         try {
-            console.log("Generating meal plan with prompt:", prompt)
+            console.log("Generating meal plan with prompt:", prompt, "for plan type:", planType)
 
             // Simulate API delay
             await new Promise((resolve) => setTimeout(resolve, 1500))
 
-            // Example AI-generated meal plan
-            const aiGeneratedPlan = {
-                name: "AI Generated Meal Plan",
-                description: `Generated based on your prompt: "${prompt}"`,
-                nutrition: {
-                    carb: 150,
-                    protein: 120,
-                    fat: 70,
-                },
-                mealTimes: defaultMealTimes.map((mealTime) => ({
-                    ...mealTime,
-                    foods: [
-                        {
-                            id: uuidv4(),
-                            name: `AI Suggested Food for ${mealTime.name}`,
-                            amount: 100,
-                            unit: "g",
-                            calories: 250,
-                            nutrition: {
-                                carb: 25,
-                                protein: 20,
-                                fat: 10,
+            if (planType === "daily") {
+                // Example AI-generated daily meal plan
+                const aiGeneratedPlan = {
+                    name: "AI Generated Daily Meal Plan",
+                    description: `Generated based on your prompt: "${prompt}"`,
+                    nutrition: {
+                        carb: 150,
+                        protein: 120,
+                        fat: 70,
+                    },
+                    mealTimes: defaultMealTimes().map((mealTime) => ({
+                        ...mealTime,
+                        foods: [
+                            {
+                                id: uuidv4(),
+                                name: `AI Suggested Food for ${mealTime.name}`,
+                                amount: 100,
+                                unit: "g",
+                                calories: 250,
+                                nutrition: {
+                                    carb: 25,
+                                    protein: 20,
+                                    fat: 10,
+                                },
                             },
-                        },
-                    ],
-                })),
-            }
+                        ],
+                    })),
+                }
 
-            setFormData({
-                ...formData,
-                ...aiGeneratedPlan,
-            })
+                setFormData({
+                    ...formData,
+                    ...aiGeneratedPlan,
+                })
+            } else {
+                // Example AI-generated weekly meal plan
+                const days: DayOfWeek[] = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+                const weeklyMealTimes: MealTimeData[] = []
+
+                days.forEach((day) => {
+                    weeklyMealTimes.push(
+                        ...defaultMealTimes(day).map((mealTime) => ({
+                            ...mealTime,
+                            foods: [
+                                {
+                                    id: uuidv4(),
+                                    name: `AI Suggested Food for ${mealTime.name} (${day})`,
+                                    amount: 100,
+                                    unit: "g",
+                                    calories: 250,
+                                    nutrition: {
+                                        carb: 25,
+                                        protein: 20,
+                                        fat: 10,
+                                    },
+                                },
+                            ],
+                        })),
+                    )
+                })
+
+                setFormData({
+                    ...formData,
+                    name: "AI Generated Weekly Meal Plan",
+                    description: `Generated based on your prompt: "${prompt}"`,
+                    nutrition: {
+                        carb: 150,
+                        protein: 120,
+                        fat: 70,
+                    },
+                    mealTimes: weeklyMealTimes,
+                })
+            }
         } catch (error) {
             console.error("Error generating meal plan:", error)
         } finally {
@@ -171,7 +247,7 @@ const ClientMealPlanPage: React.FC = () => {
             await new Promise((resolve) => setTimeout(resolve, 1000))
 
             // Redirect to meal plans page
-            router.push("/meal-plan")
+            router.push("/meal-plans")
         } catch (error) {
             console.error("Error saving meal plan:", error)
         } finally {
@@ -179,12 +255,31 @@ const ClientMealPlanPage: React.FC = () => {
         }
     }
 
+    // Filter meal times based on selected day (for weekly plan)
+    const filteredMealTimes =
+        planType === "weekly" && selectedDay !== "all"
+            ? formData.mealTimes.filter((mealTime) => mealTime.day === selectedDay)
+            : formData.mealTimes
+
     return (
         <div className="bg-white rounded-4xl p-6">
             <div className="mb-6">
                 <h1 className="text-2xl font-bold mb-2">Create Your Meal Plan</h1>
                 <p className="text-gray-600">Design a personalized meal plan or use AI to generate one for you.</p>
             </div>
+
+            <FormSection title="Plan Type">
+                <PlanTypeSelector planType={planType} onChange={setPlanType} className="mb-4" />
+
+                <div className="mt-4 p-3 bg-blue-50 rounded-md">
+                    <p className="text-sm text-blue-700">
+                        <strong>Tip:</strong>{" "}
+                        {planType === "daily"
+                            ? "Daily plans are great for specific diet days or as templates."
+                            : "Weekly plans allow you to vary your meals throughout the week for better nutrition and enjoyment."}
+                    </p>
+                </div>
+            </FormSection>
 
             <AIAssistant onGenerateMealPlan={handleGenerateMealPlan} isGenerating={isGenerating} className="mb-6" />
 
@@ -218,12 +313,24 @@ const ClientMealPlanPage: React.FC = () => {
                     </div>
                 </FormSection>
 
+                {planType === "weekly" && (
+                    <FormSection title="Day Selection">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Select Day to View/Edit</label>
+                        <DaySelector selectedDay={selectedDay} onChange={setSelectedDay} />
+                    </FormSection>
+                )}
+
                 <FormSection title="Nutrition Distribution">
                     <NutritionDistribution nutrition={formData.nutrition} onChange={handleNutritionChange} />
                 </FormSection>
 
-                {formData.mealTimes.map((mealTime) => (
-                    <MealTimeSection key={mealTime.id} mealTime={mealTime} onUpdate={handleMealTimeUpdate} />
+                {filteredMealTimes.map((mealTime) => (
+                    <MealTimeSection
+                        key={mealTime.id}
+                        mealTime={mealTime}
+                        onUpdate={handleMealTimeUpdate}
+                        showDay={planType === "weekly"}
+                    />
                 ))}
 
                 <div className="flex justify-end gap-4 mt-8">
