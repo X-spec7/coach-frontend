@@ -4,7 +4,7 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { v4 as uuidv4 } from "uuid"
-import type { MealPlanFormData, MealTimeData, VisibilityType, DayOfWeek, Nutrition } from "../../types/class.dto"
+import type { MealPlanFormData, MealTimeData, VisibilityType, DayOfWeek, Nutrition, UserData } from "../../types/class.dto"
 
 // Components
 import FormSection from "../../components/ui/FormSection"
@@ -108,10 +108,8 @@ const ClientMealPlanPage: React.FC = () => {
     }, [planType])
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target
         setFormData({
             ...formData,
-            [name]: value,
         })
     }
 
@@ -146,26 +144,36 @@ const ClientMealPlanPage: React.FC = () => {
         })
     }
 
-    const handleGenerateMealPlan = async (prompt: string) => {
+    const handleGenerateMealPlan = async (prompt: string, userData: UserData) => {
         // In a real app, this would call an AI service
         setIsGenerating(true)
 
         try {
-            console.log("Generating meal plan with prompt:", prompt, "for plan type:", planType)
+            console.log("Generating meal plan with prompt:", prompt)
+            console.log("User data:", userData)
 
             // Simulate API delay
             await new Promise((resolve) => setTimeout(resolve, 1500))
 
+            // Update nutrition based on user data
+            const nutrition = {
+                carb: Math.round(((userData.calorieNeed || 2000) * 0.5) / 4), // 50% carbs, 4 calories per gram
+                protein: Math.round(((userData.calorieNeed || 2000) * 0.3) / 4), // 30% protein, 4 calories per gram
+                fat: Math.round(((userData.calorieNeed || 2000) * 0.2) / 9), // 20% fat, 9 calories per gram
+            }
+
             if (planType === "daily") {
                 // Example AI-generated daily meal plan
                 const aiGeneratedPlan = {
-                    name: "AI Generated Daily Meal Plan",
-                    description: `Generated based on your prompt: "${prompt}"`,
-                    nutrition: {
-                        carb: 150,
-                        protein: 120,
-                        fat: 70,
-                    },
+                    name: `AI Generated ${userData.mainGoal === "lose_weight"
+                        ? "Weight Loss"
+                        : userData.mainGoal === "gain_muscle"
+                            ? "Muscle Gain"
+                            : "Maintenance"
+                        } Meal Plan`,
+                    description: `Personalized meal plan for ${userData.sex === "male" ? "male" : "female"}, ${userData.age} years, ${userData.height}cm, ${userData.weight}kg. 
+                     Daily calorie target: ${(userData.calorieNeed || 0) + (userData.calorieDeficit || 0)} calories.`,
+                    nutrition,
                     mealTimes: defaultMealTimes().map((mealTime) => ({
                         ...mealTime,
                         foods: [
@@ -174,11 +182,11 @@ const ClientMealPlanPage: React.FC = () => {
                                 name: `AI Suggested Food for ${mealTime.name}`,
                                 amount: 100,
                                 unit: "g",
-                                calories: 250,
+                                calories: Math.round((userData.calorieNeed || 2000) / 5), // Divide daily calories by 5 meals
                                 nutrition: {
-                                    carb: 25,
-                                    protein: 20,
-                                    fat: 10,
+                                    carb: Math.round(nutrition.carb / 5),
+                                    protein: Math.round(nutrition.protein / 5),
+                                    fat: Math.round(nutrition.fat / 5),
                                 },
                             },
                         ],
@@ -204,11 +212,11 @@ const ClientMealPlanPage: React.FC = () => {
                                     name: `AI Suggested Food for ${mealTime.name} (${day})`,
                                     amount: 100,
                                     unit: "g",
-                                    calories: 250,
+                                    calories: Math.round((userData.calorieNeed || 2000) / 5),
                                     nutrition: {
-                                        carb: 25,
-                                        protein: 20,
-                                        fat: 10,
+                                        carb: Math.round(nutrition.carb / 5),
+                                        protein: Math.round(nutrition.protein / 5),
+                                        fat: Math.round(nutrition.fat / 5),
                                     },
                                 },
                             ],
@@ -218,13 +226,15 @@ const ClientMealPlanPage: React.FC = () => {
 
                 setFormData({
                     ...formData,
-                    name: "AI Generated Weekly Meal Plan",
-                    description: `Generated based on your prompt: "${prompt}"`,
-                    nutrition: {
-                        carb: 150,
-                        protein: 120,
-                        fat: 70,
-                    },
+                    name: `AI Generated Weekly ${userData.mainGoal === "lose_weight"
+                        ? "Weight Loss"
+                        : userData.mainGoal === "gain_muscle"
+                            ? "Muscle Gain"
+                            : "Maintenance"
+                        } Plan`,
+                    description: `Personalized weekly meal plan for ${userData.sex === "male" ? "male" : "female"}, ${userData.age} years, ${userData.height}cm, ${userData.weight}kg. 
+                     Daily calorie target: ${(userData.calorieNeed || 0) + (userData.calorieDeficit || 0)} calories.`,
+                    nutrition,
                     mealTimes: weeklyMealTimes,
                 })
             }
@@ -247,7 +257,7 @@ const ClientMealPlanPage: React.FC = () => {
             await new Promise((resolve) => setTimeout(resolve, 1000))
 
             // Redirect to meal plans page
-            router.push("/meal-plans")
+            router.push("/meal-plan")
         } catch (error) {
             console.error("Error saving meal plan:", error)
         } finally {

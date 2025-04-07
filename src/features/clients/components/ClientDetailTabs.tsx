@@ -18,6 +18,11 @@ const ClientDetailTabs: React.FC<ClientDetailTabsProps> = ({ client }) => {
         { id: "notes", label: "Notes" },
     ]
 
+    const handleSaveNote = () => {
+        // Save note logic here
+
+    }
+
     return (
         <div className="bg-white shadow rounded-lg mb-6">
             <div className="border-b border-gray-200">
@@ -27,8 +32,8 @@ const ClientDetailTabs: React.FC<ClientDetailTabsProps> = ({ client }) => {
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id)}
                             className={`py-4 px-6 text-center border-b-2 font-medium text-sm ${activeTab === tab.id
-                                    ? "border-green-500 text-green-600"
-                                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                                ? "border-green-500 text-green-600"
+                                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                                 }`}
                         >
                             {tab.label}
@@ -217,13 +222,15 @@ const ClientDetailTabs: React.FC<ClientDetailTabsProps> = ({ client }) => {
                                 placeholder="Add a note..."
                             ></textarea>
                             <div className="mt-2 flex justify-end">
-                                <button className="px-4 py-2 bg-green text-black rounded-md hover:bg-green-dark">Save Note</button>
+                                <button className="px-4 py-2 bg-green text-black rounded-md hover:bg-green-dark"
+                                    onClick={handleSaveNote}
+                                > Save Note</button>
                             </div>
                         </div>
                     </div>
                 )}
             </div>
-        </div>
+        </div >
     )
 }
 

@@ -24,7 +24,7 @@ const ClientSearch: React.FC<ClientSearchProps> = ({ onFilterChange }) => {
         setShowFilters(!showFilters)
     }
 
-    const handleStatusChange = (status: string) => {
+    const handleStatusChange = (status: string | undefined) => {
         const newFilters = {
             ...filters,
             status: status as any,
@@ -73,7 +73,7 @@ const ClientSearch: React.FC<ClientSearchProps> = ({ onFilterChange }) => {
                         <div className="py-1">
                             <button
                                 className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                                onClick={() => handleStatusChange("")}
+                                onClick={() => handleStatusChange(undefined)}
                             >
                                 All Clients
                             </button>

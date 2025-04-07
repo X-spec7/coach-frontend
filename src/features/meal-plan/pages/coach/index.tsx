@@ -162,7 +162,7 @@ const CoachMealPlanPage: React.FC = () => {
             await new Promise((resolve) => setTimeout(resolve, 1000))
 
             // Redirect to meal plans page
-            router.push("/meal-plans")
+            router.push("/meal-plan")
         } catch (error) {
             console.error("Error saving meal plan:", error)
         } finally {

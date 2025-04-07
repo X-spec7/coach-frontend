@@ -23,36 +23,42 @@ const defaultMealTimes: MealTimeData[] = [
         name: "Breakfast",
         time: "7:00 AM",
         foods: [],
+        day: "monday",
     },
     {
         id: uuidv4(),
         name: "Snacks",
         time: "10:00 AM",
         foods: [],
+        day: "monday",
     },
     {
         id: uuidv4(),
         name: "Lunch",
         time: "12:30 PM",
         foods: [],
+        day: "monday",
     },
     {
         id: uuidv4(),
         name: "Snacks",
         time: "3:30 PM",
         foods: [],
+        day: "monday",
     },
     {
         id: uuidv4(),
         name: "Dinner",
         time: "7:00 PM",
         foods: [],
+        day: "monday",
     },
     {
         id: uuidv4(),
         name: "Snacks",
         time: "9:00 PM",
         foods: [],
+        day: "monday",
     },
 ]
 
@@ -69,6 +75,7 @@ const AddMealPlanPage: React.FC = () => {
             fat: 0,
         },
         mealTimes: defaultMealTimes,
+        planType: "daily",
     })
     const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -169,7 +176,7 @@ const AddMealPlanPage: React.FC = () => {
             await new Promise((resolve) => setTimeout(resolve, 1000))
 
             // Redirect to meal plans page
-            router.push("/meal-plans")
+            router.push("/meal-plan")
         } catch (error) {
             console.error("Error saving meal plan:", error)
         } finally {

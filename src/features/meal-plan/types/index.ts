@@ -33,6 +33,7 @@ export type DayOfWeek =
   | "all";
 
 export interface MealIngredient {
+  id: number;
   name: string;
   amount: string;
   unit?: string;
@@ -42,9 +43,11 @@ export interface MealStep {
   id: number;
   title: string;
   description: string;
+  order: number;
 }
 
 export interface MealTool {
+  id: number;
   name: string;
 }
 
@@ -84,7 +87,7 @@ export interface Meal {
 export type VisibilityType = "private" | "public" | "clients" | "coaches";
 
 export interface FoodItem {
-  id: string;
+  id: number;
   name: string;
   amount: number;
   unit: string;
@@ -93,7 +96,7 @@ export interface FoodItem {
 }
 
 export interface MealTimeData {
-  id: string;
+  id: number;
   name: string;
   time: string;
   foods: FoodItem[];
@@ -116,6 +119,7 @@ export interface MealPlan {
 }
 
 export interface MealPlanFormData {
+  id: string;
   name: string;
   image?: File;
   imageUrl?: string;
@@ -127,6 +131,7 @@ export interface MealPlanFormData {
 }
 
 export interface UserData {
+  id: number;
   sex: string;
   age: number | null;
   height: number | null;
