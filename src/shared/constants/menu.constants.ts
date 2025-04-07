@@ -31,6 +31,10 @@ export const CLIENT_MENU_ITEMS = [
     label: "Meal Plan",
     route: "/meal-plan",
   },
+  {
+    label: "Workouts",
+    route: "/workouts",
+  },
 ];
 
 export const COACH_MENU_ITEMS = [
@@ -73,6 +77,10 @@ export const COACH_MENU_ITEMS = [
   {
     label: "Clients",
     route: "/clients",
+  },
+  {
+    label: "Workouts",
+    route: "/workouts",
   },
 ];
 

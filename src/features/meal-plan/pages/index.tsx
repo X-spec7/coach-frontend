@@ -6,7 +6,6 @@ import ClientMealPlanPage from "./client"
 
 const MealPlanPage = () => {
     const { user } = useAuth()
-
     if (user?.userType === "Coach") {
         return <CoachMealPlanPage />
     }

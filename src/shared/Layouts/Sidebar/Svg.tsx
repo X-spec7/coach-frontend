@@ -3,6 +3,7 @@ import { usePathname } from 'next/navigation'
 
 import { BarbellSvg, BoulFoodSvg, CalendarSvg, ChartBarSvg, ChatTeardropDotsSvg, IdentificationBadgeSvg, MonitorSvg, SquaresFourSvg } from '@/shared/components/Svg'
 import { PiMedal, PiUsers } from 'react-icons/pi'
+import { LuBicepsFlexed } from 'react-icons/lu'
 
 export const LogoutSvg = () => {
   return (
@@ -125,6 +126,10 @@ export const NavbarSvg = ({ route, isItemActive }: NavbarSvgProps) => {
     case '/clients':
       return (
         <PiUsers color={isItemActive ? '#212738' : '#757D83'} size={20} />
+      )
+    case '/workouts':
+      return (
+        <LuBicepsFlexed color={isItemActive ? '#212738' : '#757D83'} size={20} />
       )
   }
 }

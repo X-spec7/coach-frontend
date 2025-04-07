@@ -15,6 +15,7 @@ import RecommendedMealCard from "../../components/RecommendedMealCard"
 import SidebarSection from "../../components/SidebarSection"
 import { mealDummyData } from "@/dev/dummy-data"
 import { useRouter, useSearchParams } from 'next/navigation'
+import mealPlanService from "../../services/mealPlanService"
 
 const MealPlanPage: React.FC = () => {
     const [meals, setMeals] = useState<Meal[]>(mealDummyData)
@@ -25,7 +26,11 @@ const MealPlanPage: React.FC = () => {
 
     // Filter meals based on category and search query
     useEffect(() => {
-        let result = [...meals]
+        // Fetch meals from API or use dummy data
+        // getMeals()
+        mealPlanService.getMeals().then((fetchedMeals) => setMeals(fetchedMeals))
+
+        let result = meals
 
         // Filter by category
         if (selectedCategory !== "All") {
